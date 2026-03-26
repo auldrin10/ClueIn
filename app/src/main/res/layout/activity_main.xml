@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="-182dp"
         android:text="Button" />
 
     <Button
@@ -57,6 +57,22 @@
         android:layout_marginEnd="-25dp"
         android:layout_marginBottom="168dp"
         android:text="Hello World!" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="545dp"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="479dp"
+        android:text="Button" />
 
 
 </RelativeLayout>
