@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void ToSignUp(View v){
 
-        Intent SignUp = new Intent(this, SignupActivity.class);
+        Intent SignUp = new Intent(this, SignUpActivity.class);
         startActivity(SignUp);
     }
 
