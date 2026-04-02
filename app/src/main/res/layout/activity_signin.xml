@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:gravity="center">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txtInptUsername"
+                android:id="@+id/txtInptUser"
                 android:layout_width="367dp"
                 android:inputType="text"
                 android:layout_height="56dp"
@@ -118,7 +118,8 @@
                 android:id="@+id/chckBoxEightChars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:clickable="false"
+                android:focusable="false"
                 android:layout_weight="1"
                 android:layout_marginLeft="-107.7dp"
                 android:text="Atleast 8 characters"
@@ -298,4 +299,50 @@
             android:text="LogIn" android:textSize="17dp"
             android:layout_marginLeft="1dp"/>
     </LinearLayout>
+
+<!--Progress indicator -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="89dp"
+        >
+
+    </androidx.viewpager2.widget.ViewPager2>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <androidx.cardview.widget.CardView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="30dp"
+
+            >
+            <ImageView
+                android:id="@+id/indic1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/orange"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="30dp"
+            android:layout_marginLeft="16dp"
+            >
+            <ImageView
+                android:id="@+id/indic2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/orange"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
 </RelativeLayout>
