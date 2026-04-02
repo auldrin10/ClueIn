@@ -4,9 +4,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,17 +35,46 @@ public class SignUpActivity extends AppCompatActivity {
         boolean boolValidInpt = true;
         EditText password = findViewById(R.id.txtInptPassword);
 
-        /*Creating instances in order to access the attributes of the existing checkboxes*/
-        CheckBox checkLength = findViewById(R.id.chckBoxEightChars);
-        CheckBox checkNumber = findViewById(R.id.chckBoxNumbers);
-        CheckBox checkLowerCase = findViewById(R.id.chckBoxLowerCaseChar);
-        CheckBox checkUpperCase = findViewById(R.id.chckBoxUpperCaseChar);
-        CheckBox checkSpecialChar = findViewById(R.id.chckBoxSpecialChar);
+//        /*Creating instances in order to access the attributes of the existing checkboxes*/
+//        CheckBox checkLength = findViewById(R.id.chckBoxEightChars);
+//        CheckBox checkNumber = findViewById(R.id.chckBoxNumbers);
+//        CheckBox checkLowerCase = findViewById(R.id.chckBoxLowerCaseChar);
+//        CheckBox checkUpperCase = findViewById(R.id.chckBoxUpperCaseChar);
+//        CheckBox checkSpecialChar = findViewById(R.id.chckBoxSpecialChar);
+
+        /*Instance for the textInput(Password)  */
+        LinearLayout validationLayout = findViewById(R.id.validationLayout);
+        EditText passwordInput = findViewById(R.id.txtInptPassword);
+
+        /*Instance for imageview and textview*/
+        ImageView iconLength = findViewById(R.id.iconLength);
+        TextView textLength = findViewById(R.id.chckBoxEightChars);
+
+        ImageView iconNum = findViewById(R.id.iconAtLeastNum);
+        TextView textNum = findViewById(R.id.chckBoxNumbers);
+
+        ImageView iconLowerCase = findViewById(R.id.iconLower);
+        TextView textLowerCase = findViewById(R.id.chckBoxLowerCaseChar);
+
+        ImageView iconUpperCase = findViewById(R.id.iconUpper);
+        TextView textUpperCase = findViewById(R.id.chckBoxUpperCaseChar);
+
+        ImageView iconSpecialChar = findViewById(R.id.iconSpecialChar);
+        TextView textSpecialChar = findViewById(R.id.chckBoxSpecialChar);
+
+
 
         /*Instance for the button*/
         Button btnSignUp = findViewById(R.id.btnSignUp);
 
-
+        /*Password only appears when users focuses on the inputbox  */
+        passwordInput.setOnFocusChangeListener((v, hasFocus) ->{
+            if(hasFocus){
+                validationLayout.setVisibility((View.VISIBLE));
+            }else{
+                validationLayout.setVisibility(View.GONE);
+            }
+        });
         /*Validation of  the password  */
 
         password.addTextChangedListener(new TextWatcher() {
@@ -64,55 +97,55 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if(pass.length() >= 8){
 
-                    checkLength.setChecked(true);
-                    checkLength.setTextColor(Color.GREEN);
+                    iconLength.setImageResource(R.drawable.check);
+                    textLength.setTextColor(Color.GREEN);
 
                 }else{
-                    checkLength.setChecked(false);
-                    checkLength.setTextColor(Color.RED);
+                    iconLength.setImageResource(R.drawable.check);
+                    textLength.setTextColor(Color.RED);
                     isValid = false;
                 }
 
                 /*Rule 2: Has atleast a number*/
                 if(pass.matches(".*[0-9].*")){
 
-                    checkNumber.setChecked(true);
-                    checkNumber.setTextColor(Color.GREEN);
+                    iconNum.setImageResource(R.drawable.check);
+                    textNum.setTextColor(Color.GREEN);
                 }else{
-                    checkNumber.setChecked(false);
-                    checkNumber.setTextColor(Color.RED);
+                    iconNum.setImageResource(R.drawable.check);
+                    textNum.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-                /*Rule 3: Has atleast one lowercase*/
-                if(pass.matches(".*[a-z].*")){
-                    checkLowerCase.setChecked(true);
-                    checkLowerCase.setTextColor(Color.GREEN);
-                }else{
-                    checkLowerCase.setChecked(false);
-                    checkLowerCase.setTextColor(Color.RED);
-                    isValid = false;
-                }
-
-                /*Rule 4: has atleast one uppercase*/
-                if(pass.matches(".*[A-Z].*")){
-                    checkUpperCase.setChecked(true);
-                    checkUpperCase.setTextColor(Color.GREEN);
-                }else{
-                    checkUpperCase.setChecked(false);
-                    checkUpperCase.setTextColor(Color.RED);
-                    isValid = false;
-                }
-
-                /*Rule 5: has atleast one special character   */
-                if(pass.matches(".*[@#$%^&*+=!].*")){
-                    checkSpecialChar.setChecked(true);
-                    checkSpecialChar.setTextColor(Color.GREEN);
-                }else{
-                    checkSpecialChar.setChecked(false);
-                    checkSpecialChar.setTextColor(Color.RED);
-                    isValid = false;
-                }
+//                /*Rule 3: Has atleast one lowercase*/
+//                if(pass.matches(".*[a-z].*")){
+//                    checkLowerCase.setChecked(true);
+//                    checkLowerCase.setTextColor(Color.GREEN);
+//                }else{
+//                    checkLowerCase.setChecked(false);
+//                    checkLowerCase.setTextColor(Color.RED);
+//                    isValid = false;
+//                }
+//
+//                /*Rule 4: has atleast one uppercase*/
+//                if(pass.matches(".*[A-Z].*")){
+//                    checkUpperCase.setChecked(true);
+//                    checkUpperCase.setTextColor(Color.GREEN);
+//                }else{
+//                    checkUpperCase.setChecked(false);
+//                    checkUpperCase.setTextColor(Color.RED);
+//                    isValid = false;
+//                }
+//
+//                /*Rule 5: has atleast one special character   */
+//                if(pass.matches(".*[@#$%^&*+=!].*")){
+//                    checkSpecialChar.setChecked(true);
+//                    checkSpecialChar.setTextColor(Color.GREEN);
+//                }else{
+//                    checkSpecialChar.setChecked(false);
+//                    checkSpecialChar.setTextColor(Color.RED);
+//                    isValid = false;
+//                }
 
 
             }
