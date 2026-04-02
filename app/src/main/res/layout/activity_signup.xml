@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/main" android:gravity="center" android:layout_width="match_parent" android:layout_height="match_parent" tools:context=".MainActivity">
 
-<!--    Sign up textView and User Account Icon-->
+    <!--    Sign up textView and User Account Icon-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,7 +11,7 @@
         android:layout_marginBottom="780dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf= "parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +85,7 @@
                 android:layout_height="56dp"
                 android:background="@drawable/rounded_corner_username"
                 android:drawableEnd="@drawable/baseline_email_24"
-               android:paddingEnd="10dp"
+                android:paddingEnd="10dp"
                 android:hint="Email Address"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="25dp"
@@ -113,7 +113,7 @@
                 android:paddingLeft="25dp"
                 android:textColorHint="#ff625b71"
                 android:textSize="19.99dp"/>
-<!--Password validation checklist-->
+            <!--Password validation checklist-->
             <CheckBox
                 android:id="@+id/chckBoxEightChars"
                 android:layout_width="wrap_content"
@@ -176,7 +176,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.291"
         >
-            <!-- CheckBox where user agrees with our terms and conditions -->
+        <!-- CheckBox where user agrees with our terms and conditions -->
 
         <CheckBox android:id="@+id/checkBox"
             android:layout_width="371dp"
@@ -300,12 +300,15 @@
             android:layout_marginLeft="1dp"/>
     </LinearLayout>
 
-<!--Progress indicator -->
+    <!--Progress indicator -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="89dp"
-        >
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp">
 
     </androidx.viewpager2.widget.ViewPager2>
     <LinearLayout

@@ -3,8 +3,6 @@ package com.example.cluein;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +23,18 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
     }
+    public void ToDashboard(View v){
+
+        Intent Dashboard = new Intent(this, MainActivity.class);
+        startActivity(Dashboard);
+    }
+    public void ToSignUp(View v){
+
+        Intent SignUp = new Intent(this, SignUpActivity.class);
+        startActivity(SignUp);
+    }
+
+
 
 
 }

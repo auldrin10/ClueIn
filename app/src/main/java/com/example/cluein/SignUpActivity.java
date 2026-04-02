@@ -54,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-//            Runs while the user is typing
+            //            Runs while the user is typing
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String pass = password.getText().toString();
