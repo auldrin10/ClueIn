@@ -145,49 +145,70 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/emailLayout"
+            style="@style/MyTextInputLayout"
             android:layout_width="355dp"
-            android:layout_height="81dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="Email"
-            android:textSize="25dp">
+            android:textSize="25dp"
+
+            app:boxBackgroundMode="outline"
+            app:boxStrokeWidthFocused="3dp"
+            app:boxCollapsedPaddingTop="0dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/input_stroke"
+            app:hintTextColor="@color/orange">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/Emailtxt"
                 android:layout_width="334dp"
                 android:layout_height="50dp"
-                android:background="@drawable/textfields"
                 android:inputType="textEmailAddress"
-                android:paddingLeft="25dp"
+                android:paddingStart="25dp"
+                android:drawableEnd="@drawable/baseline_email_24"
                 android:textColor="@color/black"
-                android:textColorHighlight="@color/black"
-                android:textColorHint="@color/black"
-                android:textColorLink="@color/black"
-                android:textSize="20dp"
-                android:textStyle="normal" />
+                android:textColorHighlight="@color/orange"
+                android:textColorHint="@color/orange"
+                android:textColorLink="@color/orange"
+                android:textSize="20sp"
+                android:textStyle="normal"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pswLayout"
+            style="@style/MyTextInputLayout"
             android:layout_width="355dp"
-            android:layout_height="81dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="Password"
             android:textSize="25dp"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:endIconTint="@color/orange"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeWidthFocused="3dp"
+            app:boxCollapsedPaddingTop="0dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/input_stroke"
+            app:hintTextColor="@color/orange">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pswdtxt"
                 android:layout_width="334dp"
                 android:layout_height="50dp"
 
-                android:background="@drawable/textfields"
                 android:inputType="textPassword"
                 android:paddingLeft="25dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
                 android:textColorLink="@color/black"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="normal" />
         </com.google.android.material.textfield.TextInputLayout>
 
