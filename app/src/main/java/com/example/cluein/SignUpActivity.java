@@ -114,6 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
                     isValid = false;
                 }
 
+
             }
         });
     }
