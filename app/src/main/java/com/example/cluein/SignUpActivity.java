@@ -18,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 public class SignUpActivity extends AppCompatActivity {
 
     @Override
@@ -45,6 +47,8 @@ public class SignUpActivity extends AppCompatActivity {
         /*Instance for the textInput(Password)  */
         LinearLayout validationLayout = findViewById(R.id.validationLayout);
         EditText passwordInput = findViewById(R.id.txtInptPassword);
+        /*Password layout instance*/
+       TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
 
         /*Instance for imageview and textview*/
         ImageView iconLength = findViewById(R.id.iconLength);
@@ -101,7 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
                     textLength.setTextColor(Color.GREEN);
 
                 }else{
-                    iconLength.setImageResource(R.drawable.check);
+                    iconLength.setImageResource(R.drawable.multiplication);
                     textLength.setTextColor(Color.RED);
                     isValid = false;
                 }
@@ -112,41 +116,48 @@ public class SignUpActivity extends AppCompatActivity {
                     iconNum.setImageResource(R.drawable.check);
                     textNum.setTextColor(Color.GREEN);
                 }else{
-                    iconNum.setImageResource(R.drawable.check);
+                    iconNum.setImageResource(R.drawable.multiplication);
                     textNum.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-//                /*Rule 3: Has atleast one lowercase*/
-//                if(pass.matches(".*[a-z].*")){
-//                    checkLowerCase.setChecked(true);
-//                    checkLowerCase.setTextColor(Color.GREEN);
-//                }else{
-//                    checkLowerCase.setChecked(false);
-//                    checkLowerCase.setTextColor(Color.RED);
-//                    isValid = false;
-//                }
-//
-//                /*Rule 4: has atleast one uppercase*/
-//                if(pass.matches(".*[A-Z].*")){
-//                    checkUpperCase.setChecked(true);
-//                    checkUpperCase.setTextColor(Color.GREEN);
-//                }else{
-//                    checkUpperCase.setChecked(false);
-//                    checkUpperCase.setTextColor(Color.RED);
-//                    isValid = false;
-//                }
-//
-//                /*Rule 5: has atleast one special character   */
-//                if(pass.matches(".*[@#$%^&*+=!].*")){
-//                    checkSpecialChar.setChecked(true);
-//                    checkSpecialChar.setTextColor(Color.GREEN);
-//                }else{
-//                    checkSpecialChar.setChecked(false);
-//                    checkSpecialChar.setTextColor(Color.RED);
-//                    isValid = false;
-//                }
+                /*Rule 3: Has atleast one lowercase*/
+                if(pass.matches(".*[a-z].*")){
+                    iconLowerCase.setImageResource(R.drawable.check);
+                    textLowerCase.setTextColor(Color.GREEN);
+                }else{
+                    iconLowerCase.setImageResource(R.drawable.multiplication);
+                    textLowerCase.setTextColor(Color.RED);
+                    isValid = false;
+                }
 
+                /*Rule 4: has atleast one uppercase*/
+                if(pass.matches(".*[A-Z].*")){
+                   iconUpperCase.setImageResource(R.drawable.check);
+                    textUpperCase.setTextColor(Color.GREEN);
+                }else{
+                    iconUpperCase.setImageResource(R.drawable.multiplication);
+                    textUpperCase.setTextColor(Color.RED);
+                    isValid = false;
+                }
+
+                /*Rule 5: has atleast one special character   */
+                if(pass.matches(".*[@#$%^&*+=!].*")){
+                   iconSpecialChar.setImageResource(R.drawable.check);
+                   textSpecialChar.setTextColor(Color.GREEN);
+                }else{
+                    iconSpecialChar.setImageResource(R.drawable.multiplication);
+                    textSpecialChar.setTextColor(Color.RED);
+                    isValid = false;
+                }
+
+
+                if(!isValid){
+                    validationLayout.setVisibility(View.VISIBLE);
+                    passwordLayout.setError("Password is weak");
+                }else{
+                    validationLayout.setVisibility(View.GONE);
+                }
 
             }
         });
