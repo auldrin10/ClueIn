@@ -1,5 +1,6 @@
 package com.example.cluein;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -162,6 +163,11 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+    //This function is called when the user click Log In text from sign up activity
+    public void ToLogIn(View v){
 
+        Intent LogIn = new Intent(this, LoginActivity.class);
+        startActivity(LogIn);
+    }
 
 }
