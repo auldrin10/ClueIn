@@ -338,6 +338,7 @@
             android:layout_marginTop="50dp"
             android:background="@drawable/sign_up_button"
             android:text="Sign Up"
+            android:textAllCaps="false"
             android:textColor="@color/navy"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -453,17 +454,6 @@
     </LinearLayout>
 
     <!--Progress indicator -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/indicator"
-        android:layout_width="match_parent"
-        android:layout_height="89dp"
-
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp">
-
-    </androidx.viewpager2.widget.ViewPager2>
 
     <LinearLayout
         android:layout_width="match_parent"
