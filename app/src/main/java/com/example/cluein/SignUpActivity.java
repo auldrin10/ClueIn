@@ -84,7 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         /* Instances for the two dots */
         View dot1 = findViewById(R.id.dot1);
-        View dot2 = findViewById(R.id.dot2);
+//        View dot2 = findViewById(R.id.dot2);
 
         /*Validation of  the password  */
 
@@ -172,7 +172,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         /* Color changes based on the page the user is on */
         dot1.setBackgroundResource(R.drawable.active_dot);
-        dot2.setBackgroundResource(R.drawable.dot_inactive);
+//        dot2.setBackgroundResource(R.drawable.dot_inactive);
 
     }
     //This function is called when the user click Log In text from sign up activity
