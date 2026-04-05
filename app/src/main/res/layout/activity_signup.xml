@@ -141,7 +141,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -164,7 +163,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -188,7 +186,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -212,7 +209,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -236,7 +232,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -338,7 +333,6 @@
             android:layout_marginTop="50dp"
             android:background="@drawable/sign_up_button"
             android:text="Sign Up"
-            android:textAllCaps="false"
             android:textColor="@color/navy"
             android:textSize="24dp"
             android:textStyle="bold" />
@@ -437,23 +431,25 @@
             android:layout_width="231dp"
             android:layout_height="wrap_content"
             android:text="Already have an account?"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/txtViewLogIn"
-            android:layout_width="96dp"
+            android:textSize="17dp"/>
+        <TextView android:id="@+id/txtViewLogIn"
+            android:layout_width="59dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:onClick="ToLogIn"
-            android:padding="10dp"
-            android:textAlignment="center"
-            android:text="Log In"
-            android:textColor="@color/orange"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:text="LogIn" android:textSize="17dp"
+            android:layout_marginLeft="1dp"/>
     </LinearLayout>
 
     <!--Progress indicator -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="89dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp">
+
+    </androidx.viewpager2.widget.ViewPager2>
 
     <LinearLayout
         android:layout_width="match_parent"
