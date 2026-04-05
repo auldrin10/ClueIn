@@ -47,6 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         /*Instance for the textInput(Password)  */
         LinearLayout validationLayout = findViewById(R.id.validationLayout);
         EditText passwordInput = findViewById(R.id.txtInptPassword);
+
         /*Password layout instance*/
        TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
 
@@ -79,6 +80,11 @@ public class SignUpActivity extends AppCompatActivity {
                 validationLayout.setVisibility(View.GONE);
             }
         });
+
+        /* Instances for the two dots */
+        View dot1 = findViewById(R.id.dot1);
+        View dot2 = findViewById(R.id.dot2);
+
         /*Validation of  the password  */
 
         password.addTextChangedListener(new TextWatcher() {
@@ -160,7 +166,13 @@ public class SignUpActivity extends AppCompatActivity {
                 }
 
             }
+
         });
+
+        /* Color changes based on the page the user is on */
+        dot1.setBackgroundResource(R.drawable.active_dot);
+        dot2.setBackgroundResource(R.drawable.dot_inactive);
+
     }
 
 
