@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName;
 public class Event {
     //SerializedName let the java code to be readable and also handling the messy API data
    //example the API might call event_pstr_url which refering to imageurl
-   @SerializedName("name")
+   @SerializedName("caption")
    private String event_title;
-   @SerializedName("poster_path")
+   @SerializedName("displayUrl")
    private String imageURL;
-   @SerializedName("venue_name")
+   @SerializedName("locationName")
    private String location;
    @SerializedName("event_date")
    private String eventDate;
