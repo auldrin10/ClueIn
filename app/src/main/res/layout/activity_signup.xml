@@ -249,7 +249,7 @@
 
             <CheckBox
                 android:id="@+id/checkBox"
-                android:layout_width="match_parent"
+                android:layout_width="360dp"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Service and Privacy Policy"
                 android:textSize="15sp" />
