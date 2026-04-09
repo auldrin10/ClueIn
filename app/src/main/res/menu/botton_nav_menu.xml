@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_feed"
+        android:icon="@drawable/home_svgrepo_com"
+        android:title="Feed" />
+
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/search_alt_2_svgrepo_com"
+        android:title="Search" />
+
+    <item
+        android:id="@+id/nav_favorites"
+        android:icon="@drawable/heart_alt_svgrepo_com"
+        android:title="Favorites" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/profile_round_1342_svgrepo_com"
+        android:title="Profile" />
+</menu>
