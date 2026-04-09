@@ -1,5 +1,6 @@
 package com.example.cluein;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,31 +18,30 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-    }
-    public void ToDashboard(View v){
 
+        // Find the root view by ID 'main' to apply padding for the status bar
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) View mainView = findViewById(R.id.main);
+        if (mainView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
+        }
+    }
+
+    public void ToDashboard(View v) {
         Intent Dashboard = new Intent(this, MainActivity.class);
         startActivity(Dashboard);
     }
-    public void ToSignUp(View v){
 
+    public void ToSignUp(View v) {
         Intent SignUp = new Intent(this, SignUpActivity.class);
         startActivity(SignUp);
     }
 
-    public void ResetActivity(View v){
-
+    public void ResetActivity(View v) {
         Intent ResetPage = new Intent(this, LostPasswordActivity.class);
         startActivity(ResetPage);
     }
-
-
-
-
-
 }
