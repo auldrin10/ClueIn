@@ -114,12 +114,15 @@
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeWidth="2dp"
                 app:boxStrokeColor="@color/input_stroke"
-                app:hintTextColor="@color/orange">
+                app:hintTextColor="@color/orange"
+                app:passwordToggleTint="@color/orange">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptPassword"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:hint="Password"
+
                     android:inputType="textPassword"
                     android:paddingStart="25dp"
                     android:textColorHint="#ff625b71"
@@ -340,8 +343,7 @@
                 android:text="LogIn"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="@color/orange"
-                />
+                android:textColor="@color/orange"/>
         </LinearLayout>
 
         <!-- Progress Indicator -->
