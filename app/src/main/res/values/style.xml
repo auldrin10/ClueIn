@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MyTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/MyHintText</item>
+    </style>
+
+    <style name="MyHintText">
+        <item name="android:textSize">18sp</item>  <!-- change size here -->
+        <item name="android:textColor">@color/orange</item> <!-- change color -->
+    </style>
+</resources>

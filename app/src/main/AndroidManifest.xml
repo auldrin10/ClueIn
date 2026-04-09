@@ -14,7 +14,10 @@
         android:theme="@style/Theme.ClueIn"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name=".SigninActivity"
+            android:name=".LostPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".CategoryActivity"
