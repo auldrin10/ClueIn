@@ -181,5 +181,9 @@ public class SignUpActivity extends AppCompatActivity {
         Intent LogIn = new Intent(this, LoginActivity.class);
         startActivity(LogIn);
     }
+    public void ToCategory(View v){
+        Intent Category = new Intent(this, CategoryActivity.class);
+        startActivity(Category);
+    }
 
 }

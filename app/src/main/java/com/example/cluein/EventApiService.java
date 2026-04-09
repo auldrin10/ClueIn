@@ -12,11 +12,11 @@ public interface EventApiService {
     Call<List<Event>> getAllEvents();
     //So this get the entire lists of events and this is primarily for events that are not inside on Campus;
     @GET("events")
-    Call<List<Event>> getEventsByLocation(@Query("location")) String campusName);
+    Call<List<Event>> getEventsByLocation(@Query("location")String campusName);
     //So this let you search events based on the category it can be maybe academics or social(Fresher's party)
     @GET("events")
-    Call<List<Event>> getEventsByCategory(@Query("category")) String categoryName);
+    Call<List<Event>> getEventsByCategory(@Query("category") String categoryName);
     //So I added this so that we can filter events also based on prices so that student can able to attend events that meet their budget as we know we are broke!
     @GET("events")
-    Call<List<Event>> getEventsByMaxPrice(@Query("max_price")) double maxPrice);
+    Call<List<Event>> getEventsByMaxPrice(@Query("max_price") double maxPrice);
 }
