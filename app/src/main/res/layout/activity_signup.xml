@@ -50,12 +50,21 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                style="@style/MyTextInputLayout"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeColor="@color/input_stroke"
+                app:hintTextColor="@color/orange"
+                >
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptUser"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/rounded_corner_username"
                     android:drawableEnd="@drawable/baseline_account_circle_24"
                     android:hint="Full Name"
                     android:inputType="text"
@@ -68,12 +77,20 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                style="@style/MyTextInputLayout"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeColor="@color/input_stroke"
+                app:hintTextColor="@color/orange">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptEmail"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/rounded_corner_username"
                     android:drawableEnd="@drawable/baseline_email_24"
                     android:hint="Email Address"
                     android:inputType="textEmailAddress"
@@ -88,12 +105,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled="true"
-                app:passwordToggleTint="@color/black">
+                app:passwordToggleTint="@color/black"
+                style="@style/MyTextInputLayout"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeColor="@color/input_stroke"
+                app:hintTextColor="@color/orange">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptPassword"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/rounded_corner_username"
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:paddingStart="25dp"
@@ -129,7 +154,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
-                    android:text="Should have numbers"
+                    android:text="Atleast 8 characters "
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -149,7 +174,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
-                    android:text="Atleast 8 characters"
+                    android:text="Should have numbers"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -235,6 +260,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/sign_up_button"
                 android:text="Sign Up"
+                android:textAllCaps="false"
                 android:textColor="@color/navy"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -305,14 +331,17 @@
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
                 android:textSize="17sp" />
+
             <TextView
                 android:id="@+id/txtViewLogIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="ToLogIn"
                 android:text="LogIn"
-                android:textColor="@color/navy"
                 android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/orange"
+                />
         </LinearLayout>
 
         <!-- Progress Indicator -->
@@ -323,9 +352,10 @@
             android:layout_marginBottom="20dp"
             android:gravity="center"
             android:orientation="horizontal">
+
             <View
                 android:id="@+id/dot1"
-                android:layout_width="12dp"
+                android:layout_width="13dp"
                 android:layout_height="12dp"
                 android:layout_margin="6dp"
                 android:background="@drawable/dot_inactive" />
