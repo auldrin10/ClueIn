@@ -50,12 +50,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_corner_username"
+                >
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptUser"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/rounded_corner_username"
+
                     android:drawableEnd="@drawable/baseline_account_circle_24"
                     android:hint="Full Name"
                     android:inputType="text"
@@ -323,9 +325,10 @@
             android:layout_marginBottom="20dp"
             android:gravity="center"
             android:orientation="horizontal">
+
             <View
                 android:id="@+id/dot1"
-                android:layout_width="12dp"
+                android:layout_width="13dp"
                 android:layout_height="12dp"
                 android:layout_margin="6dp"
                 android:background="@drawable/dot_inactive" />
