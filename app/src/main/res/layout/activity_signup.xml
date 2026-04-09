@@ -114,6 +114,7 @@
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeWidth="2dp"
+                app:passwordToggleTint="@color/orange"
                 app:boxStrokeColor="@color/input_stroke"
                 app:hintTextColor="@color/orange">
                 <com.google.android.material.textfield.TextInputEditText

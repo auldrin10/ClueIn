@@ -87,6 +87,7 @@
                 app:boxCornerRadiusBottomStart="30dp"
                 app:boxStrokeWidth="2dp"
                 app:boxCornerRadiusTopEnd="30dp"
+                app:passwordToggleTint="@color/orange"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeColor="@color/input_stroke"
                 app:endIconTint="@color/orange"
@@ -99,6 +100,7 @@
                     android:layout_height="55dp"
                     android:inputType="textPassword"
                     android:paddingStart="25dp"
+
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
