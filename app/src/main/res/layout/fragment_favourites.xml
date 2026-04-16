@@ -41,7 +41,17 @@
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/ic_backgroud_navy">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
 
+                            android:background="@drawable/close"/>
+
+
+                    </RelativeLayout>
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
