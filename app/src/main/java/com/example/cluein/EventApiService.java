@@ -11,20 +11,22 @@ public interface EventApiService {
     @GET("events")
     Call<List<Event>> getAllEvents();
 
-    // Search by Campus (Fixed syntax)
+    // Search by Campus
     @GET("events")
     Call<List<Event>> getEventsByLocation(@Query("location") String campusName);
 
-    // Search by Category (Fixed syntax)
+    // Search by Category
     @GET("events")
     Call<List<Event>> getEventsByCategory(@Query("category") String categoryName);
 
-    // Filter by Price (Fixed syntax)
+    // Filter by Price
     @GET("events")
     Call<List<Event>> getEventsByMaxPrice(@Query("max_price") double maxPrice);
 
     // --- LIVE SPORTS DATA (Apify) ---
-    // This is for the live data we just set up for Wits Sport
-    @GET("v2/datasets/sLlOSEXduYaLXrcde/items?format=json&clean=true")
-    Call<List<Event>> getWitsSportEvents();
+    @GET("datasets/sLlOSEXduYaLXrcde/items")
+    Call<List<Event>> getWitsSportEvents(
+            @Query("format") String format,
+            @Query("clean") boolean clean
+    );
 }
