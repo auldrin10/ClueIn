@@ -45,11 +45,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:gravity="center"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="355dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 style="@style/MyTextInputLayout"
@@ -76,7 +75,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="355dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 style="@style/MyTextInputLayout"
@@ -103,25 +102,26 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordLayout"
-                android:layout_width="355dp"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
-
                 style="@style/MyTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusTopStart="30dp"
-                app:boxStrokeWidth="2dp"
-                app:passwordToggleTint="@color/orange"
                 app:boxStrokeColor="@color/input_stroke"
-                app:hintTextColor="@color/orange">
+                app:boxStrokeWidth="2dp"
+                app:hintTextColor="@color/orange"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/orange">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptPassword"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:hint="Password"
+
                     android:inputType="textPassword"
                     android:paddingStart="25dp"
                     android:textColorHint="#ff625b71"
@@ -250,18 +250,17 @@
 
             <CheckBox
                 android:id="@+id/checkBox"
-                android:layout_width="360dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Service and Privacy Policy"
                 android:textSize="15sp" />
 
             <Button
                 android:id="@+id/btnSignUp"
-                android:layout_width="355dp"
-                android:layout_height="61dp"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/sign_up_button"
-                android:onClick="ToCategory"
                 android:text="Sign Up"
                 android:textAllCaps="false"
                 android:textColor="@color/navy"
@@ -330,7 +329,6 @@
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/textView2"
-                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
@@ -341,10 +339,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="ToLogIn"
-                android:text="Log In"
-                android:textColor="@color/orange"
+                android:text="LogIn"
                 android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/orange"/>
         </LinearLayout>
 
         <!-- Progress Indicator -->
