@@ -1,124 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".favourites">
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".favouritesFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayout"
+    <TextView
+        android:id="@+id/textView5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:id="@+id/textView5"
+        android:layout_height="wrap_content"
+        android:text="Favourites"
+        android:textColor="@color/navy"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerFavorites"
             android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tvEmptyFavorites"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Favourates"
-            android:textColor="@color/navy"
-            android:textSize="40sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <ScrollView
-            android:layout_width="409dp"
-            android:layout_height="868dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/ic_backgroud_navy">
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-
-                            android:background="@drawable/close"/>
-
-
-                    </RelativeLayout>
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-
-                    android:src="@drawable/ic_backgroud_navy"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/tv_event_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Event Title"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_event_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Location Name"
-                        android:textColor="#B0BEC5"
-                        android:textSize="14sp" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginTop="12dp">
-
-                        <TextView
-                            android:id="@+id/tv_event_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Date"
-                            android:layout_marginLeft="0dp"
-                            android:textColor="#FF9800"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_event_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:text="Price"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                </LinearLayout>
-            </LinearLayout>
-
-
-
-
-
-        </ScrollView>
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_gravity="center"
+            android:text="No favorites yet"
+            android:visibility="gone"
+            android:textSize="18sp" />
     </FrameLayout>
-
-
+</LinearLayout>
