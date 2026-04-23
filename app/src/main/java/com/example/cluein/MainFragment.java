@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,6 +36,7 @@ public class MainFragment extends Fragment {
     private List<Event> eventList = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -50,6 +54,7 @@ public class MainFragment extends Fragment {
         
         return view;
     }
+
 
     private void fetchEvents() {
         String url = "https://api.mockaroo.com/api/603386a0?count=50&key=3d8a6660"; 
