@@ -32,7 +32,7 @@ public class MainFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private EventAdapter adapter;
-    private ProgressBar progressBar; 
+    private ProgressBar progressBar;
     private List<Event> eventList = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
 
@@ -40,10 +40,10 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        
+
         recyclerView = view.findViewById(R.id.recyclerViewEvents);
         progressBar = view.findViewById(R.id.progressBar);
-        
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // Passing 'false' because this is the Main Feed, not Favorites
         adapter = new EventAdapter(eventList, getContext(), false);
@@ -51,13 +51,13 @@ public class MainFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
         fetchEvents();
-        
+
         return view;
     }
 
 
     private void fetchEvents() {
-        String url = "https://api.mockaroo.com/api/603386a0?count=50&key=3d8a6660"; 
+        String url = "https://api.mockaroo.com/api/603386a0?count=50&key=3d8a6660";
 
         Request request = new Request.Builder()
                 .url(url)
@@ -100,12 +100,12 @@ public class MainFragment extends Fragment {
         getActivity().runOnUiThread(() -> {
             progressBar.setVisibility(View.GONE);
             eventList.clear();
-            
+
             eventList.add(new Event("Wits Music Festival", "https://picsum.photos/id/1/600/400", "Wits Great Hall", "Fri, 25 Oct", "The biggest party of the year!", 120.0, "101", true));
             eventList.add(new Event("Tech Hackathon 2024", "https://picsum.photos/id/2/600/400", "Matrix Building", "Sat, 26 Oct", "24 hours of pure coding and coffee", 0.0, "102", true));
             eventList.add(new Event("Varsity Rugby: Wits vs UJ", "https://picsum.photos/id/3/600/400", "Wits Stadium", "Mon, 28 Oct", "Come support your team!", 50.0, "103", true));
             eventList.add(new Event("Entrepreneurship Talk", "https://picsum.photos/id/4/600/400", "Science Stadium", "Wed, 30 Oct", "Learn from industry experts", 0.0, "104", false));
-            
+
             adapter.notifyDataSetChanged();
 
         });

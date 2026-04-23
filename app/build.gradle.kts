@@ -48,7 +48,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    implementation("com.google.firebase:firebase-firestore:24.7.1")
     //translator app that can act as a bridge between my java code and the JSON data coming from the server
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

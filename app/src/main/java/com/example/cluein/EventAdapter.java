@@ -50,12 +50,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 .placeholder(R.drawable.dribbble_logo)
                 .into(holder.imgEvent);
 
-        if (event.isOnCampus()) {
-            holder.cardView.setStrokeWidth(4);
-            holder.cardView.setStrokeColor(Color.parseColor("#FF9800"));
-        } else {
-            holder.cardView.setStrokeWidth(0);
-        }
+
+
 
         // --- Logic for Favorite (Love) and Remove (X) buttons ---
         if (isFavoriteView) {
