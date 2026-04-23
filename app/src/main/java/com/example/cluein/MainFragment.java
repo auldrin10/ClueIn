@@ -102,7 +102,7 @@ public class MainFragment extends Fragment {
             eventList.add(new Event("Entrepreneurship Talk", "https://picsum.photos/id/4/600/400", "Science Stadium", "Wed, 30 Oct", "Learn from industry experts", 0.0, "104", false));
             
             adapter.notifyDataSetChanged();
-            Toast.makeText(getContext(), message + ". Loading sample events...", Toast.LENGTH_SHORT).show();
+
         });
     }
 }
