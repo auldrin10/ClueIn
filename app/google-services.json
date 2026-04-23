@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "636341501011",
+    "project_id": "cluein-b738d",
+    "storage_bucket": "cluein-b738d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636341501011:android:50582799e096abd75d5aa6",
+        "android_client_info": {
+          "package_name": "com.example.cluein"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-0oq6mCDoSaFpQTQKHpvTjBAeE7kOcc4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
