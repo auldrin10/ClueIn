@@ -56,10 +56,11 @@
                 android:layout_height="wrap_content"
                 android:hint="Email"
                 app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxStrokeWidth="2dp"
                 app:boxStrokeColor="@color/input_stroke"
                 app:hintTextColor="@color/orange">
 
@@ -82,10 +83,12 @@
                 android:layout_marginTop="15dp"
                 android:hint="Password"
                 app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxStrokeWidth="2dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:passwordToggleTint="@color/orange"
+                app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeColor="@color/input_stroke"
                 app:endIconTint="@color/orange"
                 app:hintTextColor="@color/orange"
@@ -97,6 +100,7 @@
                     android:layout_height="55dp"
                     android:inputType="textPassword"
                     android:paddingStart="25dp"
+
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
