@@ -15,9 +15,6 @@
         android:theme="@style/Theme.ClueIn"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activity_profile"
-            android:exported="false" />
-        <activity
             android:name=".LostPasswordActivity"
             android:exported="false" />
         <activity
