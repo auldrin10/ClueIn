@@ -1,13 +1,13 @@
 package com.example.cluein;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -34,156 +35,185 @@ public class SignUpActivity extends AppCompatActivity {
             return insets;
         });
 
-        /* Storing the checkboxes idies for later uses */
-        boolean boolValidInpt = true;
+        /* Instances for input fields and layouts */
+        TextInputLayout nameLayout = findViewById(R.id.nameLayout);
+        TextInputEditText nameInput = findViewById(R.id.txtInptUser);
+        TextInputLayout emailLayout = findViewById(R.id.emailLayout);
+        TextInputEditText emailInput = findViewById(R.id.txtInptEmail);
+        TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
         EditText password = findViewById(R.id.txtInptPassword);
-
-//        /*Creating instances in order to access the attributes of the existing checkboxes*/
-//        CheckBox checkLength = findViewById(R.id.chckBoxEightChars);
-//        CheckBox checkNumber = findViewById(R.id.chckBoxNumbers);
-//        CheckBox checkLowerCase = findViewById(R.id.chckBoxLowerCaseChar);
-//        CheckBox checkUpperCase = findViewById(R.id.chckBoxUpperCaseChar);
-//        CheckBox checkSpecialChar = findViewById(R.id.chckBoxSpecialChar);
-
-        /*Instance for the textInput(Password)  */
         LinearLayout validationLayout = findViewById(R.id.validationLayout);
-        EditText passwordInput = findViewById(R.id.txtInptPassword);
 
-        /*Password layout instance*/
-       TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
-
-        /*Instance for imageview and textview*/
+        /* Instance for imageview and textview */
         ImageView iconLength = findViewById(R.id.iconLength);
         TextView textLength = findViewById(R.id.chckBoxEightChars);
-
         ImageView iconNum = findViewById(R.id.iconAtLeastNum);
         TextView textNum = findViewById(R.id.chckBoxNumbers);
-
         ImageView iconLowerCase = findViewById(R.id.iconLower);
         TextView textLowerCase = findViewById(R.id.chckBoxLowerCaseChar);
-
         ImageView iconUpperCase = findViewById(R.id.iconUpper);
         TextView textUpperCase = findViewById(R.id.chckBoxUpperCaseChar);
-
         ImageView iconSpecialChar = findViewById(R.id.iconSpecialChar);
         TextView textSpecialChar = findViewById(R.id.chckBoxSpecialChar);
 
-
-
-        /*Instance for the button*/
         Button btnSignUp = findViewById(R.id.btnSignUp);
+        View dot1 = findViewById(R.id.dot1);
 
-        /*Password only appears when users focuses on the inputbox  */
-        passwordInput.setOnFocusChangeListener((v, hasFocus) ->{
-            if(hasFocus){
-                validationLayout.setVisibility((View.VISIBLE));
-            }else{
+        /* Password only appears when users focuses on the inputbox */
+        password.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                validationLayout.setVisibility(View.VISIBLE);
+            } else {
                 validationLayout.setVisibility(View.GONE);
             }
         });
 
-        /* Instances for the two dots */
-        View dot1 = findViewById(R.id.dot1);
-//        View dot2 = findViewById(R.id.dot2);
+        /* TextWatchers to clear errors and show ticks while typing */
+        nameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                nameLayout.setError(null);
+                nameLayout.setErrorEnabled(false);
+                if (s.length() > 0) {
+                    nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green, 0);
+                } else {
+                    nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_account_circle_24, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
-        /*Validation of  the password  */
+        emailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                emailLayout.setError(null);
+                emailLayout.setErrorEnabled(false);
+                if (s.length() > 0 && android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
+                    emailInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green, 0);
+                } else {
+                    emailInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_email_24, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         password.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-            //            Runs while the user is typing
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String pass = password.getText().toString();
-
-                /* Rule 1: Length*/
+                String pass = s.toString();
                 boolean isValid = true;
 
-                if(pass.length() >= 8){
-
-                    iconLength.setImageResource(R.drawable.check);
+                // Rule 1: Length
+                if (pass.length() >= 8) {
+                    iconLength.setImageResource(R.drawable.ic_check_circle_green);
                     textLength.setTextColor(Color.GREEN);
-
-                }else{
+                } else {
                     iconLength.setImageResource(R.drawable.multiplication);
                     textLength.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-                /*Rule 2: Has atleast a number*/
-                if(pass.matches(".*[0-9].*")){
-
-                    iconNum.setImageResource(R.drawable.check);
+                // Rule 2: Numbers
+                if (pass.matches(".*[0-9].*")) {
+                    iconNum.setImageResource(R.drawable.ic_check_circle_green);
                     textNum.setTextColor(Color.GREEN);
-                }else{
+                } else {
                     iconNum.setImageResource(R.drawable.multiplication);
                     textNum.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-                /*Rule 3: Has atleast one lowercase*/
-                if(pass.matches(".*[a-z].*")){
-                    iconLowerCase.setImageResource(R.drawable.check);
+                // Rule 3: Lowercase
+                if (pass.matches(".*[a-z].*")) {
+                    iconLowerCase.setImageResource(R.drawable.ic_check_circle_green);
                     textLowerCase.setTextColor(Color.GREEN);
-                }else{
+                } else {
                     iconLowerCase.setImageResource(R.drawable.multiplication);
                     textLowerCase.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-                /*Rule 4: has atleast one uppercase*/
-                if(pass.matches(".*[A-Z].*")){
-                   iconUpperCase.setImageResource(R.drawable.check);
+                // Rule 4: Uppercase
+                if (pass.matches(".*[A-Z].*")) {
+                    iconUpperCase.setImageResource(R.drawable.ic_check_circle_green);
                     textUpperCase.setTextColor(Color.GREEN);
-                }else{
+                } else {
                     iconUpperCase.setImageResource(R.drawable.multiplication);
                     textUpperCase.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-                /*Rule 5: has atleast one special character   */
-                if(pass.matches(".*[@#$%^&*+=!].*")){
-                   iconSpecialChar.setImageResource(R.drawable.check);
-                   textSpecialChar.setTextColor(Color.GREEN);
-                }else{
+                // Rule 5: Special Character
+                if (pass.matches(".*[@#$%^&*+=!].*")) {
+                    iconSpecialChar.setImageResource(R.drawable.ic_check_circle_green);
+                    textSpecialChar.setTextColor(Color.GREEN);
+                } else {
                     iconSpecialChar.setImageResource(R.drawable.multiplication);
                     textSpecialChar.setTextColor(Color.RED);
                     isValid = false;
                 }
 
-
-                if(!isValid){
+                if (!isValid) {
                     validationLayout.setVisibility(View.VISIBLE);
+                    passwordLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
                     passwordLayout.setError("Password is weak");
-                }else{
+                    passwordLayout.setErrorIconDrawable(null);
+                } else {
                     validationLayout.setVisibility(View.GONE);
+                    passwordLayout.setError("Password is strong");
+                    passwordLayout.setErrorIconDrawable(null);
                 }
-
             }
-
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
-        /* Color changes based on the page the user is on */
+        btnSignUp.setOnClickListener(v -> {
+            boolean isFormValid = true;
+
+            if (nameInput.getText().toString().isEmpty()) {
+                nameLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
+                nameLayout.setError("Full Name is required");
+                isFormValid = false;
+            }
+
+            if (emailInput.getText().toString().isEmpty()) {
+                emailLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
+                emailLayout.setError("Email Address is required");
+                isFormValid = false;
+            }
+
+            if (password.getText().toString().isEmpty()) {
+                passwordLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
+                passwordLayout.setError("Password is required");
+                isFormValid = false;
+            } else if (passwordLayout.getError() != null && passwordLayout.getError().equals("Password is weak")) {
+                isFormValid = false;
+            }
+
+            if (isFormValid) {
+                ToCategory(v);
+            }
+        });
+
         dot1.setBackgroundResource(R.drawable.active_dot);
-//        dot2.setBackgroundResource(R.drawable.dot_inactive);
-
     }
-    //This function is called when the user click Log In text from sign up activity
-    public void ToLogIn(View v){
 
+    public void ToLogIn(View v) {
         Intent LogIn = new Intent(this, LoginActivity.class);
         startActivity(LogIn);
     }
-    public void ToCategory(View v){
+
+    public void ToCategory(View v) {
         Intent Category = new Intent(this, CategoryActivity.class);
         startActivity(Category);
     }
-
 }

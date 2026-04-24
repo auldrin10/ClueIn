@@ -14,7 +14,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="20dp"
-        tools:context=".MainActivity">
+        tools:context=".SignUpActivity">
 
         <!-- Sign up Header Section -->
         <LinearLayout
@@ -49,6 +49,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameLayout"
                 android:layout_width="355dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -71,11 +72,13 @@
                     android:hint="Full Name"
                     android:inputType="text"
                     android:paddingStart="25dp"
-                    android:textColorHint="#ff625b71"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@null"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailLayout"
                 android:layout_width="355dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -97,7 +100,8 @@
                     android:hint="Email Address"
                     android:inputType="textEmailAddress"
                     android:paddingStart="25dp"
-                    android:textColorHint="#ff625b71"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@null"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,14 +126,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:hint="Password"
-    android:paddingStart="25dp"
+                    android:paddingStart="25dp"
                     android:inputType="textPassword"
-                    android:textColorHint="@color/orange"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@null"
                     android:textSize="20sp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <!-- Validations Section - THIS WILL COLLAPSE WHEN SET TO GONE -->
+        <!-- Validations Section -->
         <LinearLayout
             android:id="@+id/validationLayout"
             android:layout_width="match_parent"
@@ -144,7 +149,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-
                 android:layout_marginBottom="4dp">
                 <ImageView
                     android:id="@+id/iconLength"
@@ -250,10 +254,10 @@
 
             <CheckBox
                 android:id="@+id/checkBox"
-                android:layout_width="match_parent"
+                android:layout_width="355dp"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Service and Privacy Policy"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnSignUp"
