@@ -1,11 +1,9 @@
 package com.example.cluein;
-
+// This allows me to track saved Events on favourates , It manages everything that which about favourates
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Singleton class to manage favorites across the app.
- */
+
 public class FavoriteManager {
     private static FavoriteManager instance;
     private List<Event> favoriteEvents;
