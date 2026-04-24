@@ -20,7 +20,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,7 +38,7 @@ public class MainFragment extends Fragment {
     private List<Event> eventList = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
 
-
+    FirebaseFirestore firestore;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -51,6 +53,24 @@ public class MainFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
         fetchEvents();
+        firestore = FirebaseFirestore.getInstance();
+        for(int i = 0; i < 10; i++){
+            Map<String, Object> event = new HashMap<>();
+            event.put("Event_title", "Wits Music Festival");
+            event.put("Image_url", "https://picsum.photos/id/1/600/400");
+            event.put("Location", "");
+            event.put("event_date", "");
+            event.put("description", "");
+            event.put("price", 0.0);
+            event.put("id", "");
+            event.put("is_wits_event", true);
+            String id = String.valueOf(i);
+
+            firestore.collection("Events").add(event);
+
+        }
+
+
 
         return view;
     }
