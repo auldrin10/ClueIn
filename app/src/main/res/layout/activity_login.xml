@@ -102,6 +102,7 @@
                     android:paddingStart="25dp"
 
                     android:textColor="@color/black"
+                    android:textColorHint="@color/orange"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -140,7 +141,7 @@
 
         <!-- Login Button Section -->
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/loginBtn"
             android:layout_width="355dp"
             android:layout_height="61dp"
             android:layout_marginTop="30dp"
@@ -222,7 +223,8 @@
                 android:layout_height="wrap_content"
                 android:text="Don't have an account? "
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/textView3"

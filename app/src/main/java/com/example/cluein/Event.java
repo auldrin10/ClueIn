@@ -24,6 +24,8 @@ public class Event {
     @SerializedName("is_wits_event")
     private boolean isOnCampus;
 
+    private boolean isExpanded = false; // Track if the card is expanded
+
     public String getEvent_id() { return Event_id;}
 
     public void setEvent_id(String event_id) { Event_id = event_id;}
@@ -84,6 +86,14 @@ public class Event {
         this.price = price;
     }
 
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
+
     public Event(String event_title, String imageURL, String location, String eventDate, String description, double price,String Event_id,boolean isOnCampus) {
         this.event_title=event_title;
         this.eventDate=eventDate;
@@ -93,6 +103,7 @@ public class Event {
         this.isOnCampus=isOnCampus;
         this.price=price;
         this.Event_id=Event_id;
+        this.isExpanded = false;
     }
 
 

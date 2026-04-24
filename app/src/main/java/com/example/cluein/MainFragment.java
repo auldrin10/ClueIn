@@ -54,23 +54,32 @@ public class MainFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         fetchEvents();
         firestore = FirebaseFirestore.getInstance();
-        for(int i = 0; i < 10; i++){
-            Map<String, Object> event = new HashMap<>();
-            event.put("Event_title", "Wits Music Festival");
-            event.put("Image_url", "https://picsum.photos/id/1/600/400");
-            event.put("Location", "");
-            event.put("event_date", "");
-            event.put("description", "");
-            event.put("price", 0.0);
-            event.put("id", "");
-            event.put("is_wits_event", true);
-            String id = String.valueOf(i);
+//        for(int i = 0; i < 10; i++){
+//            Map<String, Object> event = new HashMap<>();
+//            event.put("Event_title", "Wits Music Festival");
+//            event.put("Image_url", "https://picsum.photos/id/1/600/400");
+//            event.put("Location", "");
+//            event.put("event_date", "");
+//            event.put("description", "");
+//            event.put("price", 0.0);
+//            event.put("id", "");
+//            event.put("is_wits_event", true);
+//            String id = String.valueOf(i);
+//
+//            firestore.collection("Events").add(event);
+//
+//        }
 
-            firestore.collection("Events").add(event);
-
-        }
-
-
+// Get all documents from "users" collection
+//        firestore.collection("Events")
+//                .get()
+//                .addOnSuccessListener(queryDocumentSnapshots -> {
+//                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+//                        String id = document.getId(); // Gets the auto-generated ID
+//                        String name = document.getString("Event_title"); // Gets field value
+//                        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
         return view;
     }
