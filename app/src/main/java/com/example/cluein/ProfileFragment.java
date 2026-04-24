@@ -5,11 +5,13 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.*;
 
@@ -18,6 +20,8 @@ public class ProfileFragment extends Fragment {
     private TextView tvProfileUserName;
     private TextView account;
     private TextView logOut;
+
+    private LinearLayout updatePic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +36,7 @@ public class ProfileFragment extends Fragment {
 
         account = view.findViewById(R.id.txtAccount);
         logOut = view.findViewById(R.id.txtLogOut);
+        updatePic = view.findViewById(R.id.updatePic);
 
         tvProfileUserName = view.findViewById(R.id.profileUserName);
         
@@ -62,17 +67,49 @@ public class ProfileFragment extends Fragment {
 
         String upperInitials = initials.toUpperCase();
         tvProfileUserName.setText(upperInitials);
+
+
+        //    The main part
+//    Moving from profile to certain elements.
+       updatePic.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+                Fragment fragment = new UpdateProfilePic();
+
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.FargmentContainer, fragment)
+                        .addToBackStack(null)
+                        .commit();
+           }
+       });
+
+        account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new InsideAccount();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.FargmentContainer, fragment);
+
+                transaction.addToBackStack(null);
+
+                transaction.commit();
+            }
+        });
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new LogOut();
+
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.FargmentContainer, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
-//    The main part
-//    Do ontouch function after that make a colorful background when that thing is touched
-public boolean onTouch(View v, MotionEvent event){
-
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-
-        }
 
 
-        return true;
-}
 }

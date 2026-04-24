@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mainAccountFrag"
-    tools:context=".InsideAccount">
+    tools:context=".UpdateProfilePic">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="What do you want to change?" />
+        android:text="Update Your Picture"/>
 
 </FrameLayout>
