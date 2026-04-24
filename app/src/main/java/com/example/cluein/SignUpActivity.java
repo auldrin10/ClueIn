@@ -55,7 +55,6 @@ public class SignUpActivity extends AppCompatActivity {
         TextView textUpperCase = findViewById(R.id.chckBoxUpperCaseChar);
         ImageView iconSpecialChar = findViewById(R.id.iconSpecialChar);
         TextView textSpecialChar = findViewById(R.id.chckBoxSpecialChar);
-
         Button btnSignUp = findViewById(R.id.btnSignUp);
         View dot1 = findViewById(R.id.dot1);
 
