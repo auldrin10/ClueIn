@@ -173,19 +173,10 @@
                         />
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/selectImage"
-                        android:layout_below = "@+id/eventImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="Select Image"
-                        />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/selectImage"
-                        android:gravity="center"
-                        android:enabled="false"
                         />
 <!--                    <TextView-->
 <!--                        android:layout_width="wrap_content"-->
