@@ -100,12 +100,15 @@ public class AddEvent extends Fragment {
                     }
 
                     Map<String, Object> eventMap = new HashMap<>();
-                    eventMap.put("Event Name", strEventName);
-                    eventMap.put("Event Location", strEventLocation);
-                    eventMap.put("Event Date", strEventDate);
-                    eventMap.put("Event Time", strEventTime);
-                    eventMap.put("Event Price", dblprice);
-                    eventMap.put("Event Description", strEventDescription);
+                    eventMap.put("Event_title", strEventName);
+                    eventMap.put("Location", strEventLocation);
+                    eventMap.put("event_date", strEventDate);
+                    eventMap.put("Event_time", strEventTime);
+                    eventMap.put("price", dblprice);
+                    eventMap.put("description", strEventDescription);
+                    eventMap.put("is_wits_event", false);
+                    eventMap.put("Image_url", "https://picsum.photos/id/4/600/400");
+
 
                     db.collection("Events")
                             .add(eventMap)
