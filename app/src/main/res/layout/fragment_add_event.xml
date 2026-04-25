@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AddEvent">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/MyTextInputLayout"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:boxCornerRadiusBottomEnd="26dp"
+                    app:boxCornerRadiusBottomStart="26dp"
+                    app:boxCornerRadiusTopEnd="26dp"
+                    app:boxCornerRadiusTopStart="26dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeWidth="2.01dp"
+                    app:boxStrokeColor="@color/input_stroke"
+                    app:hintTextColor="@color/orange"
+
+                    >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/eventName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/baseline_event_24"
+                        android:hint="Event name"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/MyTextInputLayout"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:boxCornerRadiusBottomEnd="26dp"
+                    app:boxCornerRadiusBottomStart="26dp"
+                    app:boxCornerRadiusTopEnd="26dp"
+                    app:boxCornerRadiusTopStart="26dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeWidth="2.01dp"
+                    app:boxStrokeColor="@color/input_stroke"
+                    app:hintTextColor="@color/orange"
+                    android:layout_marginTop="20dp"
+                    >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/eventLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/baseline_add_location_24"
+                        android:hint="Event location"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/MyTextInputLayout"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:boxCornerRadiusBottomEnd="26dp"
+                    app:boxCornerRadiusBottomStart="26dp"
+                    app:boxCornerRadiusTopEnd="26dp"
+                    app:boxCornerRadiusTopStart="26dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeWidth="2.01dp"
+                    app:boxStrokeColor="@color/input_stroke"
+                    app:hintTextColor="@color/orange"
+                    android:layout_marginTop="20dp"
+                    >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/eventDateTime"
+                       android:inputType="datetime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/outline_calendar_clock_24"
+                        android:hint="Time and date"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/MyTextInputLayout"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:boxCornerRadiusTopStart="26dp"
+                    app:boxCornerRadiusTopEnd="26dp"
+                    app:boxCornerRadiusBottomStart="26dp"
+                    app:boxCornerRadiusBottomEnd="26dp"
+                    app:boxStrokeWidth="2.01dp"
+                    app:boxStrokeColor="@color/input_stroke"
+                    app:hintTextColor="@color/orange"
+                    android:layout_marginTop="20dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/eventPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:drawableEnd="@drawable/outline_attach_money_24"
+                        android:hint="Price"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/MyTextInputLayout"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:boxCornerRadiusBottomEnd="26dp"
+                    app:boxCornerRadiusBottomStart="26dp"
+                    app:boxCornerRadiusTopEnd="26dp"
+                    app:boxCornerRadiusTopStart="26dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeWidth="2.01dp"
+                    app:boxStrokeColor="@color/input_stroke"
+                    app:hintTextColor="@color/orange"
+                    android:layout_marginTop="20dp"
+                    >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/eventDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/baseline_description_24"
+                        android:inputType="textLongMessage"
+                        android:hint="Event description"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:orientation="vertical">
+                    <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/colorPrimary"
+                        app:titleTextColor="?attr/colorSurface"
+                        app:titleCentered="true"
+                        />
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progress"
+                        android:layout_gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/toolbar"/>
+
+                    <ImageView
+                        android:id="@+id/eventImage"
+                        android:layout_below = "@+id/progress"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/selectImage"
+                        android:layout_below = "@+id/eventImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Select Image"
+                        />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/selectImage"
+                        android:gravity="center"
+                        android:enabled="false"
+                        />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Tap to select event image..."-->
+<!--                        android:textSize="20dp"-->
+<!--                        android:layout_marginTop="20dp"-->
+<!--                        android:layout_marginLeft="24dp"-->
+<!--                        android:textStyle="bold"/>-->
+<!--                    <Button-->
+<!--                        android:layout_width="100dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:background="@drawable/sign_up_button"/>-->
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/addEvent"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/sign_up_button"
+                    android:text="Add Event"
+                    android:textStyle="bold"/>
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
