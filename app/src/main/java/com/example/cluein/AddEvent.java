@@ -43,7 +43,8 @@ public class AddEvent extends Fragment {
 //        List of edittext instances
         EditText[] editTexts = {eventName,eventLocation, eventDateTime, eventPrice, eventDescription};
 
-        //        Validations of the inputs
+        addEvent = view.findViewById(R.id.addEvent);
+
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

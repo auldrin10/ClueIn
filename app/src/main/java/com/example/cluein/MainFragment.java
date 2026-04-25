@@ -77,7 +77,11 @@ public class MainFragment extends Fragment {
                         String Event_Title = document.getString("Event_title");
                         String location = document.getString("Location");
                         String event_dateTime = document.getString("event_date");
-                        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
+                        String description = document.getString("description");
+                        double price = document.getDouble("price");
+                        String image_url = document.getString("Image_url");
+                        boolean is_wits_event = document.getBoolean("is_wits_event");
+                        eventList.add(new Event(Event_Title, image_url, location, event_dateTime, description, price, id, is_wits_event));
                     }
                 });
 
@@ -134,7 +138,19 @@ public class MainFragment extends Fragment {
             eventList.add(new Event("Tech Hackathon 2024", "https://picsum.photos/id/2/600/400", "Matrix Building", "Sat, 26 Oct", "24 hours of pure coding and coffee", 0.0, "102", true));
             eventList.add(new Event("Varsity Rugby: Wits vs UJ", "https://picsum.photos/id/3/600/400", "Wits Stadium", "Mon, 28 Oct", "Come support your team!", 50.0, "103", true));
             eventList.add(new Event("Entrepreneurship Talk", "https://picsum.photos/id/4/600/400", "Science Stadium", "Wed, 30 Oct", "Learn from industry experts", 0.0, "104", false));
-
+            firestore.collection("Events").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                for (DocumentSnapshot document : queryDocumentSnapshots) {
+                    String id = document.getId();
+                    String Event_Title = document.getString("Event_title");
+                    String location = document.getString("Location");
+                    String event_dateTime = document.getString("event_date");
+                    String description = document.getString("description");
+                    double price = document.getDouble("price");
+                    String image_url = document.getString("Image_url");
+                    boolean is_wits_event = document.getBoolean("is_wits_event");
+                    eventList.add(new Event(Event_Title, image_url, location, event_dateTime, description, price, id, is_wits_event));
+                }
+            });
             adapter.notifyDataSetChanged();
 
         });
