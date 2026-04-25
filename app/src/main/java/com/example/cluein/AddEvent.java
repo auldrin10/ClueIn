@@ -2,26 +2,36 @@ package com.example.cluein;
 
 import static android.app.Activity.RESULT_OK;
 
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -29,24 +39,12 @@ import java.util.Map;
 
 public class AddEvent extends Fragment {
 
-    private EditText eventName, eventLocation, eventDateTime, eventPrice, eventDescription;
-    private Button addEvent;
+    private EditText eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription;
+    private Button addEvent,pickDate,pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
     private ImageView imageView;
-
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    imageUrl = result.getData().getData();
-                    Glide.with(requireContext()).load(imageUrl).into(imageView);
-                } else {
-                    Toast.makeText(requireContext(), "Please select an image", Toast.LENGTH_SHORT).show();
-                }
-            }
-    );
-
+    private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -58,79 +56,113 @@ public class AddEvent extends Fragment {
         // Initialize Views
         eventName = view.findViewById(R.id.eventName);
         eventLocation = view.findViewById(R.id.eventLocation);
-        eventDateTime = view.findViewById(R.id.eventDateTime);
+        eventDate = view.findViewById(R.id.eventDate);
+        eventTime = view.findViewById(R.id.eventTime);
         eventPrice = view.findViewById(R.id.eventPrice);
         eventDescription = view.findViewById(R.id.eventDescription);
         addEvent = view.findViewById(R.id.addEvent);
+        pickDate = view.findViewById(R.id.btnPickDate);
+        pickTime = view.findViewById(R.id.btnPickTime);
         selectImage = view.findViewById(R.id.selectImage);
         imageView = view.findViewById(R.id.eventImage);
 
-        selectImage.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            activityResultLauncher.launch(intent);
-        });
+//        Validation
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String strEventName = eventName.getText().toString().trim();
+                String strEventLocation = eventLocation.getText().toString().trim();
+                String strEventDate = eventDate.getText().toString().trim();
+                String strEventTime = eventTime.getText().toString().trim();
+                String strEventPrice = eventPrice.getText().toString().trim();
+                String strEventDescription = eventDescription.getText().toString().trim();
 
-        addEvent.setOnClickListener(v -> {
-            String name = eventName.getText().toString().trim();
-            String location = eventLocation.getText().toString().trim();
-            String dateTime = eventDateTime.getText().toString().trim();
-            String price = eventPrice.getText().toString().trim();
-            String description = eventDescription.getText().toString().trim();
+                if(strEventName.isEmpty()){
+                    eventName.setError("Event name missing.");
+                }else if(strEventLocation.isEmpty()){
+                    eventLocation.setError("Event location missing.");
+                }else if(strEventDate.isEmpty()){
+                    eventDate.setError("Event date missing.");
+                }else if(strEventTime.isEmpty()){
+                    eventTime.setError("Event time missing.");
+                }else if(strEventPrice.isEmpty()){
+                    eventPrice.setError("Event price missing.");
+                }else if(strEventDescription.isEmpty()){
+                    eventDescription.setError("Event description missing.");
+                }else{
+                    double dblprice = 0.0;
+                    try{
+                         dblprice = Double.parseDouble(strEventPrice);
+                    }catch (Exception e){
+                        Log.e("Error", "Failed parsing: "+ strEventPrice);
+                        Toast.makeText(requireContext(),"Wrong input!",Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
-            if (name.isEmpty()) {
-                eventName.setError("Event name is required");
-            } else if (location.isEmpty()) {
-                eventLocation.setError("Location is required");
-            } else if (dateTime.isEmpty()) {
-                eventDateTime.setError("Date/Time is required");
-            } else if (price.isEmpty()) {
-                eventPrice.setError("Price is required");
-            } else if (description.isEmpty()) {
-                eventDescription.setError("Description is required");
-            } else if (imageUrl == null) {
-                Toast.makeText(requireContext(), "Please select an image", Toast.LENGTH_SHORT).show();
-            } else {
-                Map<String, Object> eventMap = new HashMap<>();
-                eventMap.put("Event Name", name);
-                eventMap.put("Event DateTime", dateTime);
-                eventMap.put("Event Location", location);
-                eventMap.put("Event Price", price);
-                eventMap.put("Event Description", description);
-                eventMap.put("Event Image", imageUrl.toString());
+                    Map<String, Object> eventMap = new HashMap<>();
+                    eventMap.put("Event Name", strEventName);
+                    eventMap.put("Event Location", strEventLocation);
+                    eventMap.put("Event Date", strEventDate);
+                    eventMap.put("Event Time", strEventTime);
+                    eventMap.put("Event Price", dblprice);
+                    eventMap.put("Event Description", strEventDescription);
 
-                db.collection("Events")
-                        .add(eventMap)
-                        .addOnSuccessListener(documentReference -> 
-                            Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> 
-                            Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    db.collection("Events")
+                            .add(eventMap)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "Event added with ID: "+ documentReference.getId());
+                                    Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error adding event", e);
+                                    Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
             }
         });
 
-        // Add TextWatchers to clear errors
-        setupErrorClearing(eventName, R.drawable.baseline_event_24);
-        setupErrorClearing(eventLocation, R.drawable.baseline_add_location_24);
-        setupErrorClearing(eventDateTime, R.drawable.outline_calendar_clock_24);
-        setupErrorClearing(eventPrice, R.drawable.outline_attach_money_24);
-        setupErrorClearing(eventDescription, R.drawable.baseline_description_24);
+//        Time and date pickers
+        pickDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dateDialog();
+            }
+        });
 
+        pickTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timeDialog();
+            }
+        });
         return view;
     }
 
-    private void setupErrorClearing(EditText editText, int iconRes) {
-        editText.addTextChangedListener(new TextWatcher() {
+//    Time and date dialogs methods
+    private void dateDialog(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                editText.setError(null);
-                editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, iconRes, 0);
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                eventDate.setText(String.valueOf(year)+"/"+String.valueOf(month + 1)+"/"+String.valueOf(day));
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+        }, 2026, 0, 25);
+        datePickerDialog.show();
     }
+
+    private void timeDialog(){
+        TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
+                eventTime.setText(String.valueOf(hours)+":"+String.valueOf(minutes));
+            }
+        }, 12, 50, true);
+        timePickerDialog.show();
+    }
+
 }
