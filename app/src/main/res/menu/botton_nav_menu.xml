@@ -9,6 +9,10 @@
         android:id="@+id/nav_search"
         android:icon="@drawable/search_alt_2_svgrepo_com"
         android:title="Search" />
+    <item
+        android:id="@+id/add_event"
+        android:icon="@drawable/outline_add_circle_24"
+        android:title="Add event"/>
 
     <item
         android:id="@+id/nav_favorites"
