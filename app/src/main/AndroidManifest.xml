@@ -27,7 +27,7 @@
             android:name=".LostPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".CategoryActivity"
+            android:name=".UpdateCategory"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
