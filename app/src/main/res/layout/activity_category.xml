@@ -21,304 +21,309 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:layout_width="397dp"
-        android:layout_height="348dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_skip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header"
-        app:layout_constraintVertical_bias="0.0">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:padding="16dp">
+        <ScrollView
+            android:layout_width="406sp"
+            android:layout_height="647dp"
+            android:layout_marginTop="24sp">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <GridLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_gravity="center"
+                android:columnCount="3"
+                android:padding="16sp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/music_notes_svgrepo_com"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0sp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Music" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8sp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80sp"
+                        android:layout_height="80sp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2sp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:layout_width="40sp"
+                            android:layout_height="40sp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/music_notes_svgrepo_com"
+                            app:tint="#FF9800" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:id="@+id/img_category_icon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/food_dish_svgrepo_com"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:text="Music" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0sp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Food" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8sp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80sp"
+                        android:layout_height="80sp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2sp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:id="@+id/img_category_icon"
+                            android:layout_width="40sp"
+                            android:layout_height="40sp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/food_dish_svgrepo_com"
+                            app:tint="#FF9800" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/football_svgrepo_com"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:text="Food" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0sp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Football" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8sp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80sp"
+                        android:layout_height="80sp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2sp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:layout_width="40sp"
+                            android:layout_height="40sp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/football_svgrepo_com"
+                            app:tint="#FF9800" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/sport_rugby_svgrepo_com" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:text="Football" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0sp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Rugby" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/sport_rugby_svgrepo_com" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/coding_html_svgrepo_com"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Rugby" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Hackathon" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/coding_html_svgrepo_com"
+                            app:tint="#FF9800" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/gospel_choir_svgrepo_com" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Hackathon" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Worship" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/gospel_choir_svgrepo_com" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/dribbble_logo"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Worship" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/netball"/>
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardBackgroundColor="#0A1929"
-                    android:background="@drawable/ic_backgroud_navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/dribbble_logo"
+                            app:tint="#FF9800" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/drinks_svgrepo_com"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Netball" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/nightlife" />
-            </LinearLayout>
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
-        </GridLayout>
-    </ScrollView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="80dp"
+                        android:layout_height="80sp"
+                        android:background="@drawable/ic_backgroud_navy"
+                        app:cardBackgroundColor="#0A1929"
+                        app:cardCornerRadius="20sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="#FF9800"
+                        app:strokeWidth="2sp">
+
+                        <ImageView
+                            android:layout_width="40sp"
+                            android:layout_height="40sp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/drinks_svgrepo_com"
+                            app:tint="#FF9800" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4sp"
+                        android:text="Nightlife" />
+                </LinearLayout>
+
+            </GridLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"></LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_skip"
-        android:layout_width="254dp"
-        android:layout_height="76dp"
-        android:layout_margin="32dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="254sp"
+        android:layout_height="76sp"
+        android:layout_margin="32sp"
+        android:layout_marginBottom="40sp"
         android:text="Skip"
         android:textStyle="bold"
         app:backgroundTint="#0A1929"
-        app:cornerRadius="30dp"
+        app:cornerRadius="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.585"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
-        app:layout_constraintVertical_bias="0.739" />
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
