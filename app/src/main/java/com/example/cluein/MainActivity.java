@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_search) {
                 replaceFragment(new SearchBarFragment());
                 return true;
+            }else if(itemId == R.id.add_event){
+                replaceFragment((new AddEvent()));
+                return true;
             } else if (itemId == R.id.nav_favorites) {
                 replaceFragment(new favouritesFragment());
                 return true;
