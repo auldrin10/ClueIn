@@ -71,15 +71,15 @@ public class MainFragment extends Fragment {
 //        }
 
 // Get all documents from "users" collection
-//        firestore.collection("Events")
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-//                        String id = document.getId(); // Gets the auto-generated ID
-//                        String name = document.getString("Event_title"); // Gets field value
-//                        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+        firestore.collection("Events").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        String id = document.getId();
+                        String Event_Title = document.getString("Event_title");
+                        String location = document.getString("Location");
+                        String event_dateTime = document.getString("event_date");
+                        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         return view;
     }
