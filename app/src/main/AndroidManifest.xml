@@ -21,13 +21,13 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".CategoryActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".LostPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".CategoryActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
