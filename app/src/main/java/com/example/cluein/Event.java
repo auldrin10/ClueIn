@@ -2,28 +2,25 @@ package com.example.cluein;
 import com.google.gson.annotations.SerializedName;
 
 public class Event {
-    // These matches the fields from the Instagram Scraper (Apify)
-    @SerializedName("caption")
+    //SerializedName let the java code to be readable and also handling the messy API data
+    //example the API might call event_pstr_url which refering to imageurl
+    @SerializedName("name")
     private String event_title;
-
-    @SerializedName("displayUrl")
+    @SerializedName("poster_path")
     private String imageURL;
-
-    @SerializedName("locationName")
+    @SerializedName("venue_name")
     private String location;
-
-    @SerializedName("timestamp")
+    @SerializedName("event_date")
     private String eventDate;
-
     @SerializedName("description")
     private String description;
-
     @SerializedName("price")
     private double price ;
-
     @SerializedName("id")
     private String Event_id;
 
+
+    //This check whether the event is on campus
     @SerializedName("is_wits_event")
     private boolean isOnCampus;
 
@@ -48,7 +45,7 @@ public class Event {
     }
 
     public String getLocation() {
-        return location != null ? location : "Wits University";
+        return location;
     }
 
     public void setLocation(String location) {
@@ -97,4 +94,6 @@ public class Event {
         this.price=price;
         this.Event_id=Event_id;
     }
+
+
 }

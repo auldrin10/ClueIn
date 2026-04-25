@@ -12,12 +12,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -29,17 +34,18 @@ public class MainFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private EventAdapter adapter;
-    private ProgressBar progressBar; 
+    private ProgressBar progressBar;
     private List<Event> eventList = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
 
+    FirebaseFirestore firestore;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        
+
         recyclerView = view.findViewById(R.id.recyclerViewEvents);
         progressBar = view.findViewById(R.id.progressBar);
-        
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // Passing 'false' because this is the Main Feed, not Favorites
         adapter = new EventAdapter(eventList, getContext(), false);
@@ -47,12 +53,31 @@ public class MainFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
         fetchEvents();
-        
+        firestore = FirebaseFirestore.getInstance();
+        for(int i = 0; i < 10; i++){
+            Map<String, Object> event = new HashMap<>();
+            event.put("Event_title", "Wits Music Festival");
+            event.put("Image_url", "https://picsum.photos/id/1/600/400");
+            event.put("Location", "");
+            event.put("event_date", "");
+            event.put("description", "");
+            event.put("price", 0.0);
+            event.put("id", "");
+            event.put("is_wits_event", true);
+            String id = String.valueOf(i);
+
+            firestore.collection("Events").add(event);
+
+        }
+
+
+
         return view;
     }
 
+
     private void fetchEvents() {
-        String url = "https://api.mockaroo.com/api/603386a0?count=50&key=3d8a6660"; 
+        String url = "https://api.mockaroo.com/api/603386a0?count=50&key=3d8a6660";
 
         Request request = new Request.Builder()
                 .url(url)
@@ -95,12 +120,12 @@ public class MainFragment extends Fragment {
         getActivity().runOnUiThread(() -> {
             progressBar.setVisibility(View.GONE);
             eventList.clear();
-            
+
             eventList.add(new Event("Wits Music Festival", "https://picsum.photos/id/1/600/400", "Wits Great Hall", "Fri, 25 Oct", "The biggest party of the year!", 120.0, "101", true));
             eventList.add(new Event("Tech Hackathon 2024", "https://picsum.photos/id/2/600/400", "Matrix Building", "Sat, 26 Oct", "24 hours of pure coding and coffee", 0.0, "102", true));
             eventList.add(new Event("Varsity Rugby: Wits vs UJ", "https://picsum.photos/id/3/600/400", "Wits Stadium", "Mon, 28 Oct", "Come support your team!", 50.0, "103", true));
             eventList.add(new Event("Entrepreneurship Talk", "https://picsum.photos/id/4/600/400", "Science Stadium", "Wed, 30 Oct", "Learn from industry experts", 0.0, "104", false));
-            
+
             adapter.notifyDataSetChanged();
 
         });

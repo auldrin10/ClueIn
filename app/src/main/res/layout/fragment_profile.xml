@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/mainProfilePage"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ProfileFragment">
 
@@ -12,13 +13,17 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
             <LinearLayout
+                android:id="@+id/updatePic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                     />
 
-<!--                Profile Image-->
+<!--                Profile Image (it's off now)-->
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -38,6 +43,65 @@
                     android:textSize="32sp"
                     android:textStyle="bold"
                     android:visibility="visible"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="26dp"
+                    android:textSize="20dp"
+                    android:text="Auldrin Matlala"/>
+
+            </LinearLayout>
+
+           <View
+               android:layout_width="match_parent"
+               android:layout_height="2dp"
+               android:layout_marginTop="13dp"
+               android:background="@color/orange"/>
+<!--            Main details-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:paddingTop="30dp"
+                    android:paddingBottom="30dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textFontWeight="2"
+                    android:text="Account"
+                    />
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingTop="30dp"-->
+<!--                    android:paddingBottom="30dp"-->
+<!--                    android:textSize="20dp"-->
+<!--                    android:text="Privacy"/>-->
+<!--                <TextView-->
+<!--                    -->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:textSize="20dp"-->
+<!--                    android:paddingTop="15dp"-->
+<!--                    android:paddingBottom="15dp"-->
+<!--                    android:text="Avatar"/>-->
+                <TextView
+                    android:id="@+id/txtLogOut"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:paddingTop="30dp"
+                    android:paddingBottom="30dp"
+                    android:text="Log out"/>
+
+
             </LinearLayout>
 
         </LinearLayout>
