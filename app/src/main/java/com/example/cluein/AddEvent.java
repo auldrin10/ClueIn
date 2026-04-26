@@ -39,6 +39,7 @@ import java.util.Map;
 
 public class AddEvent extends Fragment {
 
+//    Instances
     private EditText eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription;
     private Button addEvent,pickDate,pickTime;
     private Uri imageUrl;
@@ -46,6 +47,7 @@ public class AddEvent extends Fragment {
     private ImageView imageView;
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +67,7 @@ public class AddEvent extends Fragment {
         pickTime = view.findViewById(R.id.btnPickTime);
         selectImage = view.findViewById(R.id.selectImage);
         imageView = view.findViewById(R.id.eventImage);
+        EditText[] editTexts = {eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription};
 
 //        Validation
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -77,55 +80,64 @@ public class AddEvent extends Fragment {
                 String strEventPrice = eventPrice.getText().toString().trim();
                 String strEventDescription = eventDescription.getText().toString().trim();
 
+              boolean isValid = true;
+
                 if(strEventName.isEmpty()){
                     eventName.setError("Event name missing.");
-                }else if(strEventLocation.isEmpty()){
+                    isValid = false;
+                }if(strEventLocation.isEmpty()){
                     eventLocation.setError("Event location missing.");
-                }else if(strEventDate.isEmpty()){
+                    isValid = false;
+                }if(strEventDate.isEmpty()){
                     eventDate.setError("Event date missing.");
-                }else if(strEventTime.isEmpty()){
+                    isValid = false;
+                if(strEventTime.isEmpty()){
                     eventTime.setError("Event time missing.");
-                }else if(strEventPrice.isEmpty()){
+                    isValid = false;
+                }if(strEventPrice.isEmpty()){
                     eventPrice.setError("Event price missing.");
-                }else if(strEventDescription.isEmpty()){
+                        isValid = false;
+                }if(strEventDescription.isEmpty()){
                     eventDescription.setError("Event description missing.");
-                }else{
-                    double dblprice = 0.0;
-                    try{
-                         dblprice = Double.parseDouble(strEventPrice);
-                    }catch (Exception e){
-                        Log.e("Error", "Failed parsing: "+ strEventPrice);
-                        Toast.makeText(requireContext(),"Wrong input!",Toast.LENGTH_LONG).show();
-                        return;
+                        isValid = false;
+                }if(isValid) {
+                        double dblprice = 0.0;
+                        try {
+                            dblprice = Double.parseDouble(strEventPrice);
+                        } catch (Exception e) {
+                            Log.e("Error", "Failed parsing: " + strEventPrice);
+                            Toast.makeText(requireContext(), "Wrong input!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        Map<String, Object> eventMap = new HashMap<>();
+                        eventMap.put("Event_title", strEventName);
+                        eventMap.put("Location", strEventLocation);
+                        eventMap.put("event_date", strEventDate);
+                        eventMap.put("Event_time", strEventTime);
+                        eventMap.put("price", dblprice);
+                        eventMap.put("description", strEventDescription);
+                        eventMap.put("is_wits_event", false);
+                        eventMap.put("Image_url", "https://picsum.photos/id/4/600/400");
+
+
+                        db.collection("Events")
+                                .add(eventMap)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        Log.d(TAG, "Event added with ID: " + documentReference.getId());
+                                        Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error adding event", e);
+                                        Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     }
-
-                    Map<String, Object> eventMap = new HashMap<>();
-                    eventMap.put("Event_title", strEventName);
-                    eventMap.put("Location", strEventLocation);
-                    eventMap.put("event_date", strEventDate);
-                    eventMap.put("Event_time", strEventTime);
-                    eventMap.put("price", dblprice);
-                    eventMap.put("description", strEventDescription);
-                    eventMap.put("is_wits_event", false);
-                    eventMap.put("Image_url", "https://picsum.photos/id/4/600/400");
-
-
-                    db.collection("Events")
-                            .add(eventMap)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "Event added with ID: "+ documentReference.getId());
-                                    Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error adding event", e);
-                                    Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
                 }
             }
         });
@@ -144,6 +156,48 @@ public class AddEvent extends Fragment {
                 timeDialog();
             }
         });
+
+
+//        on text changed listner
+        for(EditText edit: editTexts) {
+            edit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (edit == eventName) {
+                        eventName.setError(null);
+                        eventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_event_24, 0);
+                    } else if (edit == eventLocation) {
+                        eventLocation.setError(null);
+                        eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
+                    } else if (edit == eventDate) {
+                        eventDate.setError(null);
+                        eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
+                    } else if (edit == eventTime) {
+                        eventTime.setError(null);
+                        eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
+                    } else if (edit == eventPrice) {
+                        eventPrice.setError(null);
+                        eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_attach_money_24, 0);
+                    } else if (edit == eventDescription) {
+                        eventDescription.setError(null);
+                        eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
+                    }
+
+                }
+
+            });
+        }
+
         return view;
     }
 
@@ -167,5 +221,13 @@ public class AddEvent extends Fragment {
         }, 12, 50, true);
         timePickerDialog.show();
     }
+
+
+
+        //    Event should not be repeating
+//    Should be up to date
+//
+
+
 
 }

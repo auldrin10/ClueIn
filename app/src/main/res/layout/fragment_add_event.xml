@@ -185,8 +185,10 @@
                         android:id="@+id/eventDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:imeOptions="actionNone"
                         android:drawableEnd="@drawable/baseline_description_24"
-                        android:inputType="textLongMessage"
+                        android:inputType="textMultiLine|textCapSentences"
                         android:hint="Event description"
                         />
 
