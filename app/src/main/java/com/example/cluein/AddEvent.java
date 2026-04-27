@@ -48,6 +48,17 @@ public class AddEvent extends Fragment {
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    imageUrl = uri;
+                    imageView.setImageURI(uri);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+            }
+    );
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,10 +99,10 @@ public class AddEvent extends Fragment {
                 }if(strEventLocation.isEmpty()){
                     eventLocation.setError("Event location missing.");
                     isValid = false;
-                }if(strEventDate.isEmpty()){
+                }if(strEventDate.isEmpty()) {
                     eventDate.setError("Event date missing.");
                     isValid = false;
-                if(strEventTime.isEmpty()){
+                }if(strEventTime.isEmpty()){
                     eventTime.setError("Event time missing.");
                     isValid = false;
                 }if(strEventPrice.isEmpty()){
@@ -118,7 +129,7 @@ public class AddEvent extends Fragment {
                         eventMap.put("price", dblprice);
                         eventMap.put("description", strEventDescription);
                         eventMap.put("is_wits_event", false);
-                        eventMap.put("Image_url", "https://picsum.photos/id/4/600/400");
+                        eventMap.put("Image_url", imageUrl != null ? imageUrl.toString() : "");
 
 
                         db.collection("Events")
@@ -139,7 +150,7 @@ public class AddEvent extends Fragment {
                                 });
                     }
                 }
-            }
+            
         });
 
 //        Time and date pickers
@@ -154,6 +165,13 @@ public class AddEvent extends Fragment {
             @Override
             public void onClick(View view) {
                 timeDialog();
+            }
+        });
+
+        selectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImageLauncher.launch("image/*");
             }
         });
 
