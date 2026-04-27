@@ -222,13 +222,17 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
                         />
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/selectImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="Select Image"
-                        />
+                        android:padding="10dp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/navy" />
 <!--                    <TextView-->
 <!--                        android:layout_width="wrap_content"-->
 <!--                        android:layout_height="wrap_content"-->
