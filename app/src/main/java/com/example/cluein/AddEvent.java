@@ -90,7 +90,7 @@ public class AddEvent extends Fragment {
                     isValid = false;
                 }if(strEventDate.isEmpty()){
                     eventDate.setError("Event date missing.");
-                    isValid = false;
+                    isValid = false;}
                 if(strEventTime.isEmpty()){
                     eventTime.setError("Event time missing.");
                     isValid = false;
@@ -139,7 +139,6 @@ public class AddEvent extends Fragment {
                                 });
                     }
                 }
-            }
         });
 
 //        Time and date pickers
@@ -159,7 +158,7 @@ public class AddEvent extends Fragment {
 
 
 //        on text changed listner
-        for(EditText edit: editTexts) {
+        for(EditText edit : editTexts) {
             edit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable editable) {
