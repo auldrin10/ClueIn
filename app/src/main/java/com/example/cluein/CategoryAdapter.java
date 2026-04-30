@@ -32,7 +32,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_category, parent, false);
         return new CategoryViewHolder(view);
     }
-
+ String name;
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categoryList.get(position);

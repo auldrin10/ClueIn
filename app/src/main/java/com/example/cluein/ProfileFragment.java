@@ -19,7 +19,7 @@ public class ProfileFragment extends Fragment {
     private RelativeLayout btnAccount;
     private RelativeLayout btnLogout;
     private LinearLayout updatePic;
-
+    private String name;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

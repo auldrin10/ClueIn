@@ -89,6 +89,14 @@ public class Event {
         this.price = price;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public boolean isExpanded() {
         return isExpanded;
     }
@@ -109,6 +117,4 @@ public class Event {
         this.Event_id=Event_id;
         this.isExpanded = false;
     }
-
-
 }

@@ -15,7 +15,7 @@
         android:text="Choose Your Interests"
         android:textAlignment="center"
         android:textColor="#0A1929"
-        android:textSize="28sp"
+        android:textSize="27sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
