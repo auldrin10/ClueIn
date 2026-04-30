@@ -1,7 +1,11 @@
 package com.example.cluein;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
@@ -50,7 +61,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 .placeholder(R.drawable.dribbble_logo)
                 .into(holder.imgEvent);
 
-        // Hide expansion related views in the list item
         holder.tvDescription.setVisibility(View.GONE);
         holder.btnCloseExpand.setVisibility(View.GONE);
 
@@ -67,7 +77,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
         }
 
-        // Click listener to show the detail fragment
         holder.itemView.setOnClickListener(v -> {
             CardViewFragment fragment = CardViewFragment.newInstance(event);
             if (context instanceof AppCompatActivity) {
@@ -82,6 +91,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.btnFavorite.setOnClickListener(v -> {
             FavoriteManager.getInstance().addFavorite(event);
             holder.btnFavorite.setColorFilter(Color.RED);
+            
+            // Trigger scheduling logic
+            scheduleAllReminders(event);
+            
             Toast.makeText(context, "Added to Favorites!", Toast.LENGTH_SHORT).show();
         });
 
@@ -92,6 +105,58 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             notifyItemRangeChanged(position, eventList.size());
             Toast.makeText(context, "Removed from Favorites", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void scheduleAllReminders(Event event) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMM yyyy", Locale.getDefault());
+        try {
+            Date eventDate = sdf.parse(event.getEventDate());
+            if (eventDate == null) return;
+
+            long diffInMillis = eventDate.getTime() - System.currentTimeMillis();
+            long daysLeft = TimeUnit.MILLISECONDS.toDays(diffInMillis);
+
+            // 1. Immediate Notification: "Event starts in X days"
+            sendImmediateNotification(event, "Event starts in " + daysLeft + " days");
+
+            // 2. 48 Hour Reminder
+            scheduleAlarm(event, eventDate.getTime() - TimeUnit.HOURS.toMillis(48), "Event starts in 2 days", 48);
+
+            // 3. 24 Hour Reminder
+            scheduleAlarm(event, eventDate.getTime() - TimeUnit.HOURS.toMillis(24), "Event starts in 1 day", 24);
+
+        } catch (ParseException e) {
+            Log.e("EventAdapter", "Error parsing date: " + event.getEventDate());
+        }
+    }
+
+    private void sendImmediateNotification(Event event, String message) {
+        Intent intent = new Intent(context, EventReminderReceiver.class);
+        intent.putExtra("eventId", event.getEvent_id());
+        intent.putExtra("eventTitle", event.getEvent_title());
+        intent.putExtra("message", message);
+        context.sendBroadcast(intent);
+    }
+
+    private void scheduleAlarm(Event event, long triggerAtMillis, String message, int requestCodeOffset) {
+        if (triggerAtMillis <= System.currentTimeMillis()) return;
+
+        Intent intent = new Intent(context, EventReminderReceiver.class);
+        intent.putExtra("eventId", event.getEvent_id());
+        intent.putExtra("eventTitle", event.getEvent_title());
+        intent.putExtra("message", message);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                event.getEvent_id().hashCode() + requestCodeOffset,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+        }
     }
 
     @Override

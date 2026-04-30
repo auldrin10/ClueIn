@@ -2,16 +2,22 @@ package com.example.cluein;
 
 import static android.app.Activity.RESULT_OK;
 
-
+import android.Manifest;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -34,7 +40,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class AddEvent extends Fragment {
@@ -47,6 +56,7 @@ public class AddEvent extends Fragment {
     private ImageView imageView;
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Calendar selectedEventDate = Calendar.getInstance();
 
     private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -58,6 +68,15 @@ public class AddEvent extends Fragment {
                 }
             }
     );
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(requireContext(), "Notifications enabled", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Notifications permission denied", Toast.LENGTH_SHORT).show();
+                }
+            });
 
 
     @Override
@@ -79,6 +98,8 @@ public class AddEvent extends Fragment {
         selectImage = view.findViewById(R.id.selectImage);
         imageView = view.findViewById(R.id.eventImage);
         EditText[] editTexts = {eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription};
+
+        checkNotificationPermission();
 
 //        Validation
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +159,7 @@ public class AddEvent extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         Log.d(TAG, "Event added with ID: " + documentReference.getId());
+                                        scheduleNotification(documentReference.getId(), strEventName);
                                         Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -219,33 +241,85 @@ public class AddEvent extends Fragment {
         return view;
     }
 
+    private void checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    private void scheduleNotification(String eventId, String eventTitle) {
+        Calendar reminderCalendar = (Calendar) selectedEventDate.clone();
+        // Set reminder for 20 minutes before
+        reminderCalendar.add(Calendar.MINUTE, -20);
+
+        if (reminderCalendar.getTimeInMillis() < System.currentTimeMillis()) {
+            Log.d(TAG, "Reminder time is in the past, skipping scheduling.");
+            return;
+        }
+
+        Intent intent = new Intent(requireContext(), EventReminderReceiver.class);
+        intent.putExtra("eventId", eventId);
+        intent.putExtra("eventTitle", eventTitle);
+        
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                requireContext(), 
+                eventId.hashCode(),
+                intent, 
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
+            }
+        }
+    }
+
 //    Time and date dialogs methods
     private void dateDialog(){
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                eventDate.setText(String.valueOf(year)+"/"+String.valueOf(month + 1)+"/"+String.valueOf(day));
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                selectedEventDate.set(Calendar.YEAR, year);
+                selectedEventDate.set(Calendar.MONTH, month);
+                selectedEventDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMM yyyy", Locale.getDefault());
+                eventDate.setText(sdf.format(selectedEventDate.getTime()));
             }
-        }, 2026, 0, 25);
+        }, year, month, day);
+
+        // Restrict picking dates in the past
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 
     private void timeDialog(){
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
-                eventTime.setText(String.valueOf(hours)+":"+String.valueOf(minutes));
+                selectedEventDate.set(Calendar.HOUR_OF_DAY, hours);
+                selectedEventDate.set(Calendar.MINUTE, minutes);
+                eventTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hours, minutes));
             }
-        }, 12, 50, true);
+        }, hour, minute, true);
         timePickerDialog.show();
     }
-
-
-
-        //    Event should not be repeating
-//    Should be up to date
-//
-
-
-
 }

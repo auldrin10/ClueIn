@@ -54,17 +54,15 @@ public class MainFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         fetchEvents();
         firestore = FirebaseFirestore.getInstance();
-//        for(int i = 0; i < 10; i++){
+//        for(int i = 0; i < 5; i++){
 //            Map<String, Object> event = new HashMap<>();
 //            event.put("Event_title", "Wits Music Festival");
 //            event.put("Image_url", "https://picsum.photos/id/1/600/400");
-//            event.put("Location", "");
-//            event.put("event_date", "");
-//            event.put("description", "");
-//            event.put("price", 0.0);
-//            event.put("id", "");
+//            event.put("Location", "Noswall");
+//            event.put("event_date", String.valueOf(i) + "- May 2026");
+//            event.put("description", "TESTING");
+//            event.put("price", i * 102.95);
 //            event.put("is_wits_event", true);
-//            String id = String.valueOf(i);
 //
 //            firestore.collection("Events").add(event);
 //
