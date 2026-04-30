@@ -8,19 +8,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import java.util.*;
 
 public class ProfileFragment extends Fragment {
-    private TextView username;
     private TextView tvProfileUserName;
-    private TextView account;
-    private TextView logOut;
-
+    private RelativeLayout btnAccount;
+    private RelativeLayout btnLogout;
     private LinearLayout updatePic;
 
     @Override
@@ -34,82 +31,61 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        account = view.findViewById(R.id.txtAccount);
-        logOut = view.findViewById(R.id.txtLogOut);
+        // Initialize Views
+        btnAccount = view.findViewById(R.id.btnAccount);
+        btnLogout = view.findViewById(R.id.btnLogout);
         updatePic = view.findViewById(R.id.updatePic);
-
         tvProfileUserName = view.findViewById(R.id.profileUserName);
-        
-        // String variable to store the text from the TextView/EditText
-        String name = "";
-        if (tvProfileUserName != null) {
-            name = tvProfileUserName.getText().toString();
-        }
 
-        String[] splitted = name.split(" ");
-        String initials = "";
+        // Handle Initials logic
+        setupInitials();
 
-        if (splitted.length > 0) {
-            String firstName = splitted[0];
-            String lastName = splitted[splitted.length - 1];
-
-            if (!firstName.isEmpty()) {
-                initials += firstName.charAt(0);
-            }
-            if (splitted.length > 1 && !lastName.isEmpty()) {
-                initials += lastName.charAt(0);
-            }
-
-
-        }
-
-
-
-        String upperInitials = initials.toUpperCase();
-        tvProfileUserName.setText(upperInitials);
-
-
-        //    The main part
-//    Moving from profile to certain elements.
-       updatePic.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-                Fragment fragment = new UpdateProfilePic();
-
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.FargmentContainer, fragment)
-                        .addToBackStack(null)
-                        .commit();
-           }
-       });
-
-        account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment fragment = new InsideAccount();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.FargmentContainer, fragment);
-
-                transaction.addToBackStack(null);
-
-                transaction.commit();
-            }
+        // 1. Tapping the Profile Header (Auldrin Matlala) takes you to Account Details
+        updatePic.setOnClickListener(v -> {
+            Fragment fragment = new InsideAccount();
+            navigateTo(fragment);
         });
 
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment fragment = new LogOut();
+        // 2. Tapping the "Account" row (or the arrow) takes you to Account Settings (UpdateProfilePic)
+        btnAccount.setOnClickListener(v -> {
+            Fragment fragment = new UpdateProfilePic();
+            navigateTo(fragment);
+        });
 
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.FargmentContainer, fragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
+        // 3. Tapping the "Log out" row shows the confirmation dialog
+        btnLogout.setOnClickListener(v -> {
+            LogoutDialog dialog = new LogoutDialog();
+            dialog.show(getParentFragmentManager(), "LogoutDialog");
         });
     }
 
+    private void setupInitials() {
+        // Hardcoded or fetched name
+        String name = "";
+        // Note: You might want to get this from a User object or Firebase later
+        
+        String[] splitted = name.split(" ");
+        StringBuilder initials = new StringBuilder();
 
+        if (splitted.length > 0) {
+            String firstName = splitted[0];
+            if (!firstName.isEmpty()) {
+                initials.append(firstName.charAt(0));
+            }
+            if (splitted.length > 1) {
+                String lastName = splitted[splitted.length - 1];
+                if (!lastName.isEmpty()) {
+                    initials.append(lastName.charAt(0));
+                }
+            }
+        }
+        tvProfileUserName.setText(initials.toString().toUpperCase());
+    }
 
+    private void navigateTo(Fragment fragment) {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.FargmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

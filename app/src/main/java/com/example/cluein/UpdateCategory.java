@@ -4,11 +4,14 @@ package com.example.cluein;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +65,20 @@ public class UpdateCategory extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_update__category, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 1. Find the back arrow by its ID
+        ImageView btnBack = view.findViewById(R.id.btnBack);
+
+        // 2. Set the click listener
+        btnBack.setOnClickListener(v -> {
+            // 3. This command tells Android to go back to the previous fragment
+            if (getParentFragmentManager() != null) {
+                getParentFragmentManager().popBackStack();
+            }
+        });
     }
 }

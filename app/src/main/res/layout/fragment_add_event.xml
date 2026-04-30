@@ -73,6 +73,30 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/MyTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxCornerRadiusBottomEnd="26dp"
+                app:boxCornerRadiusBottomStart="26dp"
+                app:boxCornerRadiusTopEnd="26dp"
+                app:boxCornerRadiusTopStart="26dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeWidth="2.01dp"
+                app:boxStrokeColor="@color/input_stroke"
+                app:hintTextColor="@color/orange"
+                android:layout_marginTop="20dp"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/eventCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/baseline_add_location_24"
+                    android:hint="Event category"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
