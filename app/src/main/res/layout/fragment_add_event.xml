@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AddEvent">
 
-    <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -178,8 +177,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-
-
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/MyTextInputLayout"
                     android:layout_width="match_parent"
@@ -227,34 +224,21 @@
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:orientation="vertical">
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="?attr/colorPrimary"
-                        app:titleTextColor="?attr/colorSurface"
-                        app:titleCentered="true"
-                        />
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:id="@+id/progress"
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/toolbar"/>
 
                     <ImageView
                         android:id="@+id/eventImage"
-                        android:layout_below = "@+id/progress"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone"
+                        android:scaleType="centerCrop"
                         />
 
                     <com.google.android.material.button.MaterialButton
@@ -262,36 +246,40 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="UPLOAD Image"
+                        android:text="Select Image"
                         android:padding="10dp"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         app:backgroundTint="@color/navy" />
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Tap to select event image..."-->
-<!--                        android:textSize="20dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginLeft="24dp"-->
-<!--                        android:textStyle="bold"/>-->
-<!--                    <Button-->
-<!--                        android:layout_width="100dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="10dp"-->
-<!--                        android:background="@drawable/sign_up_button"/>-->
                 </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="30dp">
+
+                <Button
+                    android:id="@+id/clearForm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/sign_up_button"
+                    android:text="Clear Form"
+                    android:textStyle="bold"/>
 
                 <Button
                     android:id="@+id/addEvent"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
                     android:background="@drawable/sign_up_button"
                     android:text="Add Event"
                     android:textStyle="bold"/>
-
+            </LinearLayout>
 
 
             </LinearLayout>
