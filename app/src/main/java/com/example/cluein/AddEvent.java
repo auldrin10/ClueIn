@@ -51,11 +51,12 @@ import java.util.Map;
 public class AddEvent extends Fragment {
 
 //    Instances
-    private EditText eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription;
+    private EditText eventName, eventLocation, eventCategory,eventDate, eventTime, eventPrice, eventDescription;
     private Button addEvent,pickDate,pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
     private ImageView imageView;
+
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
@@ -92,6 +93,7 @@ public class AddEvent extends Fragment {
         eventLocation = view.findViewById(R.id.eventLocation);
         eventDate = view.findViewById(R.id.eventDate);
         eventTime = view.findViewById(R.id.eventTime);
+        eventCategory = view.findViewById(R.id.eventCategory);
         eventPrice = view.findViewById(R.id.eventPrice);
         eventDescription = view.findViewById(R.id.eventDescription);
         addEvent = view.findViewById(R.id.addEvent);
@@ -205,12 +207,10 @@ public class AddEvent extends Fragment {
             edit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable editable) {
-
                 }
 
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 }
 
                 @Override
@@ -221,7 +221,10 @@ public class AddEvent extends Fragment {
                     } else if (edit == eventLocation) {
                         eventLocation.setError(null);
                         eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
-                    } else if (edit == eventDate) {
+                    } else if(edit == eventCategory){
+                        eventCategory.setError(null);
+                        eventLocation.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.outline_ad_group_24,0);
+                    }else if (edit == eventDate) {
                         eventDate.setError(null);
                         eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
                     } else if (edit == eventTime) {
@@ -238,6 +241,7 @@ public class AddEvent extends Fragment {
                     if(edit != eventDescription){
                         addEvent.setEnabled(true);
                         addEvent.setBackgroundResource(R.drawable.sign_up_button);
+
                     }
 
                 }
@@ -254,11 +258,13 @@ public class AddEvent extends Fragment {
                     String strLoc = eventLocation.getText().toString().trim();
                     String strDate = eventDate.getText().toString().trim();
                     String strTime = eventTime.getText().toString().trim();
+                    String strCategory = eventCategory.getText().toString().trim();
 
-                    if (!strName.isEmpty() && !strLoc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty()) {
+                    if (!strName.isEmpty() && !strLoc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty() &&!strCategory.isEmpty()) {
                         db.collection("Events")
                                 .whereEqualTo("Event_title", strName)
                                 .whereEqualTo("Location", strLoc)
+                                .whereEqualTo("Event_category", strCategory)
                                 .whereEqualTo("event_date", strDate)
                                 .whereEqualTo("Event_time", strTime)
                                 .get()
