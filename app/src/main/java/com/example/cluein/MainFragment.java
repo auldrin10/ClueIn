@@ -57,18 +57,18 @@ public class MainFragment extends Fragment {
         
         // Start by fetching from Firestore, then try Mockaroo as additional data or fallback
         fetchFirestoreEvents();
-
-        Map<String , Object> EventMap = new HashMap<>();
-        EventMap.put("Event_title", "Event Name");
-        EventMap.put("Location", "Wits");
-        EventMap.put("event_date", "04 May 2026");
-        EventMap.put("Event_time", "17:00");
-        EventMap.put("price", 100.00); // Saved as Double instead of String
-        EventMap.put("description", "Event Description");
-        EventMap.put("is_wits_event", false);
-        EventMap.put("Image_url", "");
-        EventMap.put("Event_category", "Sports");
-        firestore.collection("Events").add(EventMap);
+//
+//        Map<String , Object> EventMap = new HashMap<>();
+//        EventMap.put("Event_title", "Event Name");
+//        EventMap.put("Location", "Wits");
+//        EventMap.put("event_date", "04 May 2026");
+//        EventMap.put("Event_time", "17:00");
+//        EventMap.put("price", 100.00); // Saved as Double instead of String
+//        EventMap.put("description", "Event Description");
+//        EventMap.put("is_wits_event", false);
+//        EventMap.put("Image_url", "");
+//        EventMap.put("Event_category", "Sports");
+//        firestore.collection("Events").add(EventMap);
         
         return view;
     }

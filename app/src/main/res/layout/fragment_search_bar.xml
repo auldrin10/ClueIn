@@ -21,7 +21,7 @@
         app:boxCornerRadiusTopStart="30dp"
         app:boxStrokeColor="@color/orange"
         app:boxStrokeWidth="2dp"
-        app:endIconDrawable="@drawable/search_svgrepo_com"
+        app:endIconDrawable="@drawable/ic_search_orange"
         app:endIconMode="custom"
         app:endIconTint="@color/orange"
         app:hintTextColor="@color/orange">
