@@ -20,6 +20,7 @@ public class CardViewFragment extends Fragment {
     private static final String ARG_DATE = "event_date";
     private static final String ARG_PRICE = "event_price";
     private static final String ARG_IMAGE_URL = "event_image_url";
+
     private static final String ARG_DESCRIPTION = "event_description";
 
     public static CardViewFragment newInstance(Event event) {

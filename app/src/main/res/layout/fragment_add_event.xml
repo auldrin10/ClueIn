@@ -91,7 +91,7 @@
                     android:id="@+id/eventCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/baseline_add_location_24"
+                    android:drawableEnd="@drawable/outline_ad_group_24"
                     android:hint="Event category"
                     />
 

@@ -14,6 +14,9 @@ public class Event {
     private String eventDate;
     @SerializedName("description")
     private String description;
+
+    @SerializedName("event_category")
+    private String category;
     @SerializedName("price")
     private double price ;
     @SerializedName("id")
@@ -94,10 +97,11 @@ public class Event {
         isExpanded = expanded;
     }
 
-    public Event(String event_title, String imageURL, String location, String eventDate, String description, double price,String Event_id,boolean isOnCampus) {
+    public Event(String event_title, String imageURL, String location, String eventDate, String description, double price,String Event_id,boolean isOnCampus, String category) {
         this.event_title=event_title;
         this.eventDate=eventDate;
         this.imageURL=imageURL;
+        this.category = category;
         this.location=location;
         this.description=description;
         this.isOnCampus=isOnCampus;
