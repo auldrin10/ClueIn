@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +109,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void scheduleAllReminders(Event event) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMM yyyy", Locale.getDefault());
+        // Using 'd' instead of 'dd' to handle single-digit days like "1 - May" or "01 - May"
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
         try {
             Date eventDate = sdf.parse(event.getEventDate());
             if (eventDate == null) return;
@@ -116,7 +118,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             long diffInMillis = eventDate.getTime() - System.currentTimeMillis();
             long daysLeft = TimeUnit.MILLISECONDS.toDays(diffInMillis);
 
-            // 1. Immediate Notification: "Event starts in X days"
+            // 1. Immediate Notification
             sendImmediateNotification(event, "Event starts in " + daysLeft + " days");
 
             // 2. 48 Hour Reminder
@@ -126,7 +128,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             scheduleAlarm(event, eventDate.getTime() - TimeUnit.HOURS.toMillis(24), "Event starts in 1 day", 24);
 
         } catch (ParseException e) {
-            Log.e("EventAdapter", "Error parsing date: " + event.getEventDate());
+            Log.e("EventAdapter", "Error parsing date: " + event.getEventDate() + " for event: " + event.getEvent_title());
         }
     }
 
@@ -155,7 +157,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+            // Fix: Check for exact alarm permission on Android 12+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+                } else {
+                    // Fallback to non-exact alarm if permission is missing
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+            }
         }
     }
 
