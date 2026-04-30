@@ -52,7 +52,7 @@ public class AddEvent extends Fragment {
 
 //    Instances
     private EditText eventName, eventLocation, eventCategory,eventDate, eventTime, eventPrice, eventDescription;
-    private Button addEvent,pickDate,pickTime;
+    private Button addEvent, clearForm, pickDate, pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
     private ImageView imageView;
@@ -68,6 +68,7 @@ public class AddEvent extends Fragment {
                     imageUrl = uri;
                     imageView.setImageURI(uri);
                     imageView.setVisibility(View.VISIBLE);
+                    selectImage.setText("Change Image");
                 }
             }
     );
@@ -97,6 +98,7 @@ public class AddEvent extends Fragment {
         eventPrice = view.findViewById(R.id.eventPrice);
         eventDescription = view.findViewById(R.id.eventDescription);
         addEvent = view.findViewById(R.id.addEvent);
+        clearForm = view.findViewById(R.id.clearForm);
         pickDate = view.findViewById(R.id.btnPickDate);
         pickTime = view.findViewById(R.id.btnPickTime);
         selectImage = view.findViewById(R.id.selectImage);
@@ -139,6 +141,9 @@ public class AddEvent extends Fragment {
                     isValid = false;
                 }if(strEventDescription.isEmpty()){
                     eventDescription.setError("Event description missing.");
+                    isValid = false;
+                }if(imageUrl == null){
+                    Toast.makeText(requireContext(),"Please select an image.",Toast.LENGTH_LONG).show();
                     isValid = false;
                 }
 
@@ -233,6 +238,13 @@ public class AddEvent extends Fragment {
             }
         });
 
+        clearForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearFormFields();
+            }
+        });
+
 
 //        on text changed listner
         for(EditText edit: editTexts) {
@@ -261,7 +273,7 @@ public class AddEvent extends Fragment {
                         eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
                     } else if (edit == eventTime) {
                         eventTime.setError(null);
-                        eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
+                        eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_alarm_24, 0);
                     } else if (edit == eventPrice) {
                         eventPrice.setError(null);
                         eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_attach_money_24, 0);
@@ -405,7 +417,7 @@ public class AddEvent extends Fragment {
 
     // Generic error pop up for duplicate events
     private void showEventError(){
-        new AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
                 .setTitle("Error")
                 .setMessage("This event exists!")
                 .setPositiveButton("OK", (dialog, which)->{
@@ -413,5 +425,41 @@ public class AddEvent extends Fragment {
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    private void clearFormFields() {
+        eventName.setText("");
+        eventLocation.setText("");
+        eventCategory.setText("");
+        eventDate.setText("");
+        eventTime.setText("");
+        eventPrice.setText("");
+        eventDescription.setText("");
+
+        imageUrl = null;
+        imageView.setVisibility(View.GONE);
+        selectImage.setText("Select Image");
+
+        // Re-enable add button if it was disabled due to duplicate
+        addEvent.setEnabled(true);
+        addEvent.setBackgroundResource(R.drawable.sign_up_button);
+
+        // Clear errors
+        eventName.setError(null);
+        eventLocation.setError(null);
+        eventCategory.setError(null);
+        eventDate.setError(null);
+        eventTime.setError(null);
+        eventPrice.setError(null);
+        eventDescription.setError(null);
+
+        // Reset compound drawables to original icons
+        eventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_event_24, 0);
+        eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
+        eventCategory.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_ad_group_24, 0);
+        eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
+        eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_alarm_24, 0);
+        eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_attach_money_24, 0);
+        eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
     }
 }
