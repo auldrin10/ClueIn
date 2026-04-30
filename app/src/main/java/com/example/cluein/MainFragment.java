@@ -59,7 +59,7 @@ public class MainFragment extends Fragment {
 //            event.put("Event_title", "Wits Music Festival");
 //            event.put("Image_url", "https://picsum.photos/id/1/600/400");
 //            event.put("Location", "Noswall");
-//            event.put("event_date", String.valueOf(i) + "- May 2026");
+//            event.put("event_date", String.valueOf(i) + " - May 2026");
 //            event.put("description", "TESTING");
 //            event.put("price", i * 102.95);
 //            event.put("is_wits_event", true);

@@ -297,7 +297,7 @@ public class AddEvent extends Fragment {
                 selectedEventDate.set(Calendar.YEAR, year);
                 selectedEventDate.set(Calendar.MONTH, month);
                 selectedEventDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMM yyyy", Locale.getDefault());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
                 eventDate.setText(sdf.format(selectedEventDate.getTime()));
             }
         }, year, month, day);
