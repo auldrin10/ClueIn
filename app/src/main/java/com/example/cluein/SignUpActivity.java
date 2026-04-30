@@ -76,7 +76,7 @@ private String name;
                 nameLayout.setError(null);
                 nameLayout.setErrorEnabled(false);
                 if (s.length() > 0) {
-                    nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green, 0);
+                    nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_account_circle_24, 0);
                 } else {
                     nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_account_circle_24, 0);
                 }
