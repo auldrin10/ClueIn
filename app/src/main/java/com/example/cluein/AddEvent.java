@@ -37,8 +37,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import androidx.appcompat.app.AlertDialog;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -233,10 +235,53 @@ public class AddEvent extends Fragment {
                         eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
                     }
 
+                    if(edit != eventDescription){
+                        addEvent.setEnabled(true);
+                        addEvent.setBackgroundResource(R.drawable.sign_up_button);
+                    }
+
                 }
 
             });
         }
+
+        // Avoiding repetition
+        eventDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    String strName = eventName.getText().toString().trim();
+                    String strLoc = eventLocation.getText().toString().trim();
+                    String strDate = eventDate.getText().toString().trim();
+                    String strTime = eventTime.getText().toString().trim();
+
+                    if (!strName.isEmpty() && !strLoc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty()) {
+                        db.collection("Events")
+                                .whereEqualTo("Event_title", strName)
+                                .whereEqualTo("Location", strLoc)
+                                .whereEqualTo("event_date", strDate)
+                                .whereEqualTo("Event_time", strTime)
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        if (!queryDocumentSnapshots.isEmpty()) {
+                                            showEventError();
+                                            addEvent.setBackgroundColor(android.graphics.Color.GRAY);
+                                            addEvent.setEnabled(false);
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("Firestore", "Error checking events", e);
+                                    }
+                                });
+                    }
+                }
+            }
+        });
 
         return view;
     }
@@ -321,5 +366,17 @@ public class AddEvent extends Fragment {
             }
         }, hour, minute, true);
         timePickerDialog.show();
+    }
+
+    // Generic error pop up for duplicate events
+    private void showEventError(){
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("This event exists!")
+                .setPositiveButton("OK", (dialog, which)->{
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
     }
 }
