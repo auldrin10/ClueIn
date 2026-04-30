@@ -51,11 +51,12 @@ import java.util.Map;
 public class AddEvent extends Fragment {
 
 //    Instances
-    private EditText eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription;
+    private EditText eventName, eventLocation, eventCategory,eventDate, eventTime, eventPrice, eventDescription;
     private Button addEvent,pickDate,pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
     private ImageView imageView;
+
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
@@ -92,6 +93,7 @@ public class AddEvent extends Fragment {
         eventLocation = view.findViewById(R.id.eventLocation);
         eventDate = view.findViewById(R.id.eventDate);
         eventTime = view.findViewById(R.id.eventTime);
+        eventCategory = view.findViewById(R.id.eventCategory);
         eventPrice = view.findViewById(R.id.eventPrice);
         eventDescription = view.findViewById(R.id.eventDescription);
         addEvent = view.findViewById(R.id.addEvent);
@@ -99,7 +101,7 @@ public class AddEvent extends Fragment {
         pickTime = view.findViewById(R.id.btnPickTime);
         selectImage = view.findViewById(R.id.selectImage);
         imageView = view.findViewById(R.id.eventImage);
-        EditText[] editTexts = {eventName, eventLocation, eventDate, eventTime, eventPrice, eventDescription};
+        EditText[] editTexts = {eventName, eventLocation,eventCategory, eventDate, eventTime, eventPrice, eventDescription};
 
         checkNotificationPermission();
 
@@ -109,18 +111,22 @@ public class AddEvent extends Fragment {
             public void onClick(View view) {
                 String strEventName = eventName.getText().toString().trim();
                 String strEventLocation = eventLocation.getText().toString().trim();
+                String strEventCategory = eventCategory.getText().toString().trim();
                 String strEventDate = eventDate.getText().toString().trim();
                 String strEventTime = eventTime.getText().toString().trim();
                 String strEventPrice = eventPrice.getText().toString().trim();
                 String strEventDescription = eventDescription.getText().toString().trim();
 
-              boolean isValid = true;
+                boolean isValid = true;
 
                 if(strEventName.isEmpty()){
                     eventName.setError("Event name missing.");
                     isValid = false;
                 }if(strEventLocation.isEmpty()){
                     eventLocation.setError("Event location missing.");
+                    isValid = false;
+                }if(strEventCategory.isEmpty()){
+                    eventCategory.setError("Event category missing.");
                     isValid = false;
                 }if(strEventDate.isEmpty()) {
                     eventDate.setError("Event date missing.");
@@ -130,51 +136,79 @@ public class AddEvent extends Fragment {
                     isValid = false;
                 }if(strEventPrice.isEmpty()){
                     eventPrice.setError("Event price missing.");
-                        isValid = false;
+                    isValid = false;
                 }if(strEventDescription.isEmpty()){
                     eventDescription.setError("Event description missing.");
-                        isValid = false;
-                }if(isValid) {
-                        double dblprice = 0.0;
-                        try {
-                            dblprice = Double.parseDouble(strEventPrice);
-                        } catch (Exception e) {
-                            Log.e("Error", "Failed parsing: " + strEventPrice);
-                            Toast.makeText(requireContext(), "Wrong input!", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        Map<String, Object> eventMap = new HashMap<>();
-                        eventMap.put("Event_title", strEventName);
-                        eventMap.put("Location", strEventLocation);
-                        eventMap.put("event_date", strEventDate);
-                        eventMap.put("Event_time", strEventTime);
-                        eventMap.put("price", dblprice);
-                        eventMap.put("description", strEventDescription);
-                        eventMap.put("is_wits_event", false);
-                        eventMap.put("Image_url", imageUrl != null ? imageUrl.toString() : "");
-
-
-                        db.collection("Events")
-                                .add(eventMap)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Log.d(TAG, "Event added with ID: " + documentReference.getId());
-                                        scheduleNotification(documentReference.getId(), strEventName);
-                                        Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error adding event", e);
-                                        Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    }
+                    isValid = false;
                 }
-            
+
+                if(isValid) {
+                    double dblprice = 0.0;
+                    try {
+                        dblprice = Double.parseDouble(strEventPrice);
+                    } catch (Exception e) {
+                        Log.e("Error", "Failed parsing: " + strEventPrice);
+                        Toast.makeText(requireContext(), "Wrong input!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    double finalDblprice = dblprice;
+                    // Final Guard: Check for duplicates one last time before adding
+                    db.collection("Events")
+                            .whereEqualTo("Event_title", strEventName)
+                            .whereEqualTo("Location", strEventLocation)
+                            .whereEqualTo("Event_category", strEventCategory)
+                            .whereEqualTo("event_date", strEventDate)
+                            .whereEqualTo("Event_time", strEventTime)
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    if (!queryDocumentSnapshots.isEmpty()) {
+                                        showEventError();
+                                        addEvent.setBackgroundColor(android.graphics.Color.GRAY);
+                                        addEvent.setEnabled(false);
+                                    } else {
+                                        // No duplicate found, proceed to add
+                                        Map<String, Object> eventMap = new HashMap<>();
+                                        eventMap.put("Event_title", strEventName);
+                                        eventMap.put("Location", strEventLocation);
+                                        eventMap.put("Event_category", strEventCategory);
+                                        eventMap.put("event_date", strEventDate);
+                                        eventMap.put("Event_time", strEventTime);
+                                        eventMap.put("price", finalDblprice);
+                                        eventMap.put("description", strEventDescription);
+                                        eventMap.put("is_wits_event", false);
+                                        eventMap.put("Image_url", imageUrl != null ? imageUrl.toString() : "");
+
+                                        db.collection("Events")
+                                                .add(eventMap)
+                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        Log.d(TAG, "Event added with ID: " + documentReference.getId());
+                                                        scheduleNotification(documentReference.getId(), strEventName);
+                                                        Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(TAG, "Error adding event", e);
+                                                        Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e(TAG, "Final check failed", e);
+                                }
+                            });
+                }
+            }
         });
 
 //        Time and date pickers
@@ -205,12 +239,10 @@ public class AddEvent extends Fragment {
             edit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable editable) {
-
                 }
 
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 }
 
                 @Override
@@ -221,7 +253,10 @@ public class AddEvent extends Fragment {
                     } else if (edit == eventLocation) {
                         eventLocation.setError(null);
                         eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
-                    } else if (edit == eventDate) {
+                    } else if(edit == eventCategory){
+                        eventCategory.setError(null);
+                        eventCategory.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.outline_ad_group_24,0);
+                    }else if (edit == eventDate) {
                         eventDate.setError(null);
                         eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
                     } else if (edit == eventTime) {
@@ -239,9 +274,7 @@ public class AddEvent extends Fragment {
                         addEvent.setEnabled(true);
                         addEvent.setBackgroundResource(R.drawable.sign_up_button);
                     }
-
                 }
-
             });
         }
 
@@ -254,11 +287,13 @@ public class AddEvent extends Fragment {
                     String strLoc = eventLocation.getText().toString().trim();
                     String strDate = eventDate.getText().toString().trim();
                     String strTime = eventTime.getText().toString().trim();
+                    String strCategory = eventCategory.getText().toString().trim();
 
-                    if (!strName.isEmpty() && !strLoc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty()) {
+                    if (!strName.isEmpty() && !strLoc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty() && !strCategory.isEmpty()) {
                         db.collection("Events")
                                 .whereEqualTo("Event_title", strName)
                                 .whereEqualTo("Location", strLoc)
+                                .whereEqualTo("Event_category", strCategory)
                                 .whereEqualTo("event_date", strDate)
                                 .whereEqualTo("Event_time", strTime)
                                 .get()
