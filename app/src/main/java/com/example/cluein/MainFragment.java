@@ -20,8 +20,10 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,6 +57,18 @@ public class MainFragment extends Fragment {
         
         // Start by fetching from Firestore, then try Mockaroo as additional data or fallback
         fetchFirestoreEvents();
+
+        Map<String , Object> EventMap = new HashMap<>();
+        EventMap.put("Event_title", "Event Name");
+        EventMap.put("Location", "Wits");
+        EventMap.put("event_date", "04 May 2026");
+        EventMap.put("Event_time", "17:00");
+        EventMap.put("price", 100.00); // Saved as Double instead of String
+        EventMap.put("description", "Event Description");
+        EventMap.put("is_wits_event", false);
+        EventMap.put("Image_url", "");
+        EventMap.put("Event_category", "Sports");
+        firestore.collection("Events").add(EventMap);
         
         return view;
     }
@@ -68,7 +82,21 @@ public class MainFragment extends Fragment {
                 String location = document.getString("Location");
                 String eventDate = document.getString("event_date");
                 String description = document.getString("description");
-                Double price = document.getDouble("price");
+                
+                // Safely get price as Double, handling cases where it might be a String in Firestore
+                Double price = 0.0;
+                Object priceObj = document.get("price");
+                if (priceObj instanceof Number) {
+                    price = ((Number) priceObj).doubleValue();
+                } else if (priceObj instanceof String) {
+                    try {
+                        price = Double.parseDouble((String) priceObj);
+                    } catch (NumberFormatException e) {
+                        Log.e("MainFragment", "Invalid price format: " + priceObj);
+                    }
+                }
+                
+                String category = document.getString("Event_category");
                 String imageUrl = document.getString("Image_url");
                 Boolean isWitsEvent = document.getBoolean("is_wits_event");
 
@@ -78,9 +106,9 @@ public class MainFragment extends Fragment {
                         location,
                         eventDate,
                         description,
-                        price != null ? price : 0.0,
+                        price,
                         id,
-                        isWitsEvent != null ? isWitsEvent : false
+                        isWitsEvent != null ? isWitsEvent : false, category
                 ));
                 addedAny = true;
             }
@@ -150,8 +178,8 @@ public class MainFragment extends Fragment {
             
             // Only add hardcoded samples if we have absolutely no data
             if (eventList.isEmpty()) {
-                eventList.add(new Event("Wits Music Festival", "https://picsum.photos/id/1/600/400", "Wits Great Hall", "25 - October 2024", "The biggest party of the year!", 120.0, "101", true));
-                eventList.add(new Event("Tech Hackathon 2024", "https://picsum.photos/id/2/600/400", "Matrix Building", "26 - October 2024", "24 hours of pure coding", 0.0, "102", true));
+                eventList.add(new Event("Wits Music Festival", "https://picsum.photos/id/1/600/400", "Wits Great Hall", "25 October 2026", "The biggest party of the year!", 70.0, "101", true , "Graduations"));
+                eventList.add(new Event("Tech Hackathon 2026", "https://picsum.photos/id/2/600/400", "Matrix Building", "26 October 2026", "24 hours of pure coding", 300.0, "102", true, "Hackathon"));
                 adapter.notifyDataSetChanged();
             }
             
