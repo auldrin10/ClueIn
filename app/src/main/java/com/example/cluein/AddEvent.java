@@ -183,7 +183,7 @@ public class AddEvent extends Fragment {
                                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                     if (!queryDocumentSnapshots.isEmpty()) {
                                         showEventError();
-                                        addEvent.setBackgroundColor(android.graphics.Color.GRAY);
+                                        addEvent.setBackgroundResource(R.drawable.gray_rounded_button);
                                         addEvent.setEnabled(false);
                                     } else {
                                         // No duplicate found, proceed to add
@@ -330,7 +330,7 @@ public class AddEvent extends Fragment {
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                         if (!queryDocumentSnapshots.isEmpty()) {
                                             showEventError();
-                                            addEvent.setBackgroundColor(android.graphics.Color.GRAY);
+                                            addEvent.setBackgroundResource(R.drawable.gray_rounded_button);
                                             addEvent.setEnabled(false);
                                         }
                                     }
