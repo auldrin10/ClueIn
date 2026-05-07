@@ -39,17 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.emailLayout);
         pswLayout = findViewById(R.id.pswLayout);
 
-        // Set error colors to "Red Red"
         int redRed = Color.parseColor("#FF0000");
         ColorStateList errorColorStateList = ColorStateList.valueOf(redRed);
         
         emailLayout.setErrorTextColor(errorColorStateList);
-        emailLayout.setErrorIconTintList(errorColorStateList);
-        emailLayout.setBoxStrokeErrorColor(errorColorStateList);
-        
         pswLayout.setErrorTextColor(errorColorStateList);
-        pswLayout.setErrorIconTintList(errorColorStateList);
-        pswLayout.setBoxStrokeErrorColor(errorColorStateList);
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) View mainView = findViewById(R.id.main);
         if (mainView != null) {
@@ -60,11 +54,9 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        // Add TextWatchers to clear errors when typing
         textEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -72,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
                     emailLayout.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
@@ -80,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         textPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -88,20 +78,13 @@ public class LoginActivity extends AppCompatActivity {
                     pswLayout.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isValid = true;
-                isValid = ValidateLogInInputForm(v, isValid);
-
-                if (isValid) {
-                    ToDashboard(v);
-                }
+        loginBtn.setOnClickListener(v -> {
+            if (ValidateLogInInputForm(v, true)) {
+                ToDashboard(v);
             }
         });
     }
@@ -110,29 +93,26 @@ public class LoginActivity extends AppCompatActivity {
         String password = textPassword.getText().toString();
         String email = textEmail.getText().toString();
 
-        // Clear previous errors
         emailLayout.setError(null);
         pswLayout.setError(null);
 
         if (password.isEmpty()) {
-            pswLayout.setErrorEnabled(true);
             pswLayout.setError("Password is required");
-            textPassword.requestFocus();
             isValid = false;
         }
         if (email.isEmpty()) {
-            emailLayout.setErrorEnabled(true);
             emailLayout.setError("Email is required");
-            textEmail.requestFocus();
             isValid = false;
         }
-
         return isValid;
     }
 
     public void ToDashboard(View v) {
         Intent Dashboard = new Intent(this, MainActivity.class);
+        // This clears the login screen from history
+        Dashboard.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(Dashboard);
+        finish(); 
     }
 
     public void ToSignUp(View v) {

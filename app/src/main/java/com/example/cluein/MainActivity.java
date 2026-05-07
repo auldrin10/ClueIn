@@ -33,21 +33,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
             int itemId = item.getItemId();
+
             if (itemId == R.id.nav_feed) {
-                replaceFragment(new MainFragment());
-                return true;
+                selectedFragment = new MainFragment();
             } else if (itemId == R.id.nav_search) {
-                replaceFragment(new SearchBarFragment());
-                return true;
-            }else if(itemId == R.id.add_event){
-                replaceFragment(new AddEvent());
-                return true;
+                selectedFragment = new SearchBarFragment();
+            } else if (itemId == R.id.add_event) {
+                selectedFragment = new AddEvent();
             } else if (itemId == R.id.nav_favorites) {
-                replaceFragment(new favouritesFragment());
-                return true;
+                selectedFragment = new favouritesFragment();
             } else if (itemId == R.id.nav_profile) {
-                replaceFragment(new ProfileFragment());
+                selectedFragment = new ProfileFragment();
+            }
+
+            if (selectedFragment != null) {
+                replaceFragment(selectedFragment);
                 return true;
             }
             return false;

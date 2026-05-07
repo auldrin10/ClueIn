@@ -25,8 +25,8 @@ public class ChangePassword extends Fragment {
     private TextInputEditText etNewPassword, etConfirmPassword;
     private TextInputLayout layoutNewPassword, layoutConfirmPassword;
     private LinearLayout validationLayout;
-    private ImageView iconLength, iconNum, iconUpper, iconSpecial;
-    private TextView tvLength, tvNum, tvUpper, tvSpecial;
+    private ImageView iconLength, iconNum, iconUpper, iconSpecial, iconLower;
+    private TextView tvLength, tvNum, tvUpper, tvSpecial, tvLower;
     private Button btnResetPassword;
     private ImageView btnBack;
 
@@ -55,19 +55,21 @@ public class ChangePassword extends Fragment {
         iconNum = view.findViewById(R.id.iconNum);
         iconUpper = view.findViewById(R.id.iconUpper);
         iconSpecial = view.findViewById(R.id.iconSpecial);
+        iconLower = view.findViewById(R.id.iconLower);
 
         tvLength = view.findViewById(R.id.tvLength);
         tvNum = view.findViewById(R.id.tvNum);
         tvUpper = view.findViewById(R.id.tvUpper);
         tvSpecial = view.findViewById(R.id.tvSpecial);
+        tvLower = view.findViewById(R.id.tvLower);
 
         btnResetPassword = view.findViewById(R.id.btnResetPassword);
         btnBack = view.findViewById(R.id.btnBack);
 
         // Back button logic
         btnBack.setOnClickListener(v -> {
-            if (getFragmentManager() != null) {
-                getFragmentManager().popBackStack();
+            if (getParentFragmentManager() != null) {
+                getParentFragmentManager().popBackStack();
             }
         });
 
@@ -143,7 +145,17 @@ public class ChangePassword extends Fragment {
             isValid = false;
         }
 
-        // Rule 3: Uppercase
+        // Rule 3: Lowercase
+        if (pass.matches(".*[a-z].*")) {
+            iconLower.setImageResource(R.drawable.check);
+            tvLower.setTextColor(Color.GREEN);
+        } else {
+            iconLower.setImageResource(R.drawable.multiplication);
+            tvLower.setTextColor(Color.RED);
+            isValid = false;
+        }
+
+        // Rule 4: Uppercase
         if (pass.matches(".*[A-Z].*")) {
             iconUpper.setImageResource(R.drawable.check);
             tvUpper.setTextColor(Color.GREEN);
@@ -153,7 +165,7 @@ public class ChangePassword extends Fragment {
             isValid = false;
         }
 
-        // Rule 4: Special Characters
+        // Rule 5: Special Characters
         if (pass.matches(".*[@#$%^&*+=!].*")) {
             iconSpecial.setImageResource(R.drawable.check);
             tvSpecial.setTextColor(Color.GREEN);
