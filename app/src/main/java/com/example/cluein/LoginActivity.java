@@ -10,8 +10,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,11 +22,27 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class LoginActivity extends AppCompatActivity {
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public class LoginActivity extends AppCompatActivity {
+    OkHttpClient client;
     Button loginBtn;
+    String getURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/clueinusr.php";
+    String postURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/clueinusr.php";
     TextInputEditText textEmail;
     TextInputEditText textPassword;
+    TextView display;
     TextInputLayout emailLayout, pswLayout;
 
     @Override
@@ -32,13 +50,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-
+        client = new OkHttpClient();
         loginBtn = findViewById(R.id.loginBtn);
         textEmail = findViewById(R.id.Emailtxt);
         textPassword = findViewById(R.id.pswdtxt);
         emailLayout = findViewById(R.id.emailLayout);
         pswLayout = findViewById(R.id.pswLayout);
-
+        display = findViewById(R.id.textView2);
         // Set error colors to "Red Red"
         int redRed = Color.parseColor("#FF0000");
         ColorStateList errorColorStateList = ColorStateList.valueOf(redRed);
@@ -100,7 +118,8 @@ public class LoginActivity extends AppCompatActivity {
                 isValid = ValidateLogInInputForm(v, isValid);
 
                 if (isValid) {
-                    ToDashboard(v);
+//                    ToDashboard(v);
+                    post();
                 }
             }
         });
@@ -128,6 +147,92 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return isValid;
+    }
+
+    public void get() {
+        Request request = new Request.Builder()
+                .url(getURL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            display.setText(response.body().string());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+
+        });
+    }
+
+
+    public void post() {
+
+        // get email from your TextView
+        String email = textEmail.getText().toString();
+
+        RequestBody body = new FormBody.Builder()
+                .add("email", email)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(postURL)   // your PHP POST URL
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String json = response.body().string();
+
+                            try {
+                                JSONObject obj = new JSONObject(json);
+
+                                String name = obj.getString("full_name");
+                                String password = obj.getString("password");
+
+                                // store into variables
+                                String userName = name;
+                                String userPassword = password;
+
+                                display.setText(userName + " " + userPassword);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public void ToDashboard(View v) {

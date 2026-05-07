@@ -36,8 +36,8 @@ private String name;
         });
 
         /* Instances for input fields and layouts */
-        TextInputLayout nameLayout = findViewById(R.id.nameLayout);
-        TextInputEditText nameInput = findViewById(R.id.txtInptUser);
+        TextInputLayout nameLayout = findViewById(R.id.fnameLayout);
+        TextInputEditText nameInput = findViewById(R.id.txtInptUserFname);
         TextInputLayout emailLayout = findViewById(R.id.emailLayout);
         TextInputEditText emailInput = findViewById(R.id.txtInptEmail);
         TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);

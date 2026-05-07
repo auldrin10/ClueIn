@@ -49,7 +49,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nameLayout"
+                android:id="@+id/fnameLayout"
                 android:layout_width="355dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -65,11 +65,41 @@
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtInptUser"
+                    android:id="@+id/txtInptUserFname"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:drawableEnd="@drawable/baseline_account_circle_24"
-                    android:hint="Full Name"
+                    android:hint="First Name"
+                    android:inputType="text"
+                    android:paddingStart="25dp"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@null"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lnameLayout"
+                android:layout_width="355dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                style="@style/MyTextInputLayout"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeColor="@color/input_stroke"
+                app:hintTextColor="@color/orange"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtInptUserLname"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:drawableEnd="@drawable/baseline_account_circle_24"
+                    android:hint="Last Name"
                     android:inputType="text"
                     android:paddingStart="25dp"
                     android:textColor="@color/black"
@@ -363,8 +393,8 @@
 
             <View
                 android:id="@+id/dot1"
-                android:layout_width="13dp"
-                android:layout_height="12dp"
+                android:layout_width="9dp"
+                android:layout_height="10dp"
                 android:layout_margin="6dp"
                 android:background="@drawable/dot_inactive" />
             <View

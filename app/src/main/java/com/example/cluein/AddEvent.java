@@ -42,14 +42,26 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class AddEvent extends Fragment {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+public class AddEvent extends Fragment {
+    OkHttpClient Eventclient = new OkHttpClient();
 //    Instances
     private EditText eventName, eventLocation, eventCategory,eventDate, eventTime, eventPrice, eventDescription;
     private Button addEvent, clearForm, pickDate, pickTime;
@@ -191,8 +203,12 @@ public class AddEvent extends Fragment {
                                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                     @Override
                                                     public void onSuccess(DocumentReference documentReference) {
-                                                        Log.d(TAG, "Event added with ID: " + documentReference.getId());
+                                                        Log.d(TAG, "Event added to Firestore with ID: " + documentReference.getId());
                                                         scheduleNotification(documentReference.getId(), strEventName);
+                                                        
+                                                        // Also post to PHP backend
+                                                        post();
+                                                        
                                                         Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
                                                     }
                                                 })
@@ -331,6 +347,72 @@ public class AddEvent extends Fragment {
         });
 
         return view;
+    }
+
+    String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
+    
+    public void post() {
+        String eName  = eventName.getText().toString().trim();
+        String eLoc = eventLocation.getText().toString().trim();
+        String eDate = eventDate.getText().toString().trim();
+        String eTime = eventTime.getText().toString().trim();
+        String eCat = eventCategory.getText().toString().trim();
+        String ePrice = eventPrice.getText().toString().trim();
+        String eDesc = eventDescription.getText().toString().trim();
+        String eImage = imageUrl != null ? imageUrl.toString() : "";
+
+        RequestBody body = new FormBody.Builder()
+                .add("event_name", eName)
+                .add("event_location", eLoc)
+                .add("event_date", eDate)
+                .add("event_time", eTime)
+                .add("event_price", ePrice)
+                .add("event_description", eDesc)
+                .add("event_image", eImage)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(postEventURL)
+                .post(body)
+                .build();
+
+        Eventclient.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                final String responseData = response.body().string();
+
+                Log.d("PHP_RESPONSE", responseData);
+
+                if (response.isSuccessful()) {
+
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            try {
+                                JSONObject jsonObject = new JSONObject(responseData);
+
+                                String message = jsonObject.optString("message", "Success");
+
+                                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+
+                            } catch (JSONException e) {
+                                Log.e(TAG, "JSON parse error", e);
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void checkNotificationPermission() {
