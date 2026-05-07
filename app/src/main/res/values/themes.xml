@@ -8,5 +8,10 @@
     <style name="DialogTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="colorAccent">@color/orange</item>
     </style>
+
+    <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorAccent">@color/orange</item>
+        <item name="android:windowBackground">@drawable/custom_dialog_bg</item>
+    </style>
     <style name="Theme.ClueIn" parent="Base.Theme.ClueIn" />
 </resources>
