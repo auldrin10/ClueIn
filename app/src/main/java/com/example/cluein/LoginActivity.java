@@ -245,6 +245,8 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(SignUp);
     }
 
+
+
     public void ResetActivity(View v) {
         Intent ResetPage = new Intent(this, LostPasswordActivity.class);
         startActivity(ResetPage);
