@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors (Adjusted for Dark Mode) -->
+    <color name="orange">#FF7043</color>
+    <color name="navy">#E1E1E1</color>
+
+    <!-- Semantic Colors (Dark) -->
+    <color name="app_background">#121212</color>
+    <color name="app_on_background">#FFFFFF</color>
+    <color name="app_surface">#1E1E1E</color>
+    <color name="app_on_surface">#FFFFFF</color>
+    <color name="app_text_primary">#E1E1E1</color>
+    <color name="app_text_secondary">#B0B0B0</color>
+</resources>

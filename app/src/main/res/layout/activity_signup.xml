@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@android:color/white">
+    android:background="@color/app_background">
 
     <LinearLayout
         android:id="@+id/main"
@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign Up"
-                android:textColor="@color/navy"
+                android:textColor="@color/app_text_primary"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
@@ -37,7 +37,8 @@
                 android:id="@+id/imageView2"
                 android:layout_width="84dp"
                 android:layout_height="98dp"
-                app:srcCompat="@drawable/outline_account_circle_24" />
+                app:srcCompat="@drawable/outline_account_circle_24"
+                app:tint="@color/app_text_primary" />
         </LinearLayout>
 
         <!-- Input Fields Section -->
@@ -72,7 +73,7 @@
                     android:hint="First Name"
                     android:inputType="text"
                     android:paddingStart="25dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/app_text_primary"
                     android:textCursorDrawable="@null"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -102,7 +103,7 @@
                     android:hint="Last Name"
                     android:inputType="text"
                     android:paddingStart="25dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/app_text_primary"
                     android:textCursorDrawable="@null"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -130,7 +131,7 @@
                     android:hint="Email Address"
                     android:inputType="textEmailAddress"
                     android:paddingStart="25dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/app_text_primary"
                     android:textCursorDrawable="@null"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,7 +159,7 @@
                     android:hint="Password"
                     android:paddingStart="25dp"
                     android:inputType="textPassword"
-                    android:textColor="@color/black"
+                    android:textColor="@color/app_text_primary"
                     android:textCursorDrawable="@null"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -191,6 +192,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:text="Atleast 8 characters "
+                    android:textColor="@color/app_text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -211,6 +213,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:text="Should have numbers"
+                    android:textColor="@color/app_text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -231,6 +234,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:text="Minimum of one lowercase"
+                    android:textColor="@color/app_text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -251,6 +255,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:text="Minimum of one uppercase"
+                    android:textColor="@color/app_text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -270,6 +275,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:text="Minimum of one special character"
+                    android:textColor="@color/app_text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
@@ -287,6 +293,7 @@
                 android:layout_width="355dp"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Service and Privacy Policy"
+                android:textColor="@color/app_text_primary"
                 android:textSize="14sp" />
 
             <Button
@@ -321,7 +328,7 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:text="OR"
-                android:textColor="@color/navy"
+                android:textColor="@color/app_text_primary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
             <View
@@ -367,7 +374,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
-                android:textColor="@color/black"
+                android:textColor="@color/app_text_primary"
                 android:textSize="17sp"
                 android:textStyle="italic" />
 

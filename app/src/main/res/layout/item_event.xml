@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    app:cardBackgroundColor="#0A1929"
+    app:cardBackgroundColor="@color/app_surface"
     app:cardCornerRadius="24dp"
     app:cardElevation="8dp"
-    app:strokeColor="#FF9800"
+    app:strokeColor="@color/orange"
     app:strokeWidth="0dp">
 
     <RelativeLayout
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Event Title"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/app_text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Location Name"
-                    android:textColor="#B0BEC5"
+                    android:textColor="@color/app_text_secondary"
                     android:textSize="14sp" />
 
                 <RelativeLayout
@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Date"
-                        android:textColor="#FF9800"
+                        android:textColor="@color/orange"
                         android:textStyle="bold" />
 
                     <TextView
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:text="Price"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/app_text_primary"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/app_text_primary"
                     android:textSize="14sp"
                     android:visibility="gone"
                     android:text="Event Description goes here..." />

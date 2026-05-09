@@ -1,12 +1,14 @@
 package com.example.cluein;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,12 +41,12 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
     OkHttpClient client;
     Button loginBtn;
-    String getURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/clueinusr.php";
-    String postURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/clueinusr.php";
+    String postURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/users/login.php";
     TextInputEditText textEmail;
     TextInputEditText textPassword;
     TextView display;
     TextInputLayout emailLayout, pswLayout;
+    public User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.emailLayout);
         pswLayout = findViewById(R.id.pswLayout);
         display = findViewById(R.id.textView2);
-        // Set error colors to "Red Red"
+        
         int redRed = Color.parseColor("#FF0000");
         ColorStateList errorColorStateList = ColorStateList.valueOf(redRed);
         
@@ -78,11 +81,9 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        // Add TextWatchers to clear errors when typing
         textEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -90,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
                     emailLayout.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
@@ -98,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
         textPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
@@ -106,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
                     pswLayout.setErrorEnabled(false);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
@@ -118,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
                 isValid = ValidateLogInInputForm(v, isValid);
 
                 if (isValid) {
-//                    ToDashboard(v);
                     post();
                 }
             }
@@ -129,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
         String password = textPassword.getText().toString();
         String email = textEmail.getText().toString();
 
-        // Clear previous errors
         emailLayout.setError(null);
         pswLayout.setError(null);
 
@@ -148,86 +144,50 @@ public class LoginActivity extends AppCompatActivity {
 
         return isValid;
     }
-
-    public void get() {
-        Request request = new Request.Builder()
-                .url(getURL)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-            }
-
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            display.setText(response.body().string());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-            }
-
-        });
-    }
-
-
+    String email;
     public void post() {
-
-        // get email from your TextView
-        String email = textEmail.getText().toString();
+        email = textEmail.getText().toString();
 
         RequestBody body = new FormBody.Builder()
                 .add("email", email)
                 .build();
 
         Request request = new Request.Builder()
-                .url(postURL)   // your PHP POST URL
+                .url(postURL)
                 .post(body)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
-
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show()
                 );
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
+                final String json = response.body().string();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            String json = response.body().string();
+                            JSONObject obj = new JSONObject(json);
 
-                            try {
-                                JSONObject obj = new JSONObject(json);
-
-                                String name = obj.getString("full_name");
-                                String password = obj.getString("password");
-
-                                // store into variables
-                                String userName = name;
-                                String userPassword = password;
-
-                                display.setText(userName + " " + userPassword);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            if (obj.has("error")) {
+                                Toast.makeText(getApplicationContext(), obj.getString("error"), Toast.LENGTH_SHORT).show();
+                            } else {
+                                String first_name = obj.optString("first_name", "");
+                                String last_name = obj.optString("last_name", "");
+                                String userID = obj.optString("user_id", "");
+                                String passwordFetched = obj.optString("password", "");
+                                
+                                user = new User(first_name, last_name, email, passwordFetched, userID);
+                                AuthenticateUser();
                             }
-
-
-
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Email does not exist", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -235,17 +195,44 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void AuthenticateUser() {
+        if (user == null) {
+            Log.e("AUTH", "User object is null, cannot authenticate.");
+            return;
+        }
+        
+        hashpswd passHash = new hashpswd(textPassword.getText().toString());
+        String inputPassword = passHash.getHashed();
+        String storedPassword = user.getPassword();
+        String storedEmail = user.getEmail();
+        if (Objects.equals(storedEmail, email) && Objects.equals(storedPassword, inputPassword)) {
+            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+            ToDashboard(null);
+        } else {
+            Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void ToDashboard(View v) {
         Intent Dashboard = new Intent(this, MainActivity.class);
+        if (user != null) {
+            String loggedInEmail = user.getEmail();
+            Dashboard.putExtra("USER_EMAIL", loggedInEmail);
+            
+            // Save email to SharedPreferences for fragments to access
+            getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                    .edit()
+                    .putString("USER_EMAIL", loggedInEmail)
+                    .apply();
+        }
         startActivity(Dashboard);
+        finish();
     }
 
     public void ToSignUp(View v) {
         Intent SignUp = new Intent(this, SignUpActivity.class);
         startActivity(SignUp);
     }
-
-
 
     public void ResetActivity(View v) {
         Intent ResetPage = new Intent(this, LostPasswordActivity.class);

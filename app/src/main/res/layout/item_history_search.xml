@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:background="@color/app_background">
 
     <ImageView
         android:layout_width="24dp"
@@ -21,7 +22,7 @@
         android:layout_weight="1"
         android:layout_marginStart="16dp"
         android:text="Sample Search"
-        android:textColor="@color/black"
+        android:textColor="@color/app_text_primary"
         android:textSize="16sp" />
 
     <ImageView
@@ -30,5 +31,5 @@
         android:layout_height="24dp"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         android:contentDescription="Delete History"
-        android:tint="#888888" />
+        android:tint="@color/app_text_secondary" />
 </LinearLayout>

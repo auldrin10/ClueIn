@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@color/app_background"
     tools:context=".favouritesFragment">
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Favourites"
-        android:textColor="@color/navy"
+        android:textColor="@color/app_text_primary"
         android:textSize="40sp"
         android:textStyle="bold" />
 
@@ -33,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="No favorites yet"
+            android:textColor="@color/app_text_secondary"
             android:visibility="gone"
             android:textSize="18sp" />
     </FrameLayout>
