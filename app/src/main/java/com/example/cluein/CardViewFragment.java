@@ -132,7 +132,7 @@ public class CardViewFragment extends Fragment {
 
         // Show Event Marker
         if (eventLocationName != null && !eventLocationName.isEmpty()) {
-            GeoPoint eventPoint = getGeoPointFromAddress(eventLocationName);
+            GeoPoint eventPoint = getGeoPointFromAddress("Wits " + eventLocationName);
             if (eventPoint != null) {
                 Marker marker = new Marker(map);
                 marker.setPosition(eventPoint);
@@ -165,8 +165,11 @@ public class CardViewFragment extends Fragment {
     }
 
     private void openExternalMap(String location) {
+        // Prepend "Wits " to ensure navigation starts within the correct context
+        String witsLocation = "Wits " + location;
+        
         // google.navigation:q= starts navigation mode specifically
-        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(location));
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(witsLocation));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         
         // Target Google Maps specifically
@@ -176,7 +179,7 @@ public class CardViewFragment extends Fragment {
             startActivity(mapIntent);
         } catch (Exception e) {
             // Fallback for devices without Google Maps (searches for location)
-            Uri searchUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
+            Uri searchUri = Uri.parse("geo:0,0?q=" + Uri.encode(witsLocation));
             Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, searchUri);
             startActivity(fallbackIntent);
         }

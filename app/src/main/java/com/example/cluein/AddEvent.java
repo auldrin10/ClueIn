@@ -453,12 +453,15 @@ public class AddEvent extends Fragment {
         String[] locations = {
                 "Great Hall",
                 "Matrix",
+                "Rugby Stadium",
+                "Soccer Stadium",
+                "Netball",
+                "Mathematical Sciences Building",
                 "Science Stadium",
-                "Wartenweiler Library",
                 "Oppenheimer Life Sciences",
                 "FNB Building",
                 "Flower Hall",
-                "Wits Theatre",
+                "Theatre",
                 "Amic Deck"
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
