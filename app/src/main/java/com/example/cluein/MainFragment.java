@@ -18,12 +18,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,7 +37,7 @@ public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
     private EventAdapter adapter;
     private ProgressBar progressBar;
-    private List<Event> eventList = new ArrayList<>();
+    public List<Event> eventList = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
     private FirebaseFirestore firestore;
 
@@ -54,21 +55,10 @@ public class MainFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         
         progressBar.setVisibility(View.VISIBLE);
+        fetchEvents();
         
         // Start by fetching from Firestore, then try Mockaroo as additional data or fallback
         fetchFirestoreEvents();
-//
-//        Map<String , Object> EventMap = new HashMap<>();
-//        EventMap.put("Event_title", "Event Name");
-//        EventMap.put("Location", "Wits");
-//        EventMap.put("event_date", "04 May 2026");
-//        EventMap.put("Event_time", "17:00");
-//        EventMap.put("price", 100.00); // Saved as Double instead of String
-//        EventMap.put("description", "Event Description");
-//        EventMap.put("is_wits_event", false);
-//        EventMap.put("Image_url", "");
-//        EventMap.put("Event_category", "Sports");
-//        firestore.collection("Events").add(EventMap);
         
         return view;
     }
@@ -106,9 +96,10 @@ public class MainFragment extends Fragment {
                         location,
                         eventDate,
                         description,
-                        price,
+                        price != null ? price : 0.0,
                         id,
-                        isWitsEvent != null ? isWitsEvent : false, category
+                        isWitsEvent != null ? isWitsEvent : false, 
+                        category != null ? category : "General"
                 ));
                 addedAny = true;
             }
@@ -183,8 +174,87 @@ public class MainFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
             
-            if (message != null && !message.isEmpty()) {
+            if (message != null && !message.isEmpty() && getContext() != null) {
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    String getEventsURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/getEvents.php";
+    OkHttpClient client3 = new OkHttpClient();
+
+    public void fetchEvents() {
+        Request request = new Request.Builder()
+                .url(getEventsURL)
+                .get()
+                .build();
+
+        client3.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (getContext() != null) {
+                            Toast.makeText(
+                                    getContext(),
+                                    "Failed to fetch events",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    });
+                }
+                Log.e("EVENT_ERROR", e.toString());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String json = response.body().string();
+                Log.d("EVENT_RESPONSE", json);
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        try {
+                            JSONArray array = new JSONArray(json);
+                            eventList.clear();
+
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj = array.getJSONObject(i);
+                                String event_id = obj.optString("event_id");
+                                String event_name = obj.optString("event_name");
+                                String location = obj.optString("location");
+                                String time = obj.optString("time");
+                                String date = obj.optString("date");
+                                String priceStr = obj.optString("price");
+                                String description = obj.optString("description");
+                                String event_image = obj.optString("event_image");
+
+                                double price = 0.0;
+                                try {
+                                    price = Double.parseDouble(priceStr);
+                                } catch (NumberFormatException e) {
+                                    Log.e("MainFragment", "Invalid price: " + priceStr);
+                                }
+
+//                                Event event = new Event(event_name, event_image, location, date, description, price, event_id, true, "General");
+
+                                eventList.add(new Event(event_name, event_image, location, date, description, price, event_id, true, "General"));
+                            }
+                            adapter.notifyDataSetChanged();
+                            Log.d("TOTAL_EVENTS", String.valueOf(eventList.size()));
+                            progressBar.setVisibility(View.GONE);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            if (getContext() != null) {
+                                Toast.makeText(
+                                        getContext(),
+                                        "JSON Error",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                            }
+                        }
+                    });
+                }
             }
         });
     }
