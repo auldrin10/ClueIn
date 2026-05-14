@@ -53,26 +53,27 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/MyTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:boxCornerRadiusBottomEnd="26dp"
                     app:boxCornerRadiusBottomStart="26dp"
                     app:boxCornerRadiusTopEnd="26dp"
                     app:boxCornerRadiusTopStart="26dp"
-                    app:boxBackgroundMode="outline"
                     app:boxStrokeWidth="2.01dp"
                     app:boxStrokeColor="@color/input_stroke"
                     app:hintTextColor="@color/orange"
                     android:layout_marginTop="20dp"
                     >
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
                         android:id="@+id/eventLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/baseline_add_location_24"
                         android:hint="Event location"
+                        android:inputType="none"
                         android:textColor="@color/app_text_primary"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>

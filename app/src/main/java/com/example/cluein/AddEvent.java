@@ -25,6 +25,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -63,7 +65,8 @@ import okhttp3.Response;
 
 public class AddEvent extends Fragment {
     OkHttpClient Eventclient = new OkHttpClient();
-    private EditText eventName, eventLocation, eventCategory, eventDate, eventTime, eventPrice, eventDescription;
+    private EditText eventName, eventCategory, eventDate, eventTime, eventPrice, eventDescription;
+    private AutoCompleteTextView eventLocation;
     private Button addEvent, clearForm, pickDate, pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
@@ -107,6 +110,7 @@ public class AddEvent extends Fragment {
         mainFormContainer = view.findViewById(R.id.mainFormContainer);
         eventName = view.findViewById(R.id.eventName);
         eventLocation = view.findViewById(R.id.eventLocation);
+        setupLocationDropdown();
         eventDate = view.findViewById(R.id.eventDate);
         eventTime = view.findViewById(R.id.eventTime);
         eventCategory = view.findViewById(R.id.eventCategory);
@@ -443,5 +447,21 @@ public class AddEvent extends Fragment {
         selectImage.setText("Select Image");
         addEvent.setEnabled(true);
         addEvent.setBackgroundResource(R.drawable.sign_up_button);
+    }
+
+    private void setupLocationDropdown() {
+        String[] locations = {
+                "Great Hall",
+                "Matrix",
+                "Science Stadium",
+                "Wartenweiler Library",
+                "Oppenheimer Life Sciences",
+                "FNB Building",
+                "Flower Hall",
+                "Wits Theatre",
+                "Amic Deck"
+        };
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
+        eventLocation.setAdapter(adapter);
     }
 }
