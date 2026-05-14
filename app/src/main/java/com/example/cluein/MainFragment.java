@@ -55,7 +55,7 @@ public class MainFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         
         progressBar.setVisibility(View.VISIBLE);
-//        fetchEvents();
+        fetchEvents();
         
         // Start by fetching from Firestore, then try Mockaroo as additional data or fallback
         fetchFirestoreEvents();
@@ -208,6 +208,7 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.body() == null) return;
                 String json = response.body().string();
                 Log.d("EVENT_RESPONSE", json);
 
@@ -222,11 +223,10 @@ public class MainFragment extends Fragment {
                                 String event_id = obj.optString("event_id");
                                 String event_name = obj.optString("event_name");
                                 String location = obj.optString("location");
-                                String time = obj.optString("time");
                                 String date = obj.optString("date");
                                 String priceStr = obj.optString("price");
                                 String description = obj.optString("description");
-                                String event_image = obj.optString("event_image");
+                                String eventImage = obj.optString("event_image");
 
                                 double price = 0.0;
                                 try {
@@ -235,9 +235,7 @@ public class MainFragment extends Fragment {
                                     Log.e("MainFragment", "Invalid price: " + priceStr);
                                 }
 
-//                                Event event = new Event(event_name, event_image, location, date, description, price, event_id, true, "General");
-
-                                eventList.add(new Event(event_name, event_image, location, date, description, price, event_id, true, "General"));
+                                eventList.add(new Event(event_name, eventImage, location, date, description, price, event_id, true, "General"));
                             }
                             adapter.notifyDataSetChanged();
                             Log.d("TOTAL_EVENTS", String.valueOf(eventList.size()));
