@@ -1,5 +1,7 @@
 package com.example.cluein;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,7 @@ import android.widget.TextView;
 
 public class ProfileFragment extends Fragment {
     private TextView tvProfileUserName;
-    public TextView username;
+    private TextView tvDisplayName;
     private RelativeLayout btnAccount;
     private RelativeLayout btnLogout;
     private LinearLayout updatePic;
@@ -24,7 +26,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -37,42 +38,31 @@ public class ProfileFragment extends Fragment {
         btnLogout = view.findViewById(R.id.btnLogout);
         updatePic = view.findViewById(R.id.updatePic);
         tvProfileUserName = view.findViewById(R.id.profileUserName);
-        username = view.findViewById(R.id.profileName);
+        // Assuming there is a TextView for the full name next to initials
+        tvDisplayName = view.findViewById(R.id.tv_display_name); 
 
-        User user = LoginActivity.user;
-        if (user != null) {
-            username.setText(user.getFirstName() + " " + user.getLastName());
-        }else{
-            username.setText("First name Last name");
-        }
+        // Load and Handle Initials logic
+        setupProfileData();
 
-        // Handle Initials logic
-        setupInitials();
-
-        // 1. Tapping the Profile Header (Auldrin Matlala) takes you to Account Details
-        updatePic.setOnClickListener(v -> {
-            Fragment fragment = new InsideAccount();
-            navigateTo(fragment);
-        });
-
-        // 2. Tapping the "Account" row (or the arrow) takes you to Account Settings (UpdateProfilePic)
-        btnAccount.setOnClickListener(v -> {
-            Fragment fragment = new UpdateProfilePic();
-            navigateTo(fragment);
-        });
-
-        // 3. Tapping the "Log out" row shows the confirmation dialog
+        updatePic.setOnClickListener(v -> navigateTo(new InsideAccount()));
+        btnAccount.setOnClickListener(v -> navigateTo(new UpdateProfilePic()));
+        
         btnLogout.setOnClickListener(v -> {
             LogoutDialog dialog = new LogoutDialog();
             dialog.show(getParentFragmentManager(), "LogoutDialog");
         });
     }
 
-    private void setupInitials() {
-        // Hardcoded or fetched name
-        String name = "";
-        // Note: You might want to get this from a User object or Firebase later
+    private void setupProfileData() {
+        // Fetch name from SharedPreferences
+        SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String name = prefs.getString("user_name", "User Name");
         
+        if (tvDisplayName != null) {
+            tvDisplayName.setText(name);
+        }
+
+        // Generate Initials
         String[] splitted = name.split(" ");
         StringBuilder initials = new StringBuilder();
 

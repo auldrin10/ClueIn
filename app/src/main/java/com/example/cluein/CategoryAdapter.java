@@ -1,6 +1,5 @@
 package com.example.cluein;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +12,12 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<Category> categoryList;
-    private OnCategoryClickListener listener; // The "Messenger"
+    private OnCategoryClickListener listener;
 
-    // It acts as a bridge so the Activity knows when an icon is clicked.
     public interface OnCategoryClickListener {
         void onCategoryClick(Category category);
     }
 
-    // 2. CONSTRUCTOR: Now takes the list AND the listener
     public CategoryAdapter(List<Category> categoryList, OnCategoryClickListener listener) {
         this.categoryList = categoryList;
         this.listener = listener;
@@ -29,18 +26,29 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_category, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
         return new CategoryViewHolder(view);
     }
- String name;
+
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categoryList.get(position);
         holder.tvName.setText(category.getName());
         holder.imgIcon.setImageResource(category.getIconResId());
 
-        // 3. THE CLICK LOGIC: When a user taps "Coding", it calls the listener
         holder.itemView.setOnClickListener(v -> {
+            // Micro-interaction: scale down then back up
+            holder.imgIcon.animate()
+                    .scaleX(0.9f)
+                    .scaleY(0.9f)
+                    .setDuration(100)
+                    .withEndAction(() -> 
+                        holder.imgIcon.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(100)
+                    );
+
             if (listener != null) {
                 listener.onCategoryClick(category);
             }
@@ -58,7 +66,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         public CategoryViewHolder(@NonNull View view) {
             super(view);
-            tvName = view.findViewById(R.id.tv_header);
+            tvName = view.findViewById(R.id.tv_category_name);
             imgIcon = view.findViewById(R.id.img_category_icon);
         }
     }

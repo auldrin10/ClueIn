@@ -277,12 +277,11 @@ public class AddEvent extends Fragment {
 
     private void checkUserAuthorization() {
         String userEmail = "";
-        if (getContext() != null) {
-            userEmail = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-                    .getString("USER_EMAIL", "");
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            userEmail = getActivity().getIntent().getStringExtra("USER_EMAIL");
         }
 
-        if (userEmail.isEmpty() || !authorizedEmails.contains(userEmail.toLowerCase())) {
+        if (userEmail == null || !authorizedEmails.contains(userEmail.toLowerCase())) {
             // NOT AUTHORIZED
             if (mainFormContainer != null) {
                 mainFormContainer.setVisibility(View.GONE);
