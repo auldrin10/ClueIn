@@ -19,8 +19,19 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class SearchBarFragment extends Fragment {
 
@@ -34,6 +45,8 @@ public class SearchBarFragment extends Fragment {
     private List<Event> allEvents = new ArrayList<>();
     private List<Event> filteredList = new ArrayList<>();
     private FirebaseFirestore firestore;
+    private OkHttpClient client = new OkHttpClient();
+    private String getEventsURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/getEvents.php";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,8 +145,13 @@ public class SearchBarFragment extends Fragment {
     }
 
     private void fetchEvents() {
+        allEvents.clear();
+        fetchFirestoreEvents();
+        fetchPhpEvents();
+    }
+
+    private void fetchFirestoreEvents() {
         firestore.collection("Events").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            allEvents.clear();
             for (DocumentSnapshot document : queryDocumentSnapshots) {
                 String id = document.getId();
                 String eventTitle = document.getString("Event_title");
@@ -169,9 +187,69 @@ public class SearchBarFragment extends Fragment {
                         category != null ? category : ""
                 ));
             }
+            refreshFilterIfNotEmpty();
         }).addOnFailureListener(e -> {
-            Log.e("SearchBarFragment", "Error fetching events", e);
+            Log.e("SearchBarFragment", "Error fetching Firestore events", e);
         });
+    }
+
+    private void fetchPhpEvents() {
+        Request request = new Request.Builder()
+                .url(getEventsURL)
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("SearchBarFragment", "Failed to fetch PHP events", e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.body() == null) return;
+                String json = response.body().string();
+                
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        try {
+                            JSONArray array = new JSONArray(json);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj = array.getJSONObject(i);
+                                String event_id = obj.optString("event_id");
+                                String event_name = obj.optString("event_name");
+                                String location = obj.optString("location");
+                                String date = obj.optString("date");
+                                String priceStr = obj.optString("price");
+                                String description = obj.optString("description");
+                                String eventImage = obj.optString("event_image");
+
+                                double price = 0.0;
+                                try {
+                                    price = Double.parseDouble(priceStr);
+                                } catch (NumberFormatException e) {
+                                    Log.e("SearchBarFragment", "Invalid price: " + priceStr);
+                                }
+
+                                allEvents.add(new Event(event_name, eventImage, location, date, description, price, event_id, true, "General"));
+                            }
+                            refreshFilterIfNotEmpty();
+                        } catch (JSONException e) {
+                            Log.e("SearchBarFragment", "JSON Error in PHP fetch", e);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void refreshFilterIfNotEmpty() {
+        if (searchEditText != null) {
+            String query = searchEditText.getText().toString().trim();
+            if (!query.isEmpty()) {
+                filterEvents(query);
+            }
+        }
     }
 
     private void filterEvents(String query) {

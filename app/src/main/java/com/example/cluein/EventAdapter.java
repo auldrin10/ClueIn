@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,11 +57,48 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.tvDate.setText(event.getEventDate());
         holder.tvPrice.setText("R" + String.valueOf(event.getPrice()));
 
-        Glide.with(context)
-                .load(event.getImageURL())
-                .centerCrop()
-                .placeholder(R.drawable.dribbble_logo)
-                .into(holder.imgEvent);
+        String imageURL = event.getImageURL();
+        if (imageURL != null && !imageURL.isEmpty()) {
+            if (imageURL.startsWith("http") || imageURL.startsWith("content://")) {
+                Glide.with(context)
+                        .load(imageURL)
+                        .centerCrop()
+                        .placeholder(R.drawable.dribbble_logo)
+                        .error(R.drawable.dribbble_logo)
+                        .into(holder.imgEvent);
+            } else if (imageURL.startsWith("\\x")) {
+                // Postgres Hex format
+                try {
+                    byte[] bytes = hexToByteArray(imageURL.substring(2));
+                    // Check if it's actually a URI string encoded as hex
+                    String decodedStr = new String(bytes);
+                    if (decodedStr.startsWith("content://") || decodedStr.startsWith("http")) {
+                        Glide.with(context).load(decodedStr).centerCrop().placeholder(R.drawable.dribbble_logo).error(R.drawable.dribbble_logo).into(holder.imgEvent);
+                    } else {
+                        Glide.with(context).load(bytes).centerCrop().placeholder(R.drawable.dribbble_logo).error(R.drawable.dribbble_logo).into(holder.imgEvent);
+                    }
+                } catch (Exception e) {
+                    Log.e("EventAdapter", "Error decoding hex image", e);
+                    holder.imgEvent.setImageResource(R.drawable.dribbble_logo);
+                }
+            } else {
+                // Assume Base64
+                try {
+                    byte[] imageBytes = Base64.decode(imageURL, Base64.DEFAULT);
+                    Glide.with(context)
+                            .load(imageBytes)
+                            .centerCrop()
+                            .placeholder(R.drawable.dribbble_logo)
+                            .error(R.drawable.dribbble_logo)
+                            .into(holder.imgEvent);
+                } catch (Exception e) {
+                    Log.e("EventAdapter", "Error decoding base64 image", e);
+                    holder.imgEvent.setImageResource(R.drawable.dribbble_logo);
+                }
+            }
+        } else {
+            holder.imgEvent.setImageResource(R.drawable.dribbble_logo);
+        }
 
         holder.tvDescription.setVisibility(View.GONE);
         holder.btnCloseExpand.setVisibility(View.GONE);
@@ -106,6 +144,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             notifyItemRangeChanged(position, eventList.size());
             Toast.makeText(context, "Removed from Favorites", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private byte[] hexToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                                 + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 
     private void scheduleAllReminders(Event event) {

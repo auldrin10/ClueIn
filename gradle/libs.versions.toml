@@ -17,6 +17,7 @@ playServicesMaps3d = "0.2.0"
 playServicesAuth = "21.3.0"
 firebaseAuth = "23.2.1"
 facebookLogin = "18.2.3"
+firebaseCrashlyticsBuildtools = "3.0.7"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -35,6 +36,7 @@ play-services-maps3d = { group = "com.google.android.gms", name = "play-services
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 facebook-login = { group = "com.facebook.android", name = "facebook-login", version.ref = "facebookLogin" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

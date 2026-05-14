@@ -51,9 +51,10 @@ dependencies {
     implementation(libs.facebook.login)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps3d)
+    implementation(libs.firebase.crashlytics.buildtools)
 
 
-    
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

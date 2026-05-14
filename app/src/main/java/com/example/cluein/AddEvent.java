@@ -9,6 +9,8 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +49,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -185,53 +190,7 @@ public class AddEvent extends Fragment {
                         Toast.makeText(requireContext(), "Wrong input!", Toast.LENGTH_LONG).show();
                         return;
                     }
-
-                    double finalDblprice = dblprice;
-                    db.collection("Events")
-                            .whereEqualTo("Event_title", strEventName)
-                            .whereEqualTo("Location", strEventLocation)
-                            .whereEqualTo("Event_category", strEventCategory)
-                            .whereEqualTo("event_date", strEventDate)
-                            .whereEqualTo("Event_time", strEventTime)
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    if (!queryDocumentSnapshots.isEmpty()) {
-                                        showEventError();
-                                        addEvent.setBackgroundResource(R.drawable.gray_rounded_button);
-                                        addEvent.setEnabled(false);
-                                    } else {
-                                        Map<String, Object> eventMap = new HashMap<>();
-                                        eventMap.put("Event_title", strEventName);
-                                        eventMap.put("Location", strEventLocation);
-                                        eventMap.put("Event_category", strEventCategory);
-                                        eventMap.put("event_date", strEventDate);
-                                        eventMap.put("Event_time", strEventTime);
-                                        eventMap.put("price", finalDblprice);
-                                        eventMap.put("description", strEventDescription);
-                                        eventMap.put("is_wits_event", false);
-                                        eventMap.put("Image_url", imageUrl != null ? imageUrl.toString() : "");
-
-                                        db.collection("Events")
-                                                .add(eventMap)
-                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentReference documentReference) {
-                                                        scheduleNotification(documentReference.getId(), strEventName);
-                                                        post();
-                                                        Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    }
-                                }
-                            });
+                    post();
                 }
             }
         });
@@ -323,6 +282,39 @@ public class AddEvent extends Fragment {
 
     String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
 
+    private String uriToBase64(Uri uri) {
+        try {
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            if (bitmap == null) return "";
+
+            // Resize image to keep Base64 string at a reasonable length
+            int maxWidth = 600;
+            int maxHeight = 600;
+            if (bitmap.getWidth() > maxWidth || bitmap.getHeight() > maxHeight) {
+                float aspectRatio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+                int newWidth, newHeight;
+                if (aspectRatio > 1) {
+                    newWidth = maxWidth;
+                    newHeight = (int) (maxWidth / aspectRatio);
+                } else {
+                    newHeight = maxHeight;
+                    newWidth = (int) (maxHeight * aspectRatio);
+                }
+                bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            // Use JPEG compression to further reduce size
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStream);
+            byte[] byteArray = outputStream.toByteArray();
+            return Base64.encodeToString(byteArray, Base64.NO_WRAP);
+        } catch (IOException e) {
+            Log.e(TAG, "Error converting URI to Base64", e);
+            return "";
+        }
+    }
+
     public void post() {
         String eName = eventName.getText().toString().trim();
         String eLoc = eventLocation.getText().toString().trim();
@@ -331,7 +323,7 @@ public class AddEvent extends Fragment {
         String eCat = eventCategory.getText().toString().trim();
         String ePrice = eventPrice.getText().toString().trim();
         String eDesc = eventDescription.getText().toString().trim();
-        String eImage = imageUrl != null ? imageUrl.toString() : "";
+        String eImage = imageUrl != null ? uriToBase64(imageUrl) : "";
 
         RequestBody body = new FormBody.Builder()
                 .add("event_name", eName)
@@ -363,8 +355,11 @@ public class AddEvent extends Fragment {
                             JSONObject jsonObject = new JSONObject(responseData);
                             String message = jsonObject.optString("message", "Success");
                             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                            if (message.toLowerCase().contains("successfully")) {
+                                clearFormFields();
+                            }
                         } catch (JSONException e) {
-                            Log.e(TAG, "JSON parse error", e);
+                            Log.e(TAG, "JSON parse error: " + responseData);
                         }
                     });
                 }
@@ -445,10 +440,16 @@ public class AddEvent extends Fragment {
         eventPrice.setText("");
         eventDescription.setText("");
         imageUrl = null;
-        imageView.setVisibility(View.GONE);
-        selectImage.setText("Select Image");
-        addEvent.setEnabled(true);
-        addEvent.setBackgroundResource(R.drawable.sign_up_button);
+        if (imageView != null) {
+            imageView.setVisibility(View.GONE);
+        }
+        if (selectImage != null) {
+            selectImage.setText("Select Image");
+        }
+        if (addEvent != null) {
+            addEvent.setEnabled(true);
+            addEvent.setBackgroundResource(R.drawable.sign_up_button);
+        }
     }
 
     private void setupLocationDropdown() {
@@ -464,7 +465,9 @@ public class AddEvent extends Fragment {
                 "FNB Building",
                 "Flower Hall",
                 "Theatre",
-                "Amic Deck"
+                "Amic Deck",
+                "Wits Art Musium",
+                "Online"
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
         eventLocation.setAdapter(adapter);
