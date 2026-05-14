@@ -198,22 +198,34 @@
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/btnGoogle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="15dp"
-                android:background="@drawable/google" />
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/google" />
 
             <ImageView
+                android:id="@+id/btnInstagram"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="15dp"
-                android:background="@drawable/instagram" />
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/instagram" />
 
             <ImageView
+                android:id="@+id/btnFacebook"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="15dp"
-                android:background="@drawable/facebook" />
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/facebook" />
         </LinearLayout>
 
         <!-- Footer Section (Sign Up) -->
