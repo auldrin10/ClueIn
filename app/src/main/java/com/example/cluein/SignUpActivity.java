@@ -41,7 +41,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SignUpActivity extends AppCompatActivity {
-    private String name;
+    public static String NewUserEmail;
     String signupURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/users/signup.php";
     OkHttpClient userclient = new OkHttpClient();
 
@@ -78,6 +78,7 @@ public class SignUpActivity extends AppCompatActivity {
         TextView textSpecialChar = findViewById(R.id.chckBoxSpecialChar);
         Button btnSignUp = findViewById(R.id.btnSignUp);
         View dot1 = findViewById(R.id.dot1);
+
 
         /* Password only appears when users focuses on the inputbox */
         password.setOnFocusChangeListener((v, hasFocus) -> {
@@ -234,7 +235,7 @@ public class SignUpActivity extends AppCompatActivity {
         last_name = ((EditText) findViewById(R.id.txtInptUserLname)).getText().toString();
         email = ((EditText) findViewById(R.id.txtInptEmail)).getText().toString();
         password = ((EditText) findViewById(R.id.txtInptPassword)).getText().toString();
-
+        NewUserEmail = email;
         hashpswd passHash = new hashpswd(password);
         String hashedPassword = passHash.getHashed();
 
