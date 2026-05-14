@@ -26,7 +26,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the correct small item layout instead of the whole activity
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
         return new CategoryViewHolder(view);
     }
@@ -38,6 +37,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.imgIcon.setImageResource(category.getIconResId());
 
         holder.itemView.setOnClickListener(v -> {
+            // Micro-interaction: scale down then back up
+            holder.imgIcon.animate()
+                    .scaleX(0.9f)
+                    .scaleY(0.9f)
+                    .setDuration(100)
+                    .withEndAction(() -> 
+                        holder.imgIcon.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(100)
+                    );
+
             if (listener != null) {
                 listener.onCategoryClick(category);
             }
@@ -55,8 +66,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         public CategoryViewHolder(@NonNull View view) {
             super(view);
-            // Ensure these IDs exist in item_category.xml
-            tvName = view.findViewById(R.id.tv_header);
+            tvName = view.findViewById(R.id.tv_category_name);
             imgIcon = view.findViewById(R.id.img_category_icon);
         }
     }

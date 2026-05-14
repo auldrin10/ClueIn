@@ -11,11 +11,11 @@
         android:id="@+id/category_card"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:cardBackgroundColor="#0A1929"
+        app:cardBackgroundColor="@color/navy"
         app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        app:strokeColor="#FF9800"
-        app:strokeWidth="0dp">
+        app:cardElevation="10dp"
+        app:strokeColor="@color/orange"
+        app:strokeWidth="2dp">
 
         <ImageView
             android:id="@+id/img_category_icon"
@@ -23,7 +23,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:contentDescription="@null"
-            app:tint="#FF9800" />
+            app:tint="@color/orange" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="#0A1929"
+        android:textColor="@color/app_text_primary"
         android:textSize="14sp"
         android:textStyle="bold" />
 </LinearLayout>

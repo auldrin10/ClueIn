@@ -35,7 +35,7 @@ public class CategoryActivity extends AppCompatActivity {
         });
 
         // 1. Setup RecyclerView
-        //recyclerView = findViewById(R.id.rv_categories);
+        recyclerView = findViewById(R.id.rv_categories);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         // 2. Prepare Data
@@ -51,7 +51,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         // 3. Set Adapter
         adapter = new CategoryAdapter(categoryList, category -> {
-            // Basic selection logic if needed
+            // Micro-interaction logic is handled inside the Adapter
         });
         recyclerView.setAdapter(adapter);
 
