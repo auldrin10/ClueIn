@@ -74,6 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> googleSignInLauncher;
     private CallbackManager mCallbackManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
