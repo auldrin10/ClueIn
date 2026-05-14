@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 public class ProfileFragment extends Fragment {
     private TextView tvProfileUserName;
+    public TextView username;
     private RelativeLayout btnAccount;
     private RelativeLayout btnLogout;
     private LinearLayout updatePic;
@@ -36,6 +37,14 @@ public class ProfileFragment extends Fragment {
         btnLogout = view.findViewById(R.id.btnLogout);
         updatePic = view.findViewById(R.id.updatePic);
         tvProfileUserName = view.findViewById(R.id.profileUserName);
+        username = view.findViewById(R.id.profileName);
+
+        User user = LoginActivity.user;
+        if (user != null) {
+            username.setText(user.getFirstName() + " " + user.getLastName());
+        }else{
+            username.setText("First name Last name");
+        }
 
         // Handle Initials logic
         setupInitials();

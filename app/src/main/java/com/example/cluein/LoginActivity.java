@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText textPassword;
     TextView display;
     TextInputLayout emailLayout, pswLayout;
-    public User user;
+    public static User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

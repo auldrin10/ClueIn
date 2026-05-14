@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp"
+    android:padding="20dp"
     android:gravity="center"
     android:background="@drawable/custom_dialog_bg">
 
@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You are NOT authorised to create an event."
+        android:text="You are NOT authorised to post an event."
         android:textSize="16sp"
         android:textColor="@color/app_text_secondary"
         android:gravity="center"
@@ -34,10 +34,12 @@
     <Button
         android:id="@+id/btnOk"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="61dp"
         android:text="OK"
         android:background="@drawable/sign_up_button"
-        android:textColor="@color/white"
+        android:textColor="@color/navy"
+        android:textSize="25sp"
+        android:textAllCaps="false"
         android:textStyle="bold" />
 
 </LinearLayout>
