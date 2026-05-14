@@ -221,6 +221,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             if (isFormValid) {
                 post();
+                ToCategory(v);
             }
         });
 
