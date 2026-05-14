@@ -12,6 +12,8 @@ cardview = "1.0.0"
 googleGmsGoogleServices = "4.4.4"
 firebaseFirestore = "26.2.0"
 firebaseStorage = "22.0.1"
+constraintlayoutVersion = "2.2.1"
+playServicesMaps3d = "0.2.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,6 +27,8 @@ cardview-v7 = { group = "com.android.support", name = "cardview-v7", version.ref
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
+play-services-maps3d = { group = "com.google.android.gms", name = "play-services-maps3d", version.ref = "playServicesMaps3d" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

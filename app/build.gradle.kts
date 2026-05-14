@@ -46,6 +46,8 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.maps3d)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
