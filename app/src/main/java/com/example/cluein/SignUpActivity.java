@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
     private CallbackManager mCallbackManager;
-    int themba=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

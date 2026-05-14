@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,18 +23,21 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class CardViewFragment extends Fragment implements OnMapReadyCallback {
+public class CardViewFragment extends Fragment {
 
     private static final String ARG_TITLE = "event_title";
     private static final String ARG_LOCATION = "event_location";
@@ -42,8 +46,7 @@ public class CardViewFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_IMAGE_URL = "event_image_url";
     private static final String ARG_DESCRIPTION = "event_description";
 
-    private MapView mapView;
-    private GoogleMap googleMap;
+    private MapView map = null; 
     private String eventLocationName;
 
     public static CardViewFragment newInstance(Event event) {
@@ -62,6 +65,10 @@ public class CardViewFragment extends Fragment implements OnMapReadyCallback {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // REQUIRED: Initialize osmdroid configuration
+        Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
+        Configuration.getInstance().setUserAgentValue(requireContext().getPackageName());
+
         View view = inflater.inflate(R.layout.fragment_card_view, container, false);
 
         ImageView imgEvent = view.findViewById(R.id.frag_img_event);
@@ -72,12 +79,14 @@ public class CardViewFragment extends Fragment implements OnMapReadyCallback {
         TextView tvDescription = view.findViewById(R.id.frag_tv_description);
         ImageView btnClose = view.findViewById(R.id.btn_close_fragment);
         LinearLayout layoutLocation = view.findViewById(R.id.layout_location);
-        mapView = view.findViewById(R.id.mapView);
+
+        // This correctly finds the <org.osmdroid.views.MapView> in your XML
+        map = view.findViewById(R.id.map);
 
         if (getArguments() != null) {
             String title = getArguments().getString(ARG_TITLE);
             eventLocationName = getArguments().getString(ARG_LOCATION);
-            
+
             tvTitle.setText(title);
             tvLocation.setText(eventLocationName);
             tvDate.setText(getArguments().getString(ARG_DATE));
@@ -92,104 +101,108 @@ public class CardViewFragment extends Fragment implements OnMapReadyCallback {
 
             layoutLocation.setOnClickListener(v -> {
                 if (eventLocationName != null && !eventLocationName.isEmpty()) {
-                    openMap(eventLocationName);
-                } else {
-                    Toast.makeText(getContext(), "Location not available", Toast.LENGTH_SHORT).show();
+                    openExternalMap(eventLocationName);
                 }
             });
         }
 
-        // Initialize Map
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        setupMap();
 
-        btnClose.setOnClickListener(v -> {
-            if (getFragmentManager() != null) {
-                getFragmentManager().beginTransaction().remove(CardViewFragment.this).commit();
-            }
-        });
-
-        // Close when clicking outside the card (on the dim background)
-        view.setOnClickListener(v -> {
-            if (getFragmentManager() != null) {
-                getFragmentManager().beginTransaction().remove(CardViewFragment.this).commit();
-            }
-        });
+        btnClose.setOnClickListener(v -> closeFragment());
+        view.setOnClickListener(v -> closeFragment());
 
         return view;
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap map) {
-        googleMap = map;
-        
+    private void setupMap() {
+        if (map == null) return;
+
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setMultiTouchControls(true);
+
+        IMapController mapController = map.getController();
+        mapController.setZoom(17.0);
+
+        // Show User Location
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            googleMap.setMyLocationEnabled(true);
+            MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), map);
+            locationOverlay.enableMyLocation();
+            map.getOverlays().add(locationOverlay);
         }
 
+        // Show Event Marker
         if (eventLocationName != null && !eventLocationName.isEmpty()) {
-            LatLng latLng = getLatLngFromAddress(eventLocationName);
-            if (latLng != null) {
-                googleMap.addMarker(new MarkerOptions().position(latLng).title(eventLocationName));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+            GeoPoint eventPoint = getGeoPointFromAddress(eventLocationName);
+            if (eventPoint != null) {
+                Marker marker = new Marker(map);
+                marker.setPosition(eventPoint);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                marker.setTitle(eventLocationName);
+                
+                // Add the click listener to the marker here
+                marker.setOnMarkerClickListener((m, mapView) -> {
+                    openExternalMap(eventLocationName);
+                    return true;
+                });
+
+                map.getOverlays().add(marker);
+                mapController.setCenter(eventPoint);
             }
         }
     }
 
-    private LatLng getLatLngFromAddress(String address) {
+    private GeoPoint getGeoPointFromAddress(String address) {
         Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocationName(address, 1);
             if (addresses != null && !addresses.isEmpty()) {
-                Address location = addresses.get(0);
-                return new LatLng(location.getLatitude(), location.getLongitude());
+                return new GeoPoint(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
             }
         } catch (IOException e) {
-            Log.e("CardViewFragment", "Geocoding error: ", e);
+            Log.e("CardViewFragment", "Geocoding error", e);
         }
         return null;
     }
 
-    private void openMap(String location) {
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
+    private void openExternalMap(String location) {
+        // google.navigation:q= starts navigation mode specifically
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(location));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        
+        // Target Google Maps specifically
         mapIntent.setPackage("com.google.android.apps.maps");
         
-        if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+        try {
             startActivity(mapIntent);
-        } else {
-            Intent genericMapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            startActivity(genericMapIntent);
+        } catch (Exception e) {
+            // Fallback for devices without Google Maps (searches for location)
+            Uri searchUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
+            Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, searchUri);
+            startActivity(fallbackIntent);
+        }
+    }
+
+    private void closeFragment() {
+        if (getFragmentManager() != null) {
+            getFragmentManager().beginTransaction().remove(this).commit();
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        if (map != null) map.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if (map != null) map.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+        if (map != null) map.onDetach();
     }
 }
