@@ -2,6 +2,7 @@ package com.example.cluein;
 
 import static android.service.controls.ControlsProviderService.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -56,7 +57,6 @@ public class SignUpActivity extends AppCompatActivity {
             return insets;
         });
 
-        /* Instances for input fields and layouts */
         TextInputLayout nameLayout = findViewById(R.id.fnameLayout);
         TextInputEditText nameInput = findViewById(R.id.txtInptUserFname);
         TextInputLayout emailLayout = findViewById(R.id.emailLayout);
@@ -65,7 +65,6 @@ public class SignUpActivity extends AppCompatActivity {
         EditText password = findViewById(R.id.txtInptPassword);
         LinearLayout validationLayout = findViewById(R.id.validationLayout);
 
-        /* Instance for imageview and textview */
         ImageView iconLength = findViewById(R.id.iconLength);
         TextView textLength = findViewById(R.id.chckBoxEightChars);
         ImageView iconNum = findViewById(R.id.iconAtLeastNum);
@@ -79,7 +78,6 @@ public class SignUpActivity extends AppCompatActivity {
         Button btnSignUp = findViewById(R.id.btnSignUp);
         View dot1 = findViewById(R.id.dot1);
 
-        /* Password only appears when users focuses on the inputbox */
         password.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 validationLayout.setVisibility(View.VISIBLE);
@@ -88,50 +86,30 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        /* TextWatchers to clear errors and show ticks while typing */
         nameInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 nameLayout.setError(null);
                 nameLayout.setErrorEnabled(false);
-                if (s.length() > 0) {
-                    nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_account_circle_24, 0);
-                } else {
-                    nameInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_account_circle_24, 0);
-                }
             }
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
         emailInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 emailLayout.setError(null);
                 emailLayout.setErrorEnabled(false);
-                if (s.length() > 0 && android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
-                    emailInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_circle_green, 0);
-                } else {
-                    emailInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_email_24, 0);
-                }
             }
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
         password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String pass = s.toString();
                 boolean isValid = true;
 
-                // Rule 1: Length
                 if (pass.length() >= 8) {
                     iconLength.setImageResource(R.drawable.ic_check_circle_green);
                     textLength.setTextColor(Color.GREEN);
@@ -141,7 +119,6 @@ public class SignUpActivity extends AppCompatActivity {
                     isValid = false;
                 }
 
-                // Rule 2: Numbers
                 if (pass.matches(".*[0-9].*")) {
                     iconNum.setImageResource(R.drawable.ic_check_circle_green);
                     textNum.setTextColor(Color.GREEN);
@@ -151,7 +128,6 @@ public class SignUpActivity extends AppCompatActivity {
                     isValid = false;
                 }
 
-                // Rule 3: Lowercase
                 if (pass.matches(".*[a-z].*")) {
                     iconLowerCase.setImageResource(R.drawable.ic_check_circle_green);
                     textLowerCase.setTextColor(Color.GREEN);
@@ -161,7 +137,6 @@ public class SignUpActivity extends AppCompatActivity {
                     isValid = false;
                 }
 
-                // Rule 4: Uppercase
                 if (pass.matches(".*[A-Z].*")) {
                     iconUpperCase.setImageResource(R.drawable.ic_check_circle_green);
                     textUpperCase.setTextColor(Color.GREEN);
@@ -171,7 +146,6 @@ public class SignUpActivity extends AppCompatActivity {
                     isValid = false;
                 }
 
-                // Rule 5: Special Character
                 if (pass.matches(".*[@#$%^&*+=!].*")) {
                     iconSpecialChar.setImageResource(R.drawable.ic_check_circle_green);
                     textSpecialChar.setTextColor(Color.GREEN);
@@ -183,44 +157,43 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if (!isValid) {
                     validationLayout.setVisibility(View.VISIBLE);
-                    passwordLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
                     passwordLayout.setError("Password is weak");
-                    passwordLayout.setErrorIconDrawable(null);
                 } else {
                     validationLayout.setVisibility(View.GONE);
-                    passwordLayout.setError("Password is strong");
-                    passwordLayout.setErrorIconDrawable(null);
+                    passwordLayout.setError(null);
                 }
             }
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
         btnSignUp.setOnClickListener(v -> {
             boolean isFormValid = true;
 
             if (nameInput.getText().toString().isEmpty()) {
-                nameLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
                 nameLayout.setError("Full Name is required");
                 isFormValid = false;
             }
 
-            if (emailInput.getText().toString().isEmpty()) {
-                emailLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
+            String email = emailInput.getText().toString();
+            if (email.isEmpty()) {
                 emailLayout.setError("Email Address is required");
                 isFormValid = false;
             }
 
             if (password.getText().toString().isEmpty()) {
-                passwordLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
                 passwordLayout.setError("Password is required");
-                isFormValid = false;
-            } else if (passwordLayout.getError() != null && passwordLayout.getError().equals("Password is weak")) {
                 isFormValid = false;
             }
 
             if (isFormValid) {
+                // Save email to SharedPreferences so MainActivity knows the user
+                getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                        .edit()
+                        .putString("USER_EMAIL", email)
+                        .apply();
+                
                 post();
+                ToCategory(v);
             }
         });
 
@@ -228,11 +201,10 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void post() {
-        String first_name, last_name, email, password;
-        first_name = ((EditText) findViewById(R.id.txtInptUserFname)).getText().toString();
-        last_name = ((EditText) findViewById(R.id.txtInptUserLname)).getText().toString();
-        email = ((EditText) findViewById(R.id.txtInptEmail)).getText().toString();
-        password = ((EditText) findViewById(R.id.txtInptPassword)).getText().toString();
+        String first_name = ((EditText) findViewById(R.id.txtInptUserFname)).getText().toString();
+        String last_name = ((EditText) findViewById(R.id.txtInptUserLname)).getText().toString();
+        String email = ((EditText) findViewById(R.id.txtInptEmail)).getText().toString();
+        String password = ((EditText) findViewById(R.id.txtInptPassword)).getText().toString();
 
         hashpswd passHash = new hashpswd(password);
         String hashedPassword = passHash.getHashed();
@@ -244,24 +216,17 @@ public class SignUpActivity extends AppCompatActivity {
                 .add("password", hashedPassword)
                 .build();
 
-        Request request = new Request.Builder()
-                .url(signupURL)
-                .post(body)
-                .build();
+        Request request = new Request.Builder().url(signupURL).post(body).build();
 
         userclient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(SignUpActivity.this, "Network Error", Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> Toast.makeText(SignUpActivity.this, "Network Error", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 final String responseData = response.body().string();
-                Log.d("PHP_RESPONSE", responseData);
-
                 if (response.isSuccessful()) {
                     runOnUiThread(() -> {
                         try {
