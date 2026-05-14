@@ -55,7 +55,7 @@ public class MainFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         
         progressBar.setVisibility(View.VISIBLE);
-        fetchEvents();
+//        fetchEvents();
         
         // Start by fetching from Firestore, then try Mockaroo as additional data or fallback
         fetchFirestoreEvents();
