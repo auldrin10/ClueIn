@@ -79,6 +79,14 @@ public class SignUpActivity extends AppCompatActivity {
         Button btnSignUp = findViewById(R.id.btnSignUp);
         View dot1 = findViewById(R.id.dot1);
 
+        ImageView btnGoogle = findViewById(R.id.btnGoogle);
+        ImageView btnInstagram = findViewById(R.id.btnInstagram);
+        ImageView btnFacebook = findViewById(R.id.btnFacebook);
+
+        btnGoogle.setOnClickListener(v -> openUrl("https://www.google.com"));
+        btnInstagram.setOnClickListener(v -> openUrl("https://www.instagram.com"));
+        btnFacebook.setOnClickListener(v -> openUrl("https://www.facebook.com"));
+
         /* Password only appears when users focuses on the inputbox */
         password.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -285,5 +293,10 @@ public class SignUpActivity extends AppCompatActivity {
     public void ToCategory(View v) {
         Intent Category = new Intent(this, CategoryActivity.class);
         startActivity(Category);
+    }
+
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url));
+        startActivity(intent);
     }
 }

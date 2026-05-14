@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    app:cardBackgroundColor="@color/app_surface"
+    app:cardBackgroundColor="#0A1929"
     app:cardCornerRadius="24dp"
     app:cardElevation="8dp"
     app:strokeColor="@color/orange"
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Event Title"
-                    android:textColor="@color/app_text_primary"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Location Name"
-                    android:textColor="@color/app_text_secondary"
+                    android:textColor="#B0BEC5"
                     android:textSize="14sp" />
 
                 <RelativeLayout
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:text="Price"
-                        android:textColor="@color/app_text_primary"
+                        android:textColor="#FFFFFF"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:textColor="@color/app_text_primary"
+                    android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:visibility="gone"
                     android:text="Event Description goes here..." />

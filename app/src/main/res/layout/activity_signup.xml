@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign Up"
-                android:textColor="@color/app_text_primary"
+                android:textColor="@color/orange"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
                 android:layout_width="84dp"
                 android:layout_height="98dp"
                 app:srcCompat="@drawable/outline_account_circle_24"
-                app:tint="@color/app_text_primary" />
+                app:tint="@color/orange" />
         </LinearLayout>
 
         <!-- Input Fields Section -->
@@ -345,19 +345,31 @@
             android:layout_marginTop="20dp"
             android:gravity="center">
             <ImageView
+                android:id="@+id/btnGoogle"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="15dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/google" />
             <ImageView
+                android:id="@+id/btnInstagram"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="15dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/instagram" />
             <ImageView
+                android:id="@+id/btnFacebook"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="15dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/facebook" />
         </LinearLayout>
 
