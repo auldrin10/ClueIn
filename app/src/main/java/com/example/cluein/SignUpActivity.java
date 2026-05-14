@@ -54,6 +54,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -64,7 +65,7 @@ import android.app.Activity;
 import android.content.Context;
 
 public class SignUpActivity extends AppCompatActivity {
-    private String name;
+    public  static  String NewUser;
     String signupURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/users/signup.php";
     OkHttpClient userclient = new OkHttpClient();
     
@@ -77,6 +78,11 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        
+        // Explicitly initialize Facebook SDK before any LoginManager calls
+        FacebookSdk.setApplicationId(getString(R.string.facebook_app_id));
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         setContentView(R.layout.activity_signup);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -311,6 +317,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             if (isFormValid) {
                 post();
+                ToCategory(v);
             }
         });
 
@@ -333,7 +340,7 @@ public class SignUpActivity extends AppCompatActivity {
                 .add("email", email)
                 .add("password", hashedPassword)
                 .build();
-
+        NewUser = email;
         Request request = new Request.Builder()
                 .url(signupURL)
                 .post(body)
