@@ -44,7 +44,6 @@ public class ProfileFragment extends Fragment {
         tvDisplayName = view.findViewById(R.id.tv_display_name); 
         user = LoginActivity.user;
         // Load and Handle Initials logic
-//        setupProfileData();
         tvDisplayName.setText(user.getFirstName() + " " + user.getLastName());
 
         updatePic.setOnClickListener(v -> navigateTo(new InsideAccount()));
@@ -56,33 +55,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void setupProfileData() {
-        // Fetch name from SharedPreferences
-        SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String name = prefs.getString("user_name", "User Name");
-        
-        if (tvDisplayName != null) {
-            tvDisplayName.setText(name);
-        }
 
-        // Generate Initials
-        String[] splitted = name.split(" ");
-        StringBuilder initials = new StringBuilder();
-
-        if (splitted.length > 0) {
-            String firstName = splitted[0];
-            if (!firstName.isEmpty()) {
-                initials.append(firstName.charAt(0));
-            }
-            if (splitted.length > 1) {
-                String lastName = splitted[splitted.length - 1];
-                if (!lastName.isEmpty()) {
-                    initials.append(lastName.charAt(0));
-                }
-            }
-        }
-        tvProfileUserName.setText(initials.toString().toUpperCase());
-    }
 
     private void navigateTo(Fragment fragment) {
         getParentFragmentManager().beginTransaction()

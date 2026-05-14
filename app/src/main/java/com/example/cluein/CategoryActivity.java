@@ -34,11 +34,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class CategoryActivity extends AppCompatActivity {
-
-    // =========================
-    // URLS
-    // =========================
-
     String postPreferenceURL =
             "https://wmc.ms.wits.ac.za/students/sgroup2672/events/preference.php";
 
@@ -57,10 +52,6 @@ public class CategoryActivity extends AppCompatActivity {
 
     Button btnSkip;
 
-    // =========================
-    // DATA
-    // =========================
-
     ArrayList<String> Categories = new ArrayList<>();
 
     private final Set<Integer> selectedCategories =
@@ -73,9 +64,6 @@ public class CategoryActivity extends AppCompatActivity {
 
     User NewUser;
 
-    // =========================
-    // ON CREATE
-    // =========================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
