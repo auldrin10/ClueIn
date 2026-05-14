@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -14,7 +15,7 @@
         app:cardBackgroundColor="@color/navy"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
-        app:strokeColor="@color/orange"
+        app:strokeColor="#FF9800"
         app:strokeWidth="2dp">
 
         <ImageView
@@ -23,7 +24,8 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:contentDescription="@null"
-            app:tint="@color/orange" />
+            app:tint="#FF9800"
+            tools:src="@drawable/music_notes_svgrepo_com" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
@@ -33,5 +35,6 @@
         android:layout_marginTop="4dp"
         android:textColor="@color/app_text_primary"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Category" />
 </LinearLayout>
