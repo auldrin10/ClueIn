@@ -79,26 +79,27 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/MyTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:boxCornerRadiusBottomEnd="26dp"
                 app:boxCornerRadiusBottomStart="26dp"
                 app:boxCornerRadiusTopEnd="26dp"
                 app:boxCornerRadiusTopStart="26dp"
-                app:boxBackgroundMode="outline"
                 app:boxStrokeWidth="2.01dp"
                 app:boxStrokeColor="@color/input_stroke"
                 app:hintTextColor="@color/orange"
                 android:layout_marginTop="20dp"
                 >
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/eventCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/outline_ad_group_24"
                     android:hint="Event category"
+                    android:inputType="none"
                     android:textColor="@color/app_text_primary"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -197,14 +198,15 @@
                     app:boxStrokeWidth="2.01dp"
                     app:boxStrokeColor="@color/input_stroke"
                     app:hintTextColor="@color/orange"
+                    app:startIconDrawable="@drawable/ic_rand"
+                    app:startIconTint="@color/app_text_primary"
                     android:layout_marginTop="20dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/eventPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         android:textColor="@color/app_text_primary"
-                        android:drawableEnd="@drawable/outline_attach_money_24"
                         android:hint="Price"/>
                 </com.google.android.material.textfield.TextInputLayout>
 

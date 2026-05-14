@@ -65,8 +65,8 @@ import okhttp3.Response;
 
 public class AddEvent extends Fragment {
     OkHttpClient Eventclient = new OkHttpClient();
-    private EditText eventName, eventCategory, eventDate, eventTime, eventPrice, eventDescription;
-    private AutoCompleteTextView eventLocation;
+    private EditText eventName, eventDate, eventTime, eventPrice, eventDescription;
+    private AutoCompleteTextView eventLocation, eventCategory;
     private Button addEvent, clearForm, pickDate, pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
@@ -114,6 +114,7 @@ public class AddEvent extends Fragment {
         eventDate = view.findViewById(R.id.eventDate);
         eventTime = view.findViewById(R.id.eventTime);
         eventCategory = view.findViewById(R.id.eventCategory);
+        setupCategoryDropdown();
         eventPrice = view.findViewById(R.id.eventPrice);
         eventDescription = view.findViewById(R.id.eventDescription);
         addEvent = view.findViewById(R.id.addEvent);
@@ -261,7 +262,7 @@ public class AddEvent extends Fragment {
                         eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_alarm_24, 0);
                     } else if (edit == eventPrice) {
                         eventPrice.setError(null);
-                        eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_attach_money_24, 0);
+                        eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_rand, 0);
                     } else if (edit == eventDescription) {
                         eventDescription.setError(null);
                         eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
@@ -337,6 +338,7 @@ public class AddEvent extends Fragment {
                 .add("event_location", eLoc)
                 .add("event_date", eDate)
                 .add("event_time", eTime)
+                .add("event_category", eCat)
                 .add("event_price", ePrice)
                 .add("event_description", eDesc)
                 .add("event_image", eImage)
@@ -466,5 +468,12 @@ public class AddEvent extends Fragment {
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
         eventLocation.setAdapter(adapter);
+    }
+
+    private void setupCategoryDropdown() {
+        String[] categories = {"Social", "Sports", "Academic", "Nightlife", "Cultural", "Other"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, categories);
+        eventCategory.setAdapter(adapter);
     }
 }
