@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/app_background">
+    android:background="@color/app_background"
+    tools:context=".SignUpActivity">
 
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="20dp"
-        tools:context=".SignUpActivity">
+        android:gravity="center_horizontal">
 
         <!-- Sign up Header Section -->
         <LinearLayout
@@ -62,8 +62,7 @@
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeWidth="2dp"
                 app:boxStrokeColor="@color/input_stroke"
-                app:hintTextColor="@color/orange"
-                >
+                app:hintTextColor="@color/orange">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptUserFname"
@@ -78,7 +77,6 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/lnameLayout"
                 android:layout_width="355dp"
@@ -92,8 +90,7 @@
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeWidth="2dp"
                 app:boxStrokeColor="@color/input_stroke"
-                app:hintTextColor="@color/orange"
-                >
+                app:hintTextColor="@color/orange">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtInptUserLname"
@@ -412,10 +409,10 @@
 
             <View
                 android:id="@+id/dot1"
-                android:layout_width="9dp"
-                android:layout_height="10dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_margin="6dp"
-                android:background="@drawable/dot_inactive" />
+                android:background="@drawable/active_dot" />
             <View
                 android:id="@+id/dot2"
                 android:layout_width="12dp"
