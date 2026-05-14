@@ -75,15 +75,16 @@ String postNewURL = " https://wmc.ms.wits.ac.za/students/sgroup2672/users/login.
         // 2. Handle Skip/Continue Button
         btnSkip.setOnClickListener(v -> {
             // Animation for the button
+            postNewUSER();
+            for (String category : Categories) {
+                postPreference(NewUser.getUserID(), category);
+            }
             v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).withEndAction(() -> {
                 v.animate().scaleX(1f).scaleY(1f).setDuration(100).withEndAction(() -> {
                     Intent intent = new Intent(CategoryActivity.this, MainActivity.class);
                     // Optional: Pass selectedCategories to the next activity
                     startActivity(intent);
-                    postNewUSER();
-                    for (String category : Categories) {
-                        postPreference(NewUser.getUserID(), category);
-                    }
+
                     finish();
                 });
             });
@@ -142,7 +143,7 @@ Log.d("Selected Categories", Categories.toString());
     String NewEmail;
     User NewUser;
     public void postNewUSER() {
-        NewEmail = SignUpActivity.NewUserEmail;
+        NewEmail ="mannagnyibrighton2@gmail.com";
 
         RequestBody body = new FormBody.Builder()
                 .add("email", NewEmail)

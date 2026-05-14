@@ -28,7 +28,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".CategoryActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".CategoryActivity"
             android:exported="false" />
 
         <activity
