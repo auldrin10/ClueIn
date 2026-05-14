@@ -4,4 +4,14 @@
     <string name="netball">Netball</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Facebook Login configuration -->
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+    <string name="fb_login_protocol_scheme">fbYOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+
+    <!-- Instagram Configuration -->
+    <string name="instagram_client_id">YOUR_INSTAGRAM_CLIENT_ID</string>
+    <string name="instagram_client_secret">YOUR_INSTAGRAM_CLIENT_SECRET</string>
+    <string name="instagram_redirect_uri">https://localhost/</string>
 </resources>
