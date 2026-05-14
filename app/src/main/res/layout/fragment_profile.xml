@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/mainProfilePage"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/app_background"
     tools:context=".ProfileFragment">
 
     <ScrollView
@@ -30,6 +31,8 @@
                     android:layout_height="80dp"
                     android:gravity="center"
                     android:background="@drawable/outline_account_circle_24"
+                    app:tint="@color/app_text_primary"
+                    android:textColor="@color/app_text_primary"
                     android:text=""
                     android:textSize="28sp"
                     android:textStyle="bold"
@@ -41,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:textSize="20sp"
-                    android:textColor="@color/navy"
+                    android:textColor="@color/app_text_primary"
                     android:textStyle="bold"
                     android:text="User Name"/>
 
@@ -51,7 +54,7 @@
                android:layout_width="match_parent"
                android:layout_height="1dp"
                android:layout_marginTop="20dp"
-               android:background="#DDDDDD"/>
+               android:background="@color/app_text_secondary"/>
 
             <!-- Main details -->
             <LinearLayout
@@ -78,7 +81,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="Account"
-                        android:textColor="@color/navy"
+                        android:textColor="@color/app_text_primary"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -88,7 +91,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/outline_arrow_forward_ios_24"
-                        app:tint="#808080" />
+                        app:tint="@color/app_text_secondary" />
                 </RelativeLayout>
 
                 <!-- Logout Row -->
@@ -109,7 +112,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="Log out"
-                        android:textColor="@color/navy"
+                        android:textColor="@color/app_text_primary"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -119,7 +122,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/outline_arrow_forward_ios_24"
-                        app:tint="#808080" />
+                        app:tint="@color/app_text_secondary" />
                 </RelativeLayout>
 
             </LinearLayout>

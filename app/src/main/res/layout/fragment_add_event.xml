@@ -4,12 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/app_background"
     tools:context=".AddEvent">
 
     <ScrollView
+        android:id="@+id/mainFormContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="visible">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +25,7 @@
                 android:text="Create Event"
                 android:textSize="40sp"
                 android:textStyle="bold"
-                android:textColor="@color/navy"
+                android:textColor="@color/app_text_primary"
                 android:layout_marginBottom="20dp"
                 />
 
@@ -45,6 +48,7 @@
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/baseline_event_24"
                         android:hint="Event name"
+                        android:textColor="@color/app_text_primary"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -68,6 +72,7 @@
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/baseline_add_location_24"
                         android:hint="Event location"
+                        android:textColor="@color/app_text_primary"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -92,6 +97,7 @@
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/outline_ad_group_24"
                     android:hint="Event category"
+                    android:textColor="@color/app_text_primary"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -126,6 +132,7 @@
                             android:focusable="false"
                             android:clickable="true"
                             android:hint="Date"
+                            android:textColor="@color/app_text_primary"
                             android:drawableEnd="@drawable/outline_calendar_clock_24"/>
                     </com.google.android.material.textfield.TextInputLayout>
                     <Button
@@ -165,6 +172,7 @@
                             android:focusable="false"
                             android:clickable="true"
                             android:hint="Time"
+                            android:textColor="@color/app_text_primary"
                             android:drawableEnd="@drawable/outline_alarm_24"/>
                     </com.google.android.material.textfield.TextInputLayout>
                     <Button
@@ -194,6 +202,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
+                        android:textColor="@color/app_text_primary"
                         android:drawableEnd="@drawable/outline_attach_money_24"
                         android:hint="Price"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -218,6 +227,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="top"
                         android:imeOptions="actionNone"
+                        android:textColor="@color/app_text_primary"
                         android:drawableEnd="@drawable/baseline_description_24"
                         android:inputType="textMultiLine|textCapSentences"
                         android:hint="Event description"

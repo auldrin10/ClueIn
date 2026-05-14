@@ -1,19 +1,24 @@
 package com.example.cluein;
 
+import static android.service.controls.ControlsProviderService.TAG;
+
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,8 +27,24 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class SignUpActivity extends AppCompatActivity {
-private String name;
+    private String name;
+    String signupURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/users/signup.php";
+    OkHttpClient userclient = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +57,8 @@ private String name;
         });
 
         /* Instances for input fields and layouts */
-        TextInputLayout nameLayout = findViewById(R.id.nameLayout);
-        TextInputEditText nameInput = findViewById(R.id.txtInptUser);
+        TextInputLayout nameLayout = findViewById(R.id.fnameLayout);
+        TextInputEditText nameInput = findViewById(R.id.txtInptUserFname);
         TextInputLayout emailLayout = findViewById(R.id.emailLayout);
         TextInputEditText emailInput = findViewById(R.id.txtInptEmail);
         TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
@@ -199,11 +220,61 @@ private String name;
             }
 
             if (isFormValid) {
-                ToCategory(v);
+                post();
             }
         });
 
         dot1.setBackgroundResource(R.drawable.active_dot);
+    }
+
+    public void post() {
+        String first_name, last_name, email, password;
+        first_name = ((EditText) findViewById(R.id.txtInptUserFname)).getText().toString();
+        last_name = ((EditText) findViewById(R.id.txtInptUserLname)).getText().toString();
+        email = ((EditText) findViewById(R.id.txtInptEmail)).getText().toString();
+        password = ((EditText) findViewById(R.id.txtInptPassword)).getText().toString();
+
+        hashpswd passHash = new hashpswd(password);
+        String hashedPassword = passHash.getHashed();
+
+        RequestBody body = new FormBody.Builder()
+                .add("first_name", first_name)
+                .add("last_name", last_name)
+                .add("email", email)
+                .add("password", hashedPassword)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(signupURL)
+                .post(body)
+                .build();
+
+        userclient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(SignUpActivity.this, "Network Error", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                Log.d("PHP_RESPONSE", responseData);
+
+                if (response.isSuccessful()) {
+                    runOnUiThread(() -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseData);
+                            String message = jsonObject.optString("message", "Success");
+                            Toast.makeText(SignUpActivity.this, message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Log.e(TAG, "JSON parse error", e);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void ToLogIn(View v) {

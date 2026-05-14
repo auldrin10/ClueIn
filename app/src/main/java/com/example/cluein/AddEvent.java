@@ -1,8 +1,7 @@
 package com.example.cluein;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -30,10 +29,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
@@ -42,25 +41,41 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class AddEvent extends Fragment {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-//    Instances
-    private EditText eventName, eventLocation, eventCategory,eventDate, eventTime, eventPrice, eventDescription;
+public class AddEvent extends Fragment {
+    OkHttpClient Eventclient = new OkHttpClient();
+    private EditText eventName, eventLocation, eventCategory, eventDate, eventTime, eventPrice, eventDescription;
     private Button addEvent, clearForm, pickDate, pickTime;
     private Uri imageUrl;
     private MaterialButton selectImage;
     private ImageView imageView;
+    private ScrollView mainFormContainer;
 
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
 
+    // List of authorized emails (A, B, C)
+    private final List<String> authorizedEmails = Arrays.asList("3030015@students.wits.ac.za", "3002003@students.wits.ac.za", "3032986@students.wits.ac.za");
     private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
@@ -82,7 +97,6 @@ public class AddEvent extends Fragment {
                 }
             });
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,6 +104,7 @@ public class AddEvent extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_event, container, false);
 
         // Initialize Views
+        mainFormContainer = view.findViewById(R.id.mainFormContainer);
         eventName = view.findViewById(R.id.eventName);
         eventLocation = view.findViewById(R.id.eventLocation);
         eventDate = view.findViewById(R.id.eventDate);
@@ -103,11 +118,13 @@ public class AddEvent extends Fragment {
         pickTime = view.findViewById(R.id.btnPickTime);
         selectImage = view.findViewById(R.id.selectImage);
         imageView = view.findViewById(R.id.eventImage);
-        EditText[] editTexts = {eventName, eventLocation,eventCategory, eventDate, eventTime, eventPrice, eventDescription};
+        EditText[] editTexts = {eventName, eventLocation, eventCategory, eventDate, eventTime, eventPrice, eventDescription};
+
+        // CHECK AUTHORIZATION ON LOAD
+        checkUserAuthorization();
 
         checkNotificationPermission();
 
-//        Validation
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,33 +138,40 @@ public class AddEvent extends Fragment {
 
                 boolean isValid = true;
 
-                if(strEventName.isEmpty()){
+                if (strEventName.isEmpty()) {
                     eventName.setError("Event name missing.");
                     isValid = false;
-                }if(strEventLocation.isEmpty()){
+                }
+                if (strEventLocation.isEmpty()) {
                     eventLocation.setError("Event location missing.");
                     isValid = false;
-                }if(strEventCategory.isEmpty()){
+                }
+                if (strEventCategory.isEmpty()) {
                     eventCategory.setError("Event category missing.");
                     isValid = false;
-                }if(strEventDate.isEmpty()) {
+                }
+                if (strEventDate.isEmpty()) {
                     eventDate.setError("Event date missing.");
                     isValid = false;
-                }if(strEventTime.isEmpty()){
+                }
+                if (strEventTime.isEmpty()) {
                     eventTime.setError("Event time missing.");
                     isValid = false;
-                }if(strEventPrice.isEmpty()){
+                }
+                if (strEventPrice.isEmpty()) {
                     eventPrice.setError("Event price missing.");
                     isValid = false;
-                }if(strEventDescription.isEmpty()){
+                }
+                if (strEventDescription.isEmpty()) {
                     eventDescription.setError("Event description missing.");
                     isValid = false;
-                }if(imageUrl == null){
-                    Toast.makeText(requireContext(),"Please select an image.",Toast.LENGTH_LONG).show();
+                }
+                if (imageUrl == null) {
+                    Toast.makeText(requireContext(), "Please select an image.", Toast.LENGTH_LONG).show();
                     isValid = false;
                 }
 
-                if(isValid) {
+                if (isValid) {
                     double dblprice = 0.0;
                     try {
                         dblprice = Double.parseDouble(strEventPrice);
@@ -158,7 +182,6 @@ public class AddEvent extends Fragment {
                     }
 
                     double finalDblprice = dblprice;
-                    // Final Guard: Check for duplicates one last time before adding
                     db.collection("Events")
                             .whereEqualTo("Event_title", strEventName)
                             .whereEqualTo("Location", strEventLocation)
@@ -174,7 +197,6 @@ public class AddEvent extends Fragment {
                                         addEvent.setBackgroundResource(R.drawable.gray_rounded_button);
                                         addEvent.setEnabled(false);
                                     } else {
-                                        // No duplicate found, proceed to add
                                         Map<String, Object> eventMap = new HashMap<>();
                                         eventMap.put("Event_title", strEventName);
                                         eventMap.put("Location", strEventLocation);
@@ -191,84 +213,43 @@ public class AddEvent extends Fragment {
                                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                     @Override
                                                     public void onSuccess(DocumentReference documentReference) {
-                                                        Log.d(TAG, "Event added with ID: " + documentReference.getId());
                                                         scheduleNotification(documentReference.getId(), strEventName);
+                                                        post();
                                                         Toast.makeText(requireContext(), "Event Added!", Toast.LENGTH_SHORT).show();
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-                                                        Log.w(TAG, "Error adding event", e);
                                                         Toast.makeText(requireContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                     }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e(TAG, "Final check failed", e);
                                 }
                             });
                 }
             }
         });
 
-//        Time and date pickers
-        pickDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dateDialog();
-            }
-        });
+        pickDate.setOnClickListener(v -> dateDialog());
+        pickTime.setOnClickListener(v -> timeDialog());
+        selectImage.setOnClickListener(v -> selectImageLauncher.launch("image/*"));
+        clearForm.setOnClickListener(v -> clearFormFields());
 
-        pickTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timeDialog();
-            }
-        });
-
-        selectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImageLauncher.launch("image/*");
-            }
-        });
-
-        clearForm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearFormFields();
-            }
-        });
-
-
-//        on text changed listner
-        for(EditText edit: editTexts) {
+        for (EditText edit : editTexts) {
             edit.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void afterTextChanged(Editable editable) {
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (edit == eventName) {
                         eventName.setError(null);
                         eventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_event_24, 0);
                     } else if (edit == eventLocation) {
                         eventLocation.setError(null);
                         eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
-                    } else if(edit == eventCategory){
+                    } else if (edit == eventCategory) {
                         eventCategory.setError(null);
-                        eventCategory.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.outline_ad_group_24,0);
-                    }else if (edit == eventDate) {
+                        eventCategory.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_ad_group_24, 0);
+                    } else if (edit == eventDate) {
                         eventDate.setError(null);
                         eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
                     } else if (edit == eventTime) {
@@ -282,55 +263,107 @@ public class AddEvent extends Fragment {
                         eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
                     }
 
-                    if(edit != eventDescription){
+                    if (edit != eventDescription) {
                         addEvent.setEnabled(true);
                         addEvent.setBackgroundResource(R.drawable.sign_up_button);
                     }
                 }
+                @Override public void afterTextChanged(Editable s) {}
             });
         }
 
-        // Avoiding repetition
-        eventDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    String strName = eventName.getText().toString().trim();
-                    String strLoc = eventLocation.getText().toString().trim();
-                    String strDate = eventDate.getText().toString().trim();
-                    String strTime = eventTime.getText().toString().trim();
-                    String strCategory = eventCategory.getText().toString().trim();
+        return view;
+    }
 
-                    if (!strName.isEmpty() && !strLoc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty() && !strCategory.isEmpty()) {
-                        db.collection("Events")
-                                .whereEqualTo("Event_title", strName)
-                                .whereEqualTo("Location", strLoc)
-                                .whereEqualTo("Event_category", strCategory)
-                                .whereEqualTo("event_date", strDate)
-                                .whereEqualTo("Event_time", strTime)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        if (!queryDocumentSnapshots.isEmpty()) {
-                                            showEventError();
-                                            addEvent.setBackgroundResource(R.drawable.gray_rounded_button);
-                                            addEvent.setEnabled(false);
-                                        }
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.e("Firestore", "Error checking events", e);
-                                    }
-                                });
-                    }
-                }
+    private void checkUserAuthorization() {
+        String userEmail = "";
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            userEmail = getActivity().getIntent().getStringExtra("USER_EMAIL");
+        }
+
+        if (userEmail == null || !authorizedEmails.contains(userEmail.toLowerCase())) {
+            // NOT AUTHORIZED
+            if (mainFormContainer != null) {
+                mainFormContainer.setVisibility(View.GONE);
+            }
+            showUnauthorizedDialog();
+        } else {
+            // AUTHORIZED
+            if (mainFormContainer != null) {
+                mainFormContainer.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void showUnauthorizedDialog() {
+        if (getContext() == null) return;
+
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_unauthorized, null);
+        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            // Redirect back to Main Feed
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).findViewById(R.id.nav_feed).performClick();
             }
         });
 
-        return view;
+        dialog.show();
+    }
+
+    String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
+
+    public void post() {
+        String eName = eventName.getText().toString().trim();
+        String eLoc = eventLocation.getText().toString().trim();
+        String eDate = eventDate.getText().toString().trim();
+        String eTime = eventTime.getText().toString().trim();
+        String eCat = eventCategory.getText().toString().trim();
+        String ePrice = eventPrice.getText().toString().trim();
+        String eDesc = eventDescription.getText().toString().trim();
+        String eImage = imageUrl != null ? imageUrl.toString() : "";
+
+        RequestBody body = new FormBody.Builder()
+                .add("event_name", eName)
+                .add("event_location", eLoc)
+                .add("event_date", eDate)
+                .add("event_time", eTime)
+                .add("event_price", ePrice)
+                .add("event_description", eDesc)
+                .add("event_image", eImage)
+                .build();
+
+        Request request = new Request.Builder().url(postEventURL).post(body).build();
+
+        Eventclient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show());
+                }
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                final String responseData = response.body().string();
+                if (response.isSuccessful() && getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseData);
+                            String message = jsonObject.optString("message", "Success");
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Log.e(TAG, "JSON parse error", e);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void checkNotificationPermission() {
@@ -341,88 +374,58 @@ public class AddEvent extends Fragment {
         }
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     private void scheduleNotification(String eventId, String eventTitle) {
         Calendar reminderCalendar = (Calendar) selectedEventDate.clone();
-        // Set reminder for 20 minutes before
         reminderCalendar.add(Calendar.MINUTE, -20);
 
-        if (reminderCalendar.getTimeInMillis() < System.currentTimeMillis()) {
-            Log.d(TAG, "Reminder time is in the past, skipping scheduling.");
-            return;
-        }
+        if (reminderCalendar.getTimeInMillis() < System.currentTimeMillis()) return;
 
         Intent intent = new Intent(requireContext(), EventReminderReceiver.class);
         intent.putExtra("eventId", eventId);
         intent.putExtra("eventTitle", eventTitle);
-        
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                requireContext(), 
+                requireContext(),
                 eventId.hashCode(),
-                intent, 
+                intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
-                }
-            } else {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
-            }
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
         }
     }
 
-//    Time and date dialogs methods
-    private void dateDialog(){
+    private void dateDialog() {
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                selectedEventDate.set(Calendar.YEAR, year);
-                selectedEventDate.set(Calendar.MONTH, month);
-                selectedEventDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-                eventDate.setText(sdf.format(selectedEventDate.getTime()));
-            }
-        }, year, month, day);
-
-        // Restrict picking dates in the past
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), R.style.DialogTheme, (view, year, month, dayOfMonth) -> {
+            selectedEventDate.set(Calendar.YEAR, year);
+            selectedEventDate.set(Calendar.MONTH, month);
+            selectedEventDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            eventDate.setText(sdf.format(selectedEventDate.getTime()));
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 
-    private void timeDialog(){
+    private void timeDialog() {
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
-                selectedEventDate.set(Calendar.HOUR_OF_DAY, hours);
-                selectedEventDate.set(Calendar.MINUTE, minutes);
-                eventTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hours, minutes));
-            }
-        }, hour, minute, true);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), R.style.DialogTheme, (view, hourOfDay, minute) -> {
+            selectedEventDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            selectedEventDate.set(Calendar.MINUTE, minute);
+            eventTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
         timePickerDialog.show();
     }
 
-    // Generic error pop up for duplicate events
-    private void showEventError(){
+    private void showEventError() {
         new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
                 .setTitle("Error")
                 .setMessage("This event exists!")
-                .setPositiveButton("OK", (dialog, which)->{
-                    dialog.dismiss();
-                })
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
     }
@@ -435,31 +438,10 @@ public class AddEvent extends Fragment {
         eventTime.setText("");
         eventPrice.setText("");
         eventDescription.setText("");
-
         imageUrl = null;
         imageView.setVisibility(View.GONE);
         selectImage.setText("Select Image");
-
-        // Re-enable add button if it was disabled due to duplicate
         addEvent.setEnabled(true);
         addEvent.setBackgroundResource(R.drawable.sign_up_button);
-
-        // Clear errors
-        eventName.setError(null);
-        eventLocation.setError(null);
-        eventCategory.setError(null);
-        eventDate.setError(null);
-        eventTime.setError(null);
-        eventPrice.setError(null);
-        eventDescription.setError(null);
-
-        // Reset compound drawables to original icons
-        eventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_event_24, 0);
-        eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
-        eventCategory.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_ad_group_24, 0);
-        eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
-        eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_alarm_24, 0);
-        eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_attach_money_24, 0);
-        eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
     }
 }
