@@ -29,6 +29,8 @@ public class ProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
+    User user;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -40,9 +42,10 @@ public class ProfileFragment extends Fragment {
         tvProfileUserName = view.findViewById(R.id.profileUserName);
         // Assuming there is a TextView for the full name next to initials
         tvDisplayName = view.findViewById(R.id.tv_display_name); 
-
+        user = LoginActivity.user;
         // Load and Handle Initials logic
-        setupProfileData();
+//        setupProfileData();
+        tvDisplayName.setText(user.getFirstName() + " " + user.getLastName());
 
         updatePic.setOnClickListener(v -> navigateTo(new InsideAccount()));
         btnAccount.setOnClickListener(v -> navigateTo(new UpdateProfilePic()));

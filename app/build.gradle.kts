@@ -46,17 +46,20 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.facebook.login)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps3d)
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("com.google.firebase:firebase-firestore:24.7.1")
-    //translator app that can act as a bridge between my java code and the JSON data coming from the server
+
+    // Networking and Image Loading
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
-
 }
