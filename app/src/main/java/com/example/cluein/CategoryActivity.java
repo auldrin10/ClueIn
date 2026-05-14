@@ -2,6 +2,7 @@ package com.example.cluein;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -9,17 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private CategoryAdapter adapter;
-    private List<Category> categoryList;
     private Button btnSkip;
 
     @Override
@@ -34,33 +27,50 @@ public class CategoryActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 1. Setup RecyclerView
-        recyclerView = findViewById(R.id.rv_categories);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        // 1. Setup animations for each category card
+        setupCategoryAnimation(findViewById(R.id.card_music), null);
+        setupCategoryAnimation(findViewById(R.id.card_food), null);
+        setupCategoryAnimation(findViewById(R.id.card_football), null);
+        setupCategoryAnimation(findViewById(R.id.card_rugby), null);
+        setupCategoryAnimation(findViewById(R.id.card_hackathon), null);
+        setupCategoryAnimation(findViewById(R.id.card_worship), null);
+        setupCategoryAnimation(findViewById(R.id.card_netball), null);
+        setupCategoryAnimation(findViewById(R.id.card_nightlife), null);
 
-        // 2. Prepare Data
-        categoryList = new ArrayList<>();
-        categoryList.add(new Category("Music", R.drawable.music_notes_svgrepo_com));
-        categoryList.add(new Category("Food", R.drawable.food_dish_svgrepo_com));
-        categoryList.add(new Category("Football", R.drawable.football_svgrepo_com));
-        categoryList.add(new Category("Rugby", R.drawable.sport_rugby_svgrepo_com));
-        categoryList.add(new Category("Hackathon", R.drawable.coding_html_svgrepo_com));
-        categoryList.add(new Category("Worship", R.drawable.gospel_choir_svgrepo_com));
-        categoryList.add(new Category("Netball", R.drawable.dribbble_logo));
-        categoryList.add(new Category("Nightlife", R.drawable.drinks_svgrepo_com));
-
-        // 3. Set Adapter
-        adapter = new CategoryAdapter(categoryList, category -> {
-            // Micro-interaction logic is handled inside the Adapter
-        });
-        recyclerView.setAdapter(adapter);
-
-        // 4. Handle Next Button
+        // 2. Handle Skip Button with animation and navigation to MainActivity
         btnSkip = findViewById(R.id.btn_skip);
-        btnSkip.setOnClickListener(v -> {
+        setupCategoryAnimation(btnSkip, () -> {
             Intent intent = new Intent(CategoryActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
+        });
+    }
+
+    /**
+     * Applies a scale micro-interaction animation to the given view.
+     * @param view The view to animate.
+     * @param onAction The action to perform after the animation sequence finishes.
+     */
+    private void setupCategoryAnimation(View view, Runnable onAction) {
+        if (view == null) return;
+
+        view.setOnClickListener(v -> {
+            // Animation: Scale down to 0.9f and then back to 1f
+            view.animate()
+                    .scaleX(0.9f)
+                    .scaleY(0.9f)
+                    .setDuration(100)
+                    .withEndAction(() ->
+                            view.animate()
+                                    .scaleX(1f)
+                                    .scaleY(1f)
+                                    .setDuration(100)
+                                    .withEndAction(() -> {
+                                        if (onAction != null) {
+                                            onAction.run();
+                                        }
+                                    })
+                    );
         });
     }
 }
