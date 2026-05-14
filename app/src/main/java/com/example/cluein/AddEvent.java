@@ -74,6 +74,8 @@ public class AddEvent extends Fragment {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
 
+    // List of authorized emails (A, B, C)
+    private final List<String> authorizedEmails = Arrays.asList("3030015@students.wits.ac.za", "3002003@students.wits.ac.za", "3032986@students.wits.ac.za");
     private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
@@ -117,6 +119,9 @@ public class AddEvent extends Fragment {
         selectImage = view.findViewById(R.id.selectImage);
         imageView = view.findViewById(R.id.eventImage);
         EditText[] editTexts = {eventName, eventLocation, eventCategory, eventDate, eventTime, eventPrice, eventDescription};
+
+        // CHECK AUTHORIZATION ON LOAD
+        checkUserAuthorization();
 
         checkNotificationPermission();
 
@@ -268,6 +273,47 @@ public class AddEvent extends Fragment {
         }
 
         return view;
+    }
+
+    private void checkUserAuthorization() {
+        String userEmail = "";
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            userEmail = getActivity().getIntent().getStringExtra("USER_EMAIL");
+        }
+
+        if (userEmail == null || !authorizedEmails.contains(userEmail.toLowerCase())) {
+            // NOT AUTHORIZED
+            if (mainFormContainer != null) {
+                mainFormContainer.setVisibility(View.GONE);
+            }
+            showUnauthorizedDialog();
+        } else {
+            // AUTHORIZED
+            if (mainFormContainer != null) {
+                mainFormContainer.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void showUnauthorizedDialog() {
+        if (getContext() == null) return;
+
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_unauthorized, null);
+        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            // Redirect back to Main Feed
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).findViewById(R.id.nav_feed).performClick();
+            }
+        });
+
+        dialog.show();
     }
 
     String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";

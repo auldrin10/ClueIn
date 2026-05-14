@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText textPassword;
     TextView display;
     TextInputLayout emailLayout, pswLayout;
+    ImageView btnGoogle, btnInstagram, btnFacebook;
     public static User user;
 
     @Override
@@ -60,7 +61,11 @@ public class LoginActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.emailLayout);
         pswLayout = findViewById(R.id.pswLayout);
         display = findViewById(R.id.textView2);
-        
+
+        btnGoogle = findViewById(R.id.btnGoogle);
+        btnInstagram = findViewById(R.id.btnInstagram);
+        btnFacebook = findViewById(R.id.btnFacebook);
+
         int redRed = Color.parseColor("#FF0000");
         ColorStateList errorColorStateList = ColorStateList.valueOf(redRed);
         
@@ -120,6 +125,15 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnGoogle.setOnClickListener(v -> openUrl("https://www.google.com"));
+        btnInstagram.setOnClickListener(v -> openUrl("https://www.instagram.com"));
+        btnFacebook.setOnClickListener(v -> openUrl("https://www.facebook.com"));
+    }
+
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url));
+        startActivity(intent);
     }
 
     private boolean ValidateLogInInputForm(View v, boolean isValid) {
