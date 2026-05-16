@@ -357,9 +357,7 @@ public class CategoryActivity extends AppCompatActivity {
                                     );
                                 }
 
-                                // =========================
-                                // NEXT PAGE
-                                // =========================
+
 
                                 Intent intent =
                                         new Intent(
@@ -406,18 +404,14 @@ public class CategoryActivity extends AppCompatActivity {
 
                         // IMPORTANT
                         .add("user_id", userid)
-
                         .add("category", category)
-
                         .build();
 
         Request request =
                 new Request.Builder()
 
                         .url(postPreferenceURL)
-
                         .post(body)
-
                         .build();
 
         client.newCall(request)

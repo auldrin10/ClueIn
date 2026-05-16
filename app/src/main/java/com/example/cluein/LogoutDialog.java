@@ -1,6 +1,8 @@
 package com.example.cluein;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +25,19 @@ public class LogoutDialog extends DialogFragment {
         btnCancel.setOnClickListener(v -> dismiss());
 
         btnConfirm.setOnClickListener(v -> {
-            // Step 1: Perform logout (e.g., clear session, sign out of Firebase)
-            // FirebaseAuth.getInstance().signOut();
+            // Step 1: Clear Remember Me / Auto-Login preferences
+            if (getActivity() != null) {
+                SharedPreferences loginPrefs = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = loginPrefs.edit();
+                editor.putBoolean("remember", false);
+                editor.remove("email");
+                editor.remove("password");
+                editor.apply();
+
+                // Also clear general UserPrefs used for email identification in fragments
+                SharedPreferences userPrefs = getActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                userPrefs.edit().clear().apply();
+            }
 
             // Step 2: Go back to Login Activity
             Intent intent = new Intent(getActivity(), LoginActivity.class);

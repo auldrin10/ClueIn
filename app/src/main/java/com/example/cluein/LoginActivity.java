@@ -3,6 +3,7 @@ package com.example.cluein;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +50,13 @@ public class LoginActivity extends AppCompatActivity {
     TextView display;
     TextInputLayout emailLayout, pswLayout;
     ImageView btnGoogle, btnInstagram, btnFacebook;
+    CheckBox rememberMe;
     public static User user;
+
+    private static final String PREFS_NAME = "LoginPrefs";
+    private static final String KEY_REMEMBER = "remember";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.emailLayout);
         pswLayout = findViewById(R.id.pswLayout);
         display = findViewById(R.id.textView2);
+        rememberMe = findViewById(R.id.checkBox);
 
         btnGoogle = findViewById(R.id.btnGoogle);
         btnInstagram = findViewById(R.id.btnInstagram);
@@ -77,6 +86,23 @@ public class LoginActivity extends AppCompatActivity {
         pswLayout.setErrorTextColor(errorColorStateList);
         pswLayout.setErrorIconTintList(errorColorStateList);
         pswLayout.setBoxStrokeErrorColor(errorColorStateList);
+
+        // Load Remember Me data and trigger Auto-Login
+        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isRemembered = preferences.getBoolean(KEY_REMEMBER, false);
+        if (isRemembered) {
+            String savedEmail = preferences.getString(KEY_EMAIL, "");
+            String savedPassword = preferences.getString(KEY_PASSWORD, "");
+            
+            textEmail.setText(savedEmail);
+            textPassword.setText(savedPassword);
+            rememberMe.setChecked(true);
+
+            // Auto-trigger the login process
+            if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
+                post();
+            }
+        }
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) View mainView = findViewById(R.id.main);
         if (mainView != null) {
@@ -221,10 +247,27 @@ public class LoginActivity extends AppCompatActivity {
         String storedPassword = user.getPassword();
         String storedEmail = user.getEmail();
         if (Objects.equals(storedEmail, email) && Objects.equals(storedPassword, inputPassword)) {
-            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show(); // Removed for smoother auto-login
+
+            // Save Remember Me state
+            SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            if (rememberMe.isChecked()) {
+                editor.putBoolean(KEY_REMEMBER, true);
+                editor.putString(KEY_EMAIL, textEmail.getText().toString());
+                editor.putString(KEY_PASSWORD, textPassword.getText().toString());
+            } else {
+                editor.putBoolean(KEY_REMEMBER, false);
+                editor.remove(KEY_EMAIL);
+                editor.remove(KEY_PASSWORD);
+            }
+            editor.apply();
+
             ToDashboard(null);
         } else {
             Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show();
+            // If auto-login failed because password changed, clear the remembered state
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
         }
     }
 
