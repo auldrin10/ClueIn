@@ -1,6 +1,7 @@
 package com.example.cluein;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -343,6 +345,14 @@ public class CategoryActivity extends AppCompatActivity {
 
                                 Log.d("USER_ID",
                                         NewUser.getUserID());
+
+                                // =========================
+                                // SAVE CATEGORIES LOCALLY
+                                // =========================
+                                SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putStringSet("SelectedCategories", new HashSet<>(Categories));
+                                editor.apply();
 
                                 // =========================
                                 // INSERT ALL CATEGORIES
