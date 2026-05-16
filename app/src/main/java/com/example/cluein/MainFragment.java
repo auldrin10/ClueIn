@@ -1,5 +1,7 @@
 package com.example.cluein;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +26,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,6 +44,7 @@ public class MainFragment extends Fragment {
     public List<Event> eventList = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
     private FirebaseFirestore firestore;
+    private Set<String> selectedCategories;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,13 +59,41 @@ public class MainFragment extends Fragment {
 
         firestore = FirebaseFirestore.getInstance();
         
-        progressBar.setVisibility(View.VISIBLE);
-        fetchEvents();
+        // Load User Preferences
+        loadUserPreferences();
         
-        // Start by fetching from Firestore, then try Mockaroo as additional data or fallback
+        progressBar.setVisibility(View.VISIBLE);
+        
+        // Clear list once before starting fetches
+        eventList.clear();
+        
+        // Fetch from all sources
+        fetchEvents();
         fetchFirestoreEvents();
         
         return view;
+    }
+
+    private void loadUserPreferences() {
+        if (getContext() != null) {
+            SharedPreferences prefs = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            selectedCategories = prefs.getStringSet("SelectedCategories", new HashSet<>());
+            Log.d("MainFragment", "Selected Categories: " + selectedCategories.toString());
+        }
+    }
+
+    private boolean isCategoryMatched(String eventCategory) {
+        if (selectedCategories == null || selectedCategories.isEmpty()) {
+            return true; // Show all if no preferences set
+        }
+        if (eventCategory == null) return false;
+        
+        for (String selected : selectedCategories) {
+            if (selected.equalsIgnoreCase(eventCategory)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void fetchFirestoreEvents() {
@@ -72,8 +105,14 @@ public class MainFragment extends Fragment {
                 String location = document.getString("Location");
                 String eventDate = document.getString("event_date");
                 String description = document.getString("description");
+                String category = document.getString("Event_category");
                 
-                // Safely get price as Double, handling cases where it might be a String in Firestore
+                // Filter based on category
+                if (!isCategoryMatched(category)) {
+                    continue;
+                }
+                
+                // Safely get price
                 Double price = 0.0;
                 Object priceObj = document.get("price");
                 if (priceObj instanceof Number) {
@@ -86,7 +125,6 @@ public class MainFragment extends Fragment {
                     }
                 }
                 
-                String category = document.getString("Event_category");
                 String imageUrl = document.getString("Image_url");
                 Boolean isWitsEvent = document.getBoolean("is_wits_event");
 
@@ -109,7 +147,7 @@ public class MainFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
             
-            // Also try fetching from the API
+            // Also try fetching from the Mockaroo API
             fetchApiEvents();
             
         }).addOnFailureListener(e -> {
@@ -148,10 +186,17 @@ public class MainFragment extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             progressBar.setVisibility(View.GONE);
                             if (fetchedEvents != null && !fetchedEvents.isEmpty()) {
-                                eventList.addAll(fetchedEvents);
+                                // Filter Mockaroo events
+                                for (Event e : fetchedEvents) {
+                                    if (isCategoryMatched(e.getCategory())) {
+                                        eventList.add(e);
+                                    }
+                                }
                                 adapter.notifyDataSetChanged();
-                            } else if (eventList.isEmpty()) {
-                                loadSampleData("No events found");
+                            }
+                            
+                            if (eventList.isEmpty()) {
+                                loadSampleData("No events matching your preferences");
                             }
                         });
                     }
@@ -169,8 +214,12 @@ public class MainFragment extends Fragment {
             
             // Only add hardcoded samples if we have absolutely no data
             if (eventList.isEmpty()) {
-                eventList.add(new Event("Wits Music Festival", "https://picsum.photos/id/1/600/400", "Wits Great Hall", "25 October 2026", "The biggest party of the year!", 70.0, "101", true , "Graduations"));
-                eventList.add(new Event("Tech Hackathon 2026", "https://picsum.photos/id/2/600/400", "Matrix Building", "26 October 2026", "24 hours of pure coding", 300.0, "102", true, "Hackathon"));
+                Event sample1 = new Event("Wits Music Festival", "https://picsum.photos/id/1/600/400", "Wits Great Hall", "25 October 2026", "The biggest party of the year!", 70.0, "101", true , "Music");
+                Event sample2 = new Event("Tech Hackathon 2026", "https://picsum.photos/id/2/600/400", "Matrix Building", "26 October 2026", "24 hours of pure coding", 300.0, "102", true, "Hackathon");
+                
+                if (isCategoryMatched(sample1.getCategory())) eventList.add(sample1);
+                if (isCategoryMatched(sample2.getCategory())) eventList.add(sample2);
+                
                 adapter.notifyDataSetChanged();
             }
             
@@ -194,12 +243,8 @@ public class MainFragment extends Fragment {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        if (getContext() != null) {
-                            Toast.makeText(
-                                    getContext(),
-                                    "Failed to fetch events",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                        if (eventList.isEmpty()) {
+                            // Only show error if no other data exists
                         }
                     });
                 }
@@ -216,7 +261,7 @@ public class MainFragment extends Fragment {
                     getActivity().runOnUiThread(() -> {
                         try {
                             JSONArray array = new JSONArray(json);
-                            eventList.clear();
+                            // We don't clear here because multiple fetches are running
 
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject obj = array.getJSONObject(i);
@@ -227,29 +272,24 @@ public class MainFragment extends Fragment {
                                 String priceStr = obj.optString("price");
                                 String description = obj.optString("description");
                                 String eventImage = obj.optString("event_image");
+                                String category = obj.optString("event_category", "General");
 
-                                double price = 0.0;
-                                try {
-                                    price = Double.parseDouble(priceStr);
-                                } catch (NumberFormatException e) {
-                                    Log.e("MainFragment", "Invalid price: " + priceStr);
+                                if (isCategoryMatched(category)) {
+                                    double price = 0.0;
+                                    try {
+                                        price = Double.parseDouble(priceStr);
+                                    } catch (NumberFormatException e) {
+                                        Log.e("MainFragment", "Invalid price: " + priceStr);
+                                    }
+
+                                    eventList.add(new Event(event_name, eventImage, location, date, description, price, event_id, true, category));
                                 }
-
-                                eventList.add(new Event(event_name, eventImage, location, date, description, price, event_id, true, "General"));
                             }
                             adapter.notifyDataSetChanged();
-                            Log.d("TOTAL_EVENTS", String.valueOf(eventList.size()));
                             progressBar.setVisibility(View.GONE);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            if (getContext() != null) {
-                                Toast.makeText(
-                                        getContext(),
-                                        "JSON Error",
-                                        Toast.LENGTH_SHORT
-                                ).show();
-                            }
                         }
                     });
                 }
