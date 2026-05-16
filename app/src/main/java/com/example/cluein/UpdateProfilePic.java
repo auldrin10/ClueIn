@@ -57,10 +57,10 @@ public class UpdateProfilePic extends Fragment {
                     .commit();
         });
 
-        // Delete Account - This shows the small pop-up (DialogFragment)
+        // Delete Account - This shows the password verification dialog first
         btnDeleteAccount.setOnClickListener(v -> {
-            DeleteAccountDialog dialog = new DeleteAccountDialog();
-            dialog.show(getParentFragmentManager(), "DeleteDialog");
+            VerifyPasswordDialog dialog = new VerifyPasswordDialog();
+            dialog.show(getParentFragmentManager(), "VerifyPasswordDialog");
         });
     }
 }

@@ -157,8 +157,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void scheduleAllReminders(Event event) {
-        // Using 'd' instead of 'dd' to handle single-digit days like "1 - May" or "01 - May"
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+        // Use "yyyy-MM-d" or "yyyy-M-d" to handle formats like 2026-06-6 or 2026-6-6
+        // SimpleDateFormat with 'M' handles both '6' and '06'
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d", Locale.getDefault());
         try {
             Date eventDate = sdf.parse(event.getEventDate());
             if (eventDate == null) return;
@@ -167,8 +168,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             long daysLeft = TimeUnit.MILLISECONDS.toDays(diffInMillis);
 
             // 1. Immediate Notification
-            sendImmediateNotification(event, "Event starts in " + daysLeft + " days");
 
+            if(daysLeft == 0){
+                sendImmediateNotification(event, "Event starts today");
+            }else{
+                sendImmediateNotification(event, "Event starts in " + daysLeft + " days");
+            }
             // 2. 48 Hour Reminder
             scheduleAlarm(event, eventDate.getTime() - TimeUnit.HOURS.toMillis(48), "Event starts in 2 days", 48);
 
@@ -205,12 +210,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
-            // Fix: Check for exact alarm permission on Android 12+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (alarmManager.canScheduleExactAlarms()) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
                 } else {
-                    // Fallback to non-exact alarm if permission is missing
                     alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
                 }
             } else {
