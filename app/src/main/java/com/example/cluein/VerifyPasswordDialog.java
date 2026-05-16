@@ -1,5 +1,7 @@
 package com.example.cluein;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,8 +57,15 @@ public class VerifyPasswordDialog extends DialogFragment {
                 if (currentUser.getPassword().equals(hashedInput)) {
                     // Password matches, show the delete confirmation dialog
                     DeleteAccountDialog deleteDialog = new DeleteAccountDialog();
+                    deleteDialog.setOnDeleteConfirmedListener(() -> {
+                        // This is called when the user clicks "Yes" in the confirmation dialog
+                        // Navigation is handled in the deleteUser callback
+                        deleteUser(user_id, hashedInput);
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    });
                     deleteDialog.show(getParentFragmentManager(), "DeleteAccountDialog");
-                    deleteUser(user_id, hashedInput);
                     dismiss();
                 } else {
                     Toast.makeText(getContext(), "Incorrect password. Please try again.", Toast.LENGTH_SHORT).show();
@@ -89,13 +98,15 @@ public class VerifyPasswordDialog extends DialogFragment {
                         .post(body)
                         .build();
 
+        // Capture activity context
+        final FragmentActivity activity = getActivity();
+
         client.newCall(request).enqueue(new Callback() {
 
             @Override
             public void onFailure(@NonNull Call call,
                                   @NonNull IOException e) {
 
-                FragmentActivity activity = getActivity();
                 if (activity != null) {
                     activity.runOnUiThread(() -> {
                         Toast.makeText(
@@ -124,16 +135,29 @@ public class VerifyPasswordDialog extends DialogFragment {
                         res
                 );
 
-                FragmentActivity activity = getActivity();
-                if (activity != null) {
-                    activity.runOnUiThread(() -> {
-                        Toast.makeText(
-                                activity,
-                                res,
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    });
-                }
+//                if (activity != null) {
+//                    activity.runOnUiThread(() -> {
+//                        Toast.makeText(
+//                                activity,
+//                                "Account deleted successfully",
+//                                Toast.LENGTH_SHORT
+//                        ).show();
+//
+//                        // Clear user session
+//                        LoginActivity.user = null;
+//
+//                        // Clear saved credentials to prevent auto-login attempts for the deleted account
+//                        activity.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE).edit().clear().apply();
+//                        activity.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).edit().clear().apply();
+//
+//                        // Navigate to LoginActivity and clear activity stack
+//                        Intent intent = new Intent(activity, LoginActivity.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        startActivity(intent);
+//                        activity.finish();
+//
+//                    });
+//                }
             }
         });
     }

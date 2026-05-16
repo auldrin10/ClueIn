@@ -28,30 +28,29 @@ public class FavoriteManager {
 
     String removeURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/removefavevent.php";
 
-    // ======================================
-    // DUMMY USER
-    // ======================================
-
-    User currentUSER = LoginActivity.user;
-    String dummy_user_id = currentUSER.getUserID();
-
-    String dummy_user_name = currentUSER.getFirstName();
-
-    // ======================================
-
     private FavoriteManager() {
-
         favoriteEvents = new ArrayList<>();
     }
 
     public static synchronized FavoriteManager getInstance() {
-
         if (instance == null) {
-
             instance = new FavoriteManager();
         }
-
         return instance;
+    }
+
+    private String getUserId() {
+        if (LoginActivity.user != null) {
+            return LoginActivity.user.getUserID();
+        }
+        return "unknown";
+    }
+
+    private String getUserName() {
+        if (LoginActivity.user != null) {
+            return LoginActivity.user.getFirstName();
+        }
+        return "Guest";
     }
 
     // ======================================
@@ -65,8 +64,8 @@ public class FavoriteManager {
             favoriteEvents.add(event);
 
             saveFavoriteToDatabase(
-                    dummy_user_id,
-                    dummy_user_name,
+                    getUserId(),
+                    getUserName(),
                     event.getEvent_id()
             );
         }
@@ -84,7 +83,7 @@ public class FavoriteManager {
         );
 
         removeFavoriteFromDatabase(
-                dummy_user_id,
+                getUserId(),
                 event.getEvent_id()
         );
     }
@@ -127,6 +126,7 @@ public class FavoriteManager {
             String user_name,
             String event_id
     ) {
+        if (user_id.equals("unknown")) return;
 
         RequestBody body =
                 new FormBody.Builder()
@@ -187,6 +187,7 @@ public class FavoriteManager {
             String user_id,
             String event_id
     ) {
+        if (user_id.equals("unknown")) return;
 
         RequestBody body =
                 new FormBody.Builder()

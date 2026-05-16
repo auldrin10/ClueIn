@@ -342,6 +342,13 @@ public class SignUpActivity extends AppCompatActivity {
                 .add("password", hashedPassword)
                 .build();
         NewUser = email;
+        
+        // Save to SharedPreferences immediately so it's available if the static field is lost
+        getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                .edit()
+                .putString("USER_EMAIL", email)
+                .apply();
+
         Request request = new Request.Builder()
                 .url(signupURL)
                 .post(body)
@@ -378,11 +385,13 @@ public class SignUpActivity extends AppCompatActivity {
     public void ToLogIn(View v) {
         Intent LogIn = new Intent(this, LoginActivity.class);
         startActivity(LogIn);
+        finish();
     }
 
     public void ToCategory(View v) {
         Intent Category = new Intent(this, CategoryActivity.class);
         startActivity(Category);
+        finish(); // Finish current activity so back button doesn't return here
     }
 
     private void signInWithGoogle() {

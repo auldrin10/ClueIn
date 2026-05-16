@@ -11,6 +11,16 @@ import androidx.fragment.app.DialogFragment;
 
 public class DeleteAccountDialog extends DialogFragment {
 
+    public interface OnDeleteConfirmedListener {
+        void onDeleteConfirmed();
+    }
+
+    private OnDeleteConfirmedListener listener;
+
+    public void setOnDeleteConfirmedListener(OnDeleteConfirmedListener listener) {
+        this.listener = listener;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,8 +38,9 @@ public class DeleteAccountDialog extends DialogFragment {
         });
 
         btnConfirmDelete.setOnClickListener(v -> {
-            // Perform the delete action here
-            // e.g., deleteUserFromFirebase();
+            if (listener != null) {
+                listener.onDeleteConfirmed();
+            }
             dismiss();
         });
 
