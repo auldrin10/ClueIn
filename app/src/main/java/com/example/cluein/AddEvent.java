@@ -46,6 +46,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,6 +84,7 @@ public class AddEvent extends Fragment {
 
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
 
     // List of authorized emails (A, B, C)
@@ -175,6 +180,12 @@ public class AddEvent extends Fragment {
                 if (strEventDescription.isEmpty()) {
                     eventDescription.setError("Event description missing.");
                     isValid = false;
+                } else {
+                    int wordCount = strEventDescription.trim().split("\\s+").length;
+                    if (wordCount > 100) {
+                        eventDescription.setError("Description cannot exceed 100 words (Current: " + wordCount + ")");
+                        isValid = false;
+                    }
                 }
                 if (imageUrl == null) {
                     Toast.makeText(requireContext(), "Please select an image.", Toast.LENGTH_LONG).show();
@@ -182,15 +193,7 @@ public class AddEvent extends Fragment {
                 }
 
                 if (isValid) {
-                    double dblprice = 0.0;
-                    try {
-                        dblprice = Double.parseDouble(strEventPrice);
-                    } catch (Exception e) {
-                        Log.e("Error", "Failed parsing: " + strEventPrice);
-                        Toast.makeText(requireContext(), "Wrong input!", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    post();
+                    uploadImageAndPost();
                 }
             }
         });
@@ -315,7 +318,27 @@ public class AddEvent extends Fragment {
         }
     }
 
-    public void post() {
+    private void uploadImageAndPost() {
+        if (imageUrl == null) return;
+
+        // Show a progress dialog or some loading indicator
+        Toast.makeText(requireContext(), "Uploading event...", Toast.LENGTH_SHORT).show();
+
+        String fileName = "events/" + System.currentTimeMillis() + ".jpg";
+        StorageReference storageRef = storage.getReference().child(fileName);
+
+        storageRef.putFile(imageUrl)
+                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String downloadUrl = uri.toString();
+                    post(downloadUrl);
+                }))
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Image upload failed", e);
+                    Toast.makeText(requireContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    public void post(String imageUrlString) {
         String eName = eventName.getText().toString().trim();
         String eLoc = eventLocation.getText().toString().trim();
         String eDate = eventDate.getText().toString().trim();
@@ -323,7 +346,6 @@ public class AddEvent extends Fragment {
         String eCat = eventCategory.getText().toString().trim();
         String ePrice = eventPrice.getText().toString().trim();
         String eDesc = eventDescription.getText().toString().trim();
-        String eImage = imageUrl != null ? uriToBase64(imageUrl) : "";
 
         RequestBody body = new FormBody.Builder()
                 .add("event_name", eName)
@@ -333,7 +355,7 @@ public class AddEvent extends Fragment {
                 .add("event_category", eCat)
                 .add("event_price", ePrice)
                 .add("event_description", eDesc)
-                .add("event_image", eImage)
+                .add("event_image", imageUrlString)
                 .build();
 
         Request request = new Request.Builder().url(postEventURL).post(body).build();
