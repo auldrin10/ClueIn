@@ -198,8 +198,6 @@
                     app:boxStrokeWidth="2.01dp"
                     app:boxStrokeColor="@color/input_stroke"
                     app:hintTextColor="@color/orange"
-                    app:startIconDrawable="@drawable/ic_rand"
-                    app:startIconTint="@color/app_text_primary"
                     android:layout_marginTop="20dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/eventPrice"
@@ -207,10 +205,12 @@
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:textColor="@color/app_text_primary"
+                        android:drawableEnd="@drawable/ic_rand"
                         android:hint="Price"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/eventDescriptionLayout"
                     style="@style/MyTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -222,6 +222,8 @@
                     app:boxStrokeWidth="2.01dp"
                     app:boxStrokeColor="@color/input_stroke"
                     app:hintTextColor="@color/orange"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="500"
                     android:layout_marginTop="20dp"
                     >
                     <com.google.android.material.textfield.TextInputEditText
