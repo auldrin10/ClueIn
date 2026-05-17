@@ -35,6 +35,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -56,9 +57,11 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +90,6 @@ public class AddEvent extends Fragment {
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
 
-    // List of authorized emails (A, B, C)
     private final List<String> authorizedEmails = Arrays.asList("3030015@students.wits.ac.za", "3002003@students.wits.ac.za", "3032986@students.wits.ac.za");
     private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -116,7 +118,6 @@ public class AddEvent extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_add_event, container, false);
 
-        // Initialize Views
         mainFormContainer = view.findViewById(R.id.mainFormContainer);
         eventName = view.findViewById(R.id.eventName);
         eventLocation = view.findViewById(R.id.eventLocation);
@@ -135,64 +136,13 @@ public class AddEvent extends Fragment {
         imageView = view.findViewById(R.id.eventImage);
         EditText[] editTexts = {eventName, eventLocation, eventCategory, eventDate, eventTime, eventPrice, eventDescription};
 
-        // CHECK AUTHORIZATION ON LOAD
         checkUserAuthorization();
-
         checkNotificationPermission();
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String strEventName = eventName.getText().toString().trim();
-                String strEventLocation = eventLocation.getText().toString().trim();
-                String strEventCategory = eventCategory.getText().toString().trim();
-                String strEventDate = eventDate.getText().toString().trim();
-                String strEventTime = eventTime.getText().toString().trim();
-                String strEventPrice = eventPrice.getText().toString().trim();
-                String strEventDescription = eventDescription.getText().toString().trim();
-
-                boolean isValid = true;
-
-                if (strEventName.isEmpty()) {
-                    eventName.setError("Event name missing.");
-                    isValid = false;
-                }
-                if (strEventLocation.isEmpty()) {
-                    eventLocation.setError("Event location missing.");
-                    isValid = false;
-                }
-                if (strEventCategory.isEmpty()) {
-                    eventCategory.setError("Event category missing.");
-                    isValid = false;
-                }
-                if (strEventDate.isEmpty()) {
-                    eventDate.setError("Event date missing.");
-                    isValid = false;
-                }
-                if (strEventTime.isEmpty()) {
-                    eventTime.setError("Event time missing.");
-                    isValid = false;
-                }
-                if (strEventPrice.isEmpty()) {
-                    eventPrice.setError("Event price missing.");
-                    isValid = false;
-                }
-                if (strEventDescription.isEmpty()) {
-                    eventDescription.setError("Event description missing.");
-                    isValid = false;
-                } else {
-                    int wordCount = strEventDescription.trim().split("\\s+").length;
-                    if (wordCount > 100) {
-                        eventDescription.setError("Description cannot exceed 100 words (Current: " + wordCount + ")");
-                        isValid = false;
-                    }
-                }
-                if (imageUrl == null) {
-                    Toast.makeText(requireContext(), "Please select an image.", Toast.LENGTH_LONG).show();
-                    isValid = false;
-                }
-
-                if (isValid) {
+                if (validateFields()) {
                     uploadImageAndPost();
                 }
             }
@@ -207,33 +157,9 @@ public class AddEvent extends Fragment {
             edit.addTextChangedListener(new TextWatcher() {
                 @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
                 @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (edit == eventName) {
-                        eventName.setError(null);
-                        eventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_event_24, 0);
-                    } else if (edit == eventLocation) {
-                        eventLocation.setError(null);
-                        eventLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_add_location_24, 0);
-                    } else if (edit == eventCategory) {
-                        eventCategory.setError(null);
-                        eventCategory.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_ad_group_24, 0);
-                    } else if (edit == eventDate) {
-                        eventDate.setError(null);
-                        eventDate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_calendar_clock_24, 0);
-                    } else if (edit == eventTime) {
-                        eventTime.setError(null);
-                        eventTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.outline_alarm_24, 0);
-                    } else if (edit == eventPrice) {
-                        eventPrice.setError(null);
-                        eventPrice.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_rand, 0);
-                    } else if (edit == eventDescription) {
-                        eventDescription.setError(null);
-                        eventDescription.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_description_24, 0);
-                    }
-
-                    if (edit != eventDescription) {
-                        addEvent.setEnabled(true);
-                        addEvent.setBackgroundResource(R.drawable.sign_up_button);
-                    }
+                    edit.setError(null);
+                    addEvent.setEnabled(true);
+                    addEvent.setBackgroundResource(R.drawable.sign_up_button);
                 }
                 @Override public void afterTextChanged(Editable s) {}
             });
@@ -242,182 +168,191 @@ public class AddEvent extends Fragment {
         return view;
     }
 
-    private void checkUserAuthorization() {
-        String userEmail = "";
-        if (getActivity() != null && getActivity().getIntent() != null) {
-            userEmail = getActivity().getIntent().getStringExtra("USER_EMAIL");
+    private boolean validateFields() {
+        String strEventName = eventName.getText().toString().trim();
+        String strEventLocation = eventLocation.getText().toString().trim();
+        String strEventCategory = eventCategory.getText().toString().trim();
+        String strEventDate = eventDate.getText().toString().trim();
+        String strEventTime = eventTime.getText().toString().trim();
+        String strEventPrice = eventPrice.getText().toString().trim();
+        String strEventDescription = eventDescription.getText().toString().trim();
+
+        if (strEventName.isEmpty()) { eventName.setError("Event name missing."); return false; }
+        if (strEventLocation.isEmpty()) { eventLocation.setError("Event location missing."); return false; }
+        if (strEventCategory.isEmpty()) { eventCategory.setError("Event category missing."); return false; }
+        if (strEventDate.isEmpty()) { eventDate.setError("Event date missing."); return false; }
+        if (strEventTime.isEmpty()) { eventTime.setError("Event time missing."); return false; }
+        if (strEventPrice.isEmpty()) { eventPrice.setError("Event price missing."); return false; }
+        if (strEventDescription.isEmpty()) { eventDescription.setError("Event description missing."); return false; }
+        
+        int wordCount = strEventDescription.trim().split("\\s+").length;
+        if (wordCount > 100) {
+            eventDescription.setError("Description cannot exceed 100 words (Current: " + wordCount + ")");
+            return false;
         }
-
-        if (userEmail == null || !authorizedEmails.contains(userEmail.toLowerCase())) {
-            // NOT AUTHORIZED
-            if (mainFormContainer != null) {
-                mainFormContainer.setVisibility(View.GONE);
-            }
-            showUnauthorizedDialog();
-        } else {
-            // AUTHORIZED
-            if (mainFormContainer != null) {
-                mainFormContainer.setVisibility(View.VISIBLE);
-            }
+        
+        if (imageUrl == null) {
+            Toast.makeText(requireContext(), "Please select an image.", Toast.LENGTH_LONG).show();
+            return false;
         }
-    }
-
-    private void showUnauthorizedDialog() {
-        if (getContext() == null) return;
-
-        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_unauthorized, null);
-        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
-                .setView(dialogView)
-                .setCancelable(false)
-                .create();
-
-        Button btnOk = dialogView.findViewById(R.id.btnOk);
-        btnOk.setOnClickListener(v -> {
-            dialog.dismiss();
-            // Redirect back to Main Feed
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).findViewById(R.id.nav_feed).performClick();
-            }
-        });
-
-        dialog.show();
-    }
-
-    String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
-
-    private String uriToBase64(Uri uri) {
-        try {
-            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            if (bitmap == null) return "";
-
-            // Resize image to keep Base64 string at a reasonable length
-            int maxWidth = 600;
-            int maxHeight = 600;
-            if (bitmap.getWidth() > maxWidth || bitmap.getHeight() > maxHeight) {
-                float aspectRatio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
-                int newWidth, newHeight;
-                if (aspectRatio > 1) {
-                    newWidth = maxWidth;
-                    newHeight = (int) (maxWidth / aspectRatio);
-                } else {
-                    newHeight = maxHeight;
-                    newWidth = (int) (maxHeight * aspectRatio);
-                }
-                bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-            }
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            // Use JPEG compression to further reduce size
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStream);
-            byte[] byteArray = outputStream.toByteArray();
-            return Base64.encodeToString(byteArray, Base64.NO_WRAP);
-        } catch (IOException e) {
-            Log.e(TAG, "Error converting URI to Base64", e);
-            return "";
-        }
+        return true;
     }
 
     private void uploadImageAndPost() {
         if (imageUrl == null) return;
 
-        // Show a progress dialog or some loading indicator
+        addEvent.setEnabled(false);
         Toast.makeText(requireContext(), "Uploading event...", Toast.LENGTH_SHORT).show();
 
         String fileName = "events/" + System.currentTimeMillis() + ".jpg";
         StorageReference storageRef = storage.getReference().child(fileName);
 
         storageRef.putFile(imageUrl)
-                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String downloadUrl = uri.toString();
-                    post(downloadUrl);
-                }))
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                String downloadUrl = uri.toString();
+                                post(downloadUrl);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Failed to get download URL", e);
+                                addEvent.setEnabled(true);
+                                Toast.makeText(requireContext(), "Failed to get image link", Toast.LENGTH_SHORT).show();
+                            });
+                })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Image upload failed", e);
-                    Toast.makeText(requireContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
+                    addEvent.setEnabled(true);
+                    String errorMsg = e.getMessage();
+                    if (errorMsg != null && errorMsg.contains("unsigned")) {
+                        new AlertDialog.Builder(requireContext())
+                            .setTitle("Storage Error")
+                            .setMessage("Firebase Storage rules require login. Please set rules to 'allow read, write: if true;' in Firebase Console.")
+                            .setPositiveButton("OK", null)
+                            .show();
+                    } else {
+                        Toast.makeText(requireContext(), "Upload failed: " + errorMsg, Toast.LENGTH_LONG).show();
+                    }
                 });
     }
 
     public void post(String imageUrlString) {
+
         String eName = eventName.getText().toString().trim();
         String eLoc = eventLocation.getText().toString().trim();
+
         String eDate = eventDate.getText().toString().trim();
         String eTime = eventTime.getText().toString().trim();
+
         String eCat = eventCategory.getText().toString().trim();
+
+        switch (eCat) {
+            case "Social": eCat = "1"; break;
+            case "Sports": eCat = "2"; break;
+            case "Academics": eCat = "6"; break;
+            case "Nightlife": eCat = "5"; break;
+            case "Music": eCat = "3"; break;
+            case "Food": eCat = "4"; break;
+            default: eCat = "2";
+        }
+
         String ePrice = eventPrice.getText().toString().trim();
         String eDesc = eventDescription.getText().toString().trim();
 
         RequestBody body = new FormBody.Builder()
                 .add("event_name", eName)
                 .add("event_location", eLoc)
+                .add("category_id", eCat)
                 .add("event_date", eDate)
                 .add("event_time", eTime)
-                .add("event_category", eCat)
                 .add("event_price", ePrice)
                 .add("event_description", eDesc)
                 .add("event_image", imageUrlString)
                 .build();
 
-        Request request = new Request.Builder().url(postEventURL).post(body).build();
+        Request request = new Request.Builder()
+                .url(postEventURL)
+                .post(body)
+                .build();
 
         Eventclient.newCall(request).enqueue(new Callback() {
+
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show());
-                }
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(),
+                                "Network error: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show()
+                );
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                final String responseData = response.body().string();
-                if (response.isSuccessful() && getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        try {
-                            JSONObject jsonObject = new JSONObject(responseData);
-                            String message = jsonObject.optString("message", "Success");
-                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-                            if (message.toLowerCase().contains("successfully")) {
-                                clearFormFields();
-                            }
-                        } catch (JSONException e) {
-                            Log.e(TAG, "JSON parse error: " + responseData);
+
+                String resBody = response.body() != null ? response.body().string() : "";
+
+                Log.d("EVENT_RESPONSE", resBody);
+
+                requireActivity().runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(resBody);
+
+                        String status = obj.optString("status");
+                        String message = obj.optString("message");
+
+                        Toast.makeText(requireContext(),
+                                status + " - " + message,
+                                Toast.LENGTH_LONG).show();
+
+                        if (status.equals("success")) {
+                            clearFormFields();
                         }
-                    });
-                }
+
+                    } catch (Exception e) {
+                        Toast.makeText(requireContext(),
+                                "Invalid server response",
+                                Toast.LENGTH_LONG).show();
+                        Log.e("PARSE_ERROR", resBody);
+                    }
+                });
             }
         });
     }
+    private void checkUserAuthorization() {
+        String userEmail = "";
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            userEmail = getActivity().getIntent().getStringExtra("USER_EMAIL");
+        }
+        if (userEmail == null || !authorizedEmails.contains(userEmail.toLowerCase())) {
+            if (mainFormContainer != null) mainFormContainer.setVisibility(View.GONE);
+            showUnauthorizedDialog();
+        } else {
+            if (mainFormContainer != null) mainFormContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showUnauthorizedDialog() {
+        if (getContext() == null) return;
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_unauthorized, null);
+        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
+                .setView(dialogView).setCancelable(false).create();
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).findViewById(R.id.nav_feed).performClick();
+            }
+        });
+        dialog.show();
+    }
+
+    String postEventURL = " https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
 
     private void checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
-        }
-    }
-
-    @SuppressLint("ScheduleExactAlarm")
-    private void scheduleNotification(String eventId, String eventTitle) {
-        Calendar reminderCalendar = (Calendar) selectedEventDate.clone();
-        reminderCalendar.add(Calendar.MINUTE, -20);
-
-        if (reminderCalendar.getTimeInMillis() < System.currentTimeMillis()) return;
-
-        Intent intent = new Intent(requireContext(), EventReminderReceiver.class);
-        intent.putExtra("eventId", eventId);
-        intent.putExtra("eventTitle", eventTitle);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                requireContext(),
-                eventId.hashCode(),
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderCalendar.getTimeInMillis(), pendingIntent);
         }
     }
 
@@ -444,15 +379,6 @@ public class AddEvent extends Fragment {
         timePickerDialog.show();
     }
 
-    private void showEventError() {
-        new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
-                .setTitle("Error")
-                .setMessage("This event exists!")
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .setCancelable(false)
-                .show();
-    }
-
     private void clearFormFields() {
         eventName.setText("");
         eventLocation.setText("");
@@ -462,12 +388,8 @@ public class AddEvent extends Fragment {
         eventPrice.setText("");
         eventDescription.setText("");
         imageUrl = null;
-        if (imageView != null) {
-            imageView.setVisibility(View.GONE);
-        }
-        if (selectImage != null) {
-            selectImage.setText("Select Image");
-        }
+        if (imageView != null) imageView.setVisibility(View.GONE);
+        if (selectImage != null) selectImage.setText("Select Image");
         if (addEvent != null) {
             addEvent.setEnabled(true);
             addEvent.setBackgroundResource(R.drawable.sign_up_button);
@@ -475,30 +397,14 @@ public class AddEvent extends Fragment {
     }
 
     private void setupLocationDropdown() {
-        String[] locations = {
-                "Great Hall",
-                "Matrix",
-                "Rugby Stadium",
-                "Soccer Stadium",
-                "Netball",
-                "Mathematical Sciences Building",
-                "Science Stadium",
-                "Oppenheimer Life Sciences",
-                "FNB Building",
-                "Flower Hall",
-                "Theatre",
-                "Amic Deck",
-                "Wits Art Musium",
-                "Online"
-        };
+        String[] locations = {"Great Hall", "Matrix", "Rugby Stadium", "Soccer Stadium", "Netball", "Mathematical Sciences Building", "Science Stadium", "Oppenheimer Life Sciences", "FNB Building", "Flower Hall", "Theatre", "Amic Deck", "Wits Art Musium", "Online"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
         eventLocation.setAdapter(adapter);
     }
 
     private void setupCategoryDropdown() {
-        String[] categories = {"Social", "Sports", "Academic", "Nightlife", "Cultural", "Other"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, categories);
+        String[] categories = {"Social", "Sports", "Academics", "Nightlife", "Music", "Food"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
         eventCategory.setAdapter(adapter);
     }
 }
