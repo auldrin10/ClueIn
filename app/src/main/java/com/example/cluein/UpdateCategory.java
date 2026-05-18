@@ -36,8 +36,8 @@ public class UpdateCategory extends Fragment {
 
     OkHttpClient client = new OkHttpClient();
 
-    String getUrl = " https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
-    String postUrl = " https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
+    String getUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
+    String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
 
     RecyclerView rvSelectedCategories;
     SelectedCategoryAdapter adapter;
@@ -112,6 +112,7 @@ public class UpdateCategory extends Fragment {
 
         String userId = LoginActivity.user.getUserID();
 
+        // Prepare the request body with user_id and category
         RequestBody body = new FormBody.Builder()
                 .add("user_id", userId)
                 .add("category", categoryName)
@@ -127,18 +128,24 @@ public class UpdateCategory extends Fragment {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> 
-                        Toast.makeText(getContext(), "Failed to add category", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(getContext(), "Network error: Failed to add " + categoryName, Toast.LENGTH_SHORT).show()
                     );
                 }
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getContext(), "Category added successfully", Toast.LENGTH_SHORT).show();
-                        loadPreferredCategories(); // Refresh the list
-                    });
+                try (Response res = response) {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (res.isSuccessful()) {
+                                Toast.makeText(getContext(), categoryName + " added successfully", Toast.LENGTH_SHORT).show();
+                                loadPreferredCategories(); // Refresh the list to show the new preference
+                            } else {
+                                Toast.makeText(getContext(), "Server error: " + res.code(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -198,6 +205,8 @@ public class UpdateCategory extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e("PARSE_ERROR", e.toString());
+                } finally {
+                    response.close();
                 }
             }
         });
