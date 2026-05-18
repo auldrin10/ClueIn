@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class favouritesFragment extends Fragment {
 
@@ -46,15 +47,20 @@ public class favouritesFragment extends Fragment {
                 new LinearLayoutManager(getContext())
         );
 
+        // Initialize with current local favorites for immediate visibility
+        List<Event> currentFavorites = FavoriteManager.getInstance().getFavoriteEvents();
         adapter =
                 new EventAdapter(
-                        new ArrayList<>(),
+                        currentFavorites,
                         getContext(),
                         true
                 );
 
         recyclerView.setAdapter(adapter);
+        
+        refreshUI();
 
+        // Sync with database
         loadFavorites();
 
         return view;
@@ -86,21 +92,11 @@ public class favouritesFragment extends Fragment {
     }
 
     private void refreshUI(){
-
-        if(
-                FavoriteManager
-                        .getInstance()
-                        .getFavoriteEvents()
-                        .isEmpty()
-        ){
-
+        if(adapter.getItemCount() == 0){
             emptyText.setVisibility(View.VISIBLE);
-
         }
         else{
-
             emptyText.setVisibility(View.GONE);
-
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cluein;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -97,12 +98,12 @@ public class CategoryActivity extends AppCompatActivity {
         // CATEGORY CARDS
         int[] cardIds = {
 
-                R.id.card_music,
-                R.id.card_football,
-                R.id.card_socials,
-                R.id.card_academics,
-                R.id.card_financial_literacy,
-                R.id.card_career_expo
+                R.id.Music_Concert,
+                R.id.Sport,
+                R.id.Society,
+                R.id.Academics,
+                R.id.Financial_Literacy,
+                R.id.Career_Expo
         };
 
         for (int id : cardIds) {
@@ -136,10 +137,15 @@ public class CategoryActivity extends AppCompatActivity {
 
             int viewId = view.getId();
 
-            String categoryName =
-                    getResources()
-                            .getResourceEntryName(viewId)
-                            .replace("card_", "");
+            String categoryName;
+            if (viewId == R.id.Music_Concert) categoryName = "Music Concerts";
+            else if (viewId == R.id.Sport) categoryName = "Sports";
+            else if (viewId == R.id.Society) categoryName = "Society";
+            else if (viewId == R.id.Academics) categoryName = "Academics";
+            else if (viewId == R.id.Financial_Literacy) categoryName = "Financial literacy";
+            else if (viewId == R.id.Career_Expo) categoryName = "Career Expo";
+            else categoryName = getResources().getResourceEntryName(viewId).replace("_", " ");
+
 
             if (selectedCategories.contains(viewId)) {
 
@@ -207,6 +213,9 @@ public class CategoryActivity extends AppCompatActivity {
 
         // email from signup
         NewEmail = SignUpActivity.NewUser;
+        if (NewEmail == null) {
+             NewEmail = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("USER_EMAIL", "");
+        }
 
         Log.d("EMAIL_SENT", NewEmail);
 
@@ -311,6 +320,15 @@ public class CategoryActivity extends AppCompatActivity {
                                         userID
                                 );
 
+                                // Set global user for LoginActivity and FavoriteManager
+                                LoginActivity.user = NewUser;
+
+                                // Save categories to SharedPreferences for MainFragment filtering
+                                getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                                        .edit()
+                                        .putStringSet("SelectedCategories", new HashSet<>(Categories))
+                                        .apply();
+
                                 Log.d("USER_ID",
                                         NewUser.getUserID());
 
@@ -334,6 +352,7 @@ public class CategoryActivity extends AppCompatActivity {
                                                 CategoryActivity.this,
                                                 MainActivity.class
                                         );
+                                intent.putExtra("USER_EMAIL", NewEmail);
 
                                 startActivity(intent);
 

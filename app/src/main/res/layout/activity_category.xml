@@ -50,7 +50,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_music"
+                    android:id="@+id/Music_Concert"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -88,7 +88,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_football"
+                    android:id="@+id/Sport"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -126,7 +126,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_socials"
+                    android:id="@+id/Society"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -164,7 +164,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_academics"
+                    android:id="@+id/Academics"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -202,7 +202,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_financial_literacy"
+                    android:id="@+id/Financial_Literacy"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -240,7 +240,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_career_expo"
+                    android:id="@+id/Career_Expo"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
