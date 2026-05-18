@@ -37,7 +37,7 @@ public class UpdateCategory extends Fragment {
     OkHttpClient client = new OkHttpClient();
 
     String getUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
-    String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
+    String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/preference.php";
 
     RecyclerView rvSelectedCategories;
     SelectedCategoryAdapter adapter;
