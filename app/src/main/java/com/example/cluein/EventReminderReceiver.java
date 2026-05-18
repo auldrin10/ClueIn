@@ -38,6 +38,14 @@ public class EventReminderReceiver extends BroadcastReceiver {
             return; 
         }
 
+        // Save notification to store
+        NotificationStore.saveNotification(context, new NotificationModel(
+                eventId + "_" + System.currentTimeMillis(),
+                eventTitle,
+                message,
+                System.currentTimeMillis()
+        ));
+
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -58,9 +66,9 @@ public class EventReminderReceiver extends BroadcastReceiver {
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.baseline_event_24)
+                .setSmallIcon(R.drawable.ic_bell_notifications)
                 .setContentTitle(eventTitle)
-                .setContentText(message) // Line controlling the specific reminder text
+                .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);

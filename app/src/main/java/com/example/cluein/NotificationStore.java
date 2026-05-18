@@ -15,9 +15,7 @@ public class NotificationStore {
     public static void saveNotification(Context context, NotificationModel notification) {
         List<NotificationModel> notifications = getNotifications(context);
         notifications.add(0, notification); // Add to top
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        String json = new Gson().toJson(notifications);
-        prefs.edit().putString(KEY_NOTIFICATIONS, json).apply();
+        saveAllNotifications(context, notifications);
     }
 
     public static List<NotificationModel> getNotifications(Context context) {
@@ -26,6 +24,39 @@ public class NotificationStore {
         if (json == null) return new ArrayList<>();
         Type type = new TypeToken<List<NotificationModel>>() {}.getType();
         return new Gson().fromJson(json, type);
+    }
+
+    public static void markAsRead(Context context, String notificationId) {
+        List<NotificationModel> notifications = getNotifications(context);
+        for (NotificationModel n : notifications) {
+            if (n.getId().equals(notificationId)) {
+                n.setRead(true);
+                break;
+            }
+        }
+        saveAllNotifications(context, notifications);
+    }
+
+    public static void markAllAsRead(Context context) {
+        List<NotificationModel> notifications = getNotifications(context);
+        for (NotificationModel n : notifications) {
+            n.setRead(true);
+        }
+        saveAllNotifications(context, notifications);
+    }
+
+    public static boolean hasUnreadNotifications(Context context) {
+        List<NotificationModel> notifications = getNotifications(context);
+        for (NotificationModel n : notifications) {
+            if (!n.isRead()) return true;
+        }
+        return false;
+    }
+
+    private static void saveAllNotifications(Context context, List<NotificationModel> notifications) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String json = new Gson().toJson(notifications);
+        prefs.edit().putString(KEY_NOTIFICATIONS, json).apply();
     }
 
     public static void clearNotifications(Context context) {

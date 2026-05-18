@@ -318,7 +318,7 @@ public class AddEvent extends Fragment {
     }
 
     private void setupCategoryDropdown() {
-        String[] categories = {"Social", "Sports", "Academics", "Nightlife", "Music", "Food"};
+        String[] categories = {"Social", "Sports", "Academics", "Career Expo", "Music Concert", "Financial Literacy"};
         if (getContext() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
             eventCategory.setAdapter(adapter);

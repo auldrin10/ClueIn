@@ -26,6 +26,9 @@ public class Event {
 
     private boolean isExpanded = false;
 
+    public Event(String eventId, String eventName, String location, String categoryId, String date, String time, String price, String description, String eventImage) {
+    }
+
     public String getEvent_id() { return Event_id;}
     public void setEvent_id(String event_id) { Event_id = event_id;}
     public String getEvent_title() { return event_title; }

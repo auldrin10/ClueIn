@@ -40,15 +40,8 @@ public class CategoryActivity extends AppCompatActivity {
     String getUserURL =
             "https://wmc.ms.wits.ac.za/students/sgroup2672/users/login.php";
 
-    // =========================
-    // NETWORK
-    // =========================
 
     OkHttpClient client = new OkHttpClient();
-
-    // =========================
-    // UI
-    // =========================
 
     Button btnSkip;
 
@@ -111,9 +104,6 @@ public class CategoryActivity extends AppCompatActivity {
 
         btnSkip = findViewById(R.id.btn_skip);
 
-        // =========================
-        // CATEGORY CARDS
-        // =========================
 
         int[] cardIds = {
 

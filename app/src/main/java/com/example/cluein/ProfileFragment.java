@@ -21,6 +21,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvProfileUserName;
     private TextView tvDisplayName;
     private RelativeLayout btnAccount;
+    private RelativeLayout btnNotifications;
     private RelativeLayout btnLogout;
     private RelativeLayout btnTheme;
     private ImageView imgThemeIcon;
@@ -39,6 +40,7 @@ public class ProfileFragment extends Fragment {
 
         // Initialize Views
         btnAccount = view.findViewById(R.id.btnAccount);
+        btnNotifications = view.findViewById(R.id.btnNotifications);
         btnLogout = view.findViewById(R.id.btnLogout);
         btnTheme = view.findViewById(R.id.btnTheme);
         imgThemeIcon = view.findViewById(R.id.imgThemeIcon);
@@ -49,9 +51,6 @@ public class ProfileFragment extends Fragment {
         user = LoginActivity.user;
         if (user != null) {
             tvDisplayName.setText(user.getFirstName() + " " + user.getLastName());
-            
-            // Set initials in the circular profile view
-
         }
 
         // Initialize Theme state from SharedPreferences
@@ -80,16 +79,16 @@ public class ProfileFragment extends Fragment {
         updatePic.setOnClickListener(v -> navigateTo(new InsideAccount()));
         btnAccount.setOnClickListener(v -> navigateTo(new UpdateProfilePic()));
         
+        if (btnNotifications != null) {
+            btnNotifications.setOnClickListener(v -> navigateTo(new NotificationFragment()));
+        }
+
         btnLogout.setOnClickListener(v -> {
             LogoutDialog dialog = new LogoutDialog();
             dialog.show(getParentFragmentManager(), "LogoutDialog");
         });
     }
 
-    /**
-     * Updates the theme icon based on the current mode.
-     * @param isDarkMode true if dark mode is active, false otherwise.
-     */
     private void updateThemeIcon(boolean isDarkMode) {
         if (isDarkMode) {
             imgThemeIcon.setImageResource(R.drawable.ic_moon);

@@ -16,34 +16,75 @@ import java.util.List;
 
 public class favouritesFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private EventAdapter adapter;
-    private TextView emptyText;
+    RecyclerView recyclerView;
+
+    EventAdapter adapter;
+
+    TextView emptyText;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Fixed: changed fragment_favourites_list to fragment_favourites
-        View view = inflater.inflate(R.layout.fragment_favourites, container, false);
-        
-        recyclerView = view.findViewById(R.id.recyclerFavorites);
-        emptyText = view.findViewById(R.id.tvEmptyFavorites);
-        
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        
-        // Load events from the FavoriteManager
-        List<Event> favList = FavoriteManager.getInstance().getFavoriteEvents();
-        
-        if (favList.isEmpty()) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
+
+        View view =
+                inflater.inflate(
+                        R.layout.fragment_favourites,
+                        container,
+                        false
+                );
+
+        recyclerView =
+                view.findViewById(
+                        R.id.recyclerFavorites
+                );
+
+        emptyText =
+                view.findViewById(
+                        R.id.tvEmptyFavorites
+                );
+
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext())
+        );
+
+        List<Event> favList =
+                FavoriteManager
+                        .getInstance()
+                        .getFavoriteEvents();
+
+        adapter =
+                new EventAdapter(
+                        favList,
+                        getContext(),
+                        true
+                );
+
+        recyclerView.setAdapter(adapter);
+
+        refreshUI();
+
+        return view;
+    }
+
+    private void refreshUI(){
+
+        List<Event> favList =
+                FavoriteManager
+                        .getInstance()
+                        .getFavoriteEvents();
+
+        if(favList.isEmpty()){
+
             emptyText.setVisibility(View.VISIBLE);
-        } else {
+
+        }else{
+
             emptyText.setVisibility(View.GONE);
         }
 
-        // Passing 'true' because this is the Favorites section
-        adapter = new EventAdapter(favList, getContext(), true);
-        recyclerView.setAdapter(adapter);
-
-        return view;
+        adapter.notifyDataSetChanged();
     }
 }

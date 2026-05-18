@@ -13,7 +13,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.badge.BadgeDrawable;
 
 import org.jspecify.annotations.NonNull;
 
@@ -30,6 +32,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private String name;
     OkHttpClient client = new OkHttpClient();
+    private BottomNavigationView bottomNavigationView;
 
     String deleteOldEventsURL =
             "https://wmc.ms.wits.ac.za/students/sgroup2672/events/deleteoldevent.php";
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
         
         // --- AUTHORIZATION CHECK FOR UI ---
         String userEmail = getIntent().getStringExtra("USER_EMAIL");
@@ -129,6 +132,18 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        updateNotificationBadge();
+    }
+
+    public void updateNotificationBadge() {
+        if (bottomNavigationView == null) return;
+        
+        boolean hasUnread = NotificationStore.hasUnreadNotifications(this);
+        BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.nav_notifications);
+        badge.setVisible(hasUnread);
+        // Optional: customize badge color
+        badge.setBackgroundColor(getResources().getColor(R.color.orange));
     }
 
     private void replaceFragment(Fragment fragment) {

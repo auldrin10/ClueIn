@@ -1,6 +1,9 @@
 package com.example.cluein;
 
 import android.util.Log;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import androidx.annotation.NonNull;
 
@@ -52,11 +55,89 @@ public class FavoriteManager {
         }
         return "Guest";
     }
+    String loadURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/users/usersfavourates.php";
 
-    // ======================================
-    // ADD FAVORITE
-    // ======================================
+    public void loadFavoritesFromDatabase() {
 
+        String user_id = getUserId();
+
+        if(user_id.equals("unknown")) return;
+
+        RequestBody body =
+                new FormBody.Builder()
+                        .add("user_id",user_id)
+                        .build();
+
+        Request request =
+                new Request.Builder()
+                        .url(loadURL)
+                        .post(body)
+                        .build();
+
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(
+                    @NonNull Call call,
+                    @NonNull IOException e
+            ) {
+
+                Log.e(
+                        "LOAD_FAV_ERROR",
+                        e.toString()
+                );
+            }
+
+            @Override
+            public void onResponse(
+                    @NonNull Call call,
+                    @NonNull Response response
+            ) throws IOException {
+
+                try{
+
+                    String res =
+                            response.body().string();
+
+                    JSONObject obj =
+                            new JSONObject(res);
+
+                    JSONArray arr =
+                            obj.getJSONArray("events");
+
+                    favoriteEvents.clear();
+
+                    for(int i=0;i<arr.length();i++){
+
+                        JSONObject item =
+                                arr.getJSONObject(i);
+
+                        Event event =
+                                new Event(
+                                        item.getString("event_id"),
+                                        item.getString("event_name"),
+                                        item.getString("location"),
+                                        item.getString("category_id"),
+                                        item.getString("date"),
+                                        item.getString("time"),
+                                        item.getString("price"),
+                                        item.getString("description"),
+                                        item.getString("event_image")
+                                );
+
+                        favoriteEvents.add(event);
+                    }
+
+                }catch(Exception e){
+
+                    Log.e(
+                            "LOAD_PARSE_ERROR",
+                            e.toString()
+                    );
+                }
+            }
+        });
+    }
     public void addFavorite(Event event) {
 
         if (!isFavorite(event)) {
@@ -88,10 +169,6 @@ public class FavoriteManager {
         );
     }
 
-    // ======================================
-    // CHECK FAVORITE
-    // ======================================
-
     public boolean isFavorite(Event event) {
 
         for (Event e : favoriteEvents) {
@@ -108,18 +185,12 @@ public class FavoriteManager {
         return false;
     }
 
-    // ======================================
-    // GET FAVORITES
-    // ======================================
 
     public List<Event> getFavoriteEvents() {
 
         return new ArrayList<>(favoriteEvents);
     }
 
-    // ======================================
-    // SAVE TO DATABASE
-    // ======================================
 
     public void saveFavoriteToDatabase(
             String user_id,

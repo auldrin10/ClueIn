@@ -15,6 +15,7 @@ import java.util.List;
 public class NotificationFragment extends Fragment {
     private RecyclerView rvNotifications;
     private TextView tvNoNotifications;
+    private TextView tvMarkAllAsRead;
     private NotificationAdapter adapter;
 
     @Nullable
@@ -23,9 +24,16 @@ public class NotificationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
         rvNotifications = view.findViewById(R.id.rvNotifications);
         tvNoNotifications = view.findViewById(R.id.tvNoNotifications);
+        tvMarkAllAsRead = view.findViewById(R.id.tvMarkAllAsRead);
         
         rvNotifications.setLayoutManager(new LinearLayoutManager(getContext()));
         
+        tvMarkAllAsRead.setOnClickListener(v -> {
+            NotificationStore.markAllAsRead(getContext());
+            loadNotifications();
+            updateBottomNavBadge();
+        });
+
         loadNotifications();
         
         return view;
@@ -37,11 +45,24 @@ public class NotificationFragment extends Fragment {
         if (notifications.isEmpty()) {
             tvNoNotifications.setVisibility(View.VISIBLE);
             rvNotifications.setVisibility(View.GONE);
+            tvMarkAllAsRead.setVisibility(View.GONE);
         } else {
             tvNoNotifications.setVisibility(View.GONE);
             rvNotifications.setVisibility(View.VISIBLE);
-            adapter = new NotificationAdapter(notifications);
+            tvMarkAllAsRead.setVisibility(View.VISIBLE);
+            
+            adapter = new NotificationAdapter(notifications, notification -> {
+                NotificationStore.markAsRead(getContext(), notification.getId());
+                loadNotifications();
+                updateBottomNavBadge();
+            });
             rvNotifications.setAdapter(adapter);
+        }
+    }
+
+    private void updateBottomNavBadge() {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).updateNotificationBadge();
         }
     }
 }
