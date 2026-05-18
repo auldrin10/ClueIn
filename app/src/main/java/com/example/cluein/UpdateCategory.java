@@ -38,6 +38,7 @@ public class UpdateCategory extends Fragment {
 
     String getUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/filterpreference.php";
     String postUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/preference.php";
+    String removeUrl = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/removepreference.php";
 
     RecyclerView rvSelectedCategories;
     SelectedCategoryAdapter adapter;
@@ -82,8 +83,8 @@ public class UpdateCategory extends Fragment {
         rvSelectedCategories.setLayoutManager(new LinearLayoutManager(getContext()));
         
         adapter = new SelectedCategoryAdapter(selectedCategoriesList, position -> {
-            // Future implementation: Delete category from preferences
-            Toast.makeText(getContext(), "Delete not yet implemented on server", Toast.LENGTH_SHORT).show();
+            String categoryName = selectedCategoriesList.get(position).getName();
+            removePreference(categoryName);
         });
         
         rvSelectedCategories.setAdapter(adapter);
@@ -141,6 +142,53 @@ public class UpdateCategory extends Fragment {
                             if (res.isSuccessful()) {
                                 Toast.makeText(getContext(), categoryName + " added successfully", Toast.LENGTH_SHORT).show();
                                 loadPreferredCategories(); // Refresh the list to show the new preference
+                            } else {
+                                Toast.makeText(getContext(), "Server error: " + res.code(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void removePreference(String categoryName) {
+        if (LoginActivity.user == null) {
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = LoginActivity.user.getUserID();
+
+        // Prepare the request body with user_id and category for removal
+        RequestBody body = new FormBody.Builder()
+                .add("user_id", userId)
+                .add("category", categoryName)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(removeUrl)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), "Failed to remove " + categoryName, Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try (Response res = response) {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (res.isSuccessful()) {
+                                Toast.makeText(getContext(), categoryName + " removed successfully", Toast.LENGTH_SHORT).show();
+                                loadPreferredCategories(); // Refresh the list to show changes
                             } else {
                                 Toast.makeText(getContext(), "Server error: " + res.code(), Toast.LENGTH_SHORT).show();
                             }
