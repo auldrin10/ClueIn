@@ -39,17 +39,9 @@ public class CategoryActivity extends AppCompatActivity {
 
     String getUserURL =
             "https://wmc.ms.wits.ac.za/students/sgroup2672/users/login.php";
-
-    // =========================
     // NETWORK
-    // =========================
-
     OkHttpClient client = new OkHttpClient();
-
-    // =========================
     // UI
-    // =========================
-
     Button btnSkip;
 
     ArrayList<String> Categories = new ArrayList<>();
@@ -92,11 +84,7 @@ public class CategoryActivity extends AppCompatActivity {
 
                     return insets;
                 });
-
-        // =========================
         // COLORS
-        // =========================
-
         colorDefault =
                 ContextCompat.getColor(
                         this,
@@ -104,27 +92,17 @@ public class CategoryActivity extends AppCompatActivity {
                 );
 
         colorSelected = Color.LTGRAY;
-
-        // =========================
         // BUTTON
-        // =========================
-
         btnSkip = findViewById(R.id.btn_skip);
-
-        // =========================
         // CATEGORY CARDS
-        // =========================
-
         int[] cardIds = {
 
                 R.id.card_music,
-                R.id.card_food,
                 R.id.card_football,
-                R.id.card_rugby,
-                R.id.card_hackathon,
-                R.id.card_worship,
-                R.id.card_netball,
-                R.id.card_nightlife
+                R.id.card_socials,
+                R.id.card_academics,
+                R.id.card_financial_literacy,
+                R.id.card_career_expo
         };
 
         for (int id : cardIds) {
@@ -141,11 +119,7 @@ public class CategoryActivity extends AppCompatActivity {
                         "Card not found: " + id);
             }
         }
-
-        // =========================
         // BUTTON CLICK
-        // =========================
-
         btnSkip.setOnClickListener(v -> {
 
             // get user first
@@ -154,10 +128,8 @@ public class CategoryActivity extends AppCompatActivity {
         });
     }
 
-    // =========================
-    // CATEGORY TOGGLE
-    // =========================
 
+    // CATEGORY TOGGLE
     private void setupCategoryToggle(View view) {
 
         view.setOnClickListener(v -> {
@@ -195,9 +167,7 @@ public class CategoryActivity extends AppCompatActivity {
         });
     }
 
-    // =========================
     // CARD COLOR
-    // =========================
 
     private void setCardBackground(View view,
                                    int color) {
@@ -213,9 +183,9 @@ public class CategoryActivity extends AppCompatActivity {
         }
     }
 
-    // =========================
+
     // BUTTON TEXT
-    // =========================
+
 
     private void updateButtonText() {
 
@@ -229,9 +199,9 @@ public class CategoryActivity extends AppCompatActivity {
         }
     }
 
-    // =========================
+
     // GET USER USING EMAIL
-    // =========================
+
 
     public void postNewUSER() {
 
@@ -344,9 +314,9 @@ public class CategoryActivity extends AppCompatActivity {
                                 Log.d("USER_ID",
                                         NewUser.getUserID());
 
-                                // =========================
+
                                 // INSERT ALL CATEGORIES
-                                // =========================
+
 
                                 for (String category :
                                         Categories) {
@@ -387,9 +357,9 @@ public class CategoryActivity extends AppCompatActivity {
                 });
     }
 
-    // =========================
+
     // INSERT PREFERENCE
-    // =========================
+
 
     public void postPreference(
             String userid,
