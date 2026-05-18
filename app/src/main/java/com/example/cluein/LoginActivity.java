@@ -24,6 +24,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -49,9 +55,12 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText textPassword;
     TextView display;
     TextInputLayout emailLayout, pswLayout;
-    ImageView btnGoogle, btnInstagram, btnFacebook;
+    ImageView btnGoogle;
     CheckBox rememberMe;
     public static User user;
+
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
 
     private static final String PREFS_NAME = "LoginPrefs";
     private static final String KEY_REMEMBER = "remember";
@@ -73,8 +82,12 @@ public class LoginActivity extends AppCompatActivity {
         rememberMe = findViewById(R.id.checkBox);
 
         btnGoogle = findViewById(R.id.btnGoogle);
-        btnInstagram = findViewById(R.id.btnInstagram);
-        btnFacebook = findViewById(R.id.btnFacebook);
+
+        // Configure Google Sign-In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         int redRed = Color.parseColor("#FF0000");
         ColorStateList errorColorStateList = ColorStateList.valueOf(redRed);
@@ -153,9 +166,53 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btnGoogle.setOnClickListener(v -> openUrl("https://www.google.com"));
-        btnInstagram.setOnClickListener(v -> openUrl("https://www.instagram.com"));
-        btnFacebook.setOnClickListener(v -> openUrl("https://www.facebook.com"));
+        btnGoogle.setOnClickListener(v -> {
+            signIn();
+        });
+    }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            if (account != null) {
+                String email = account.getEmail();
+                String displayName = account.getDisplayName();
+                String firstName = account.getGivenName();
+                String lastName = account.getFamilyName();
+                String googleId = account.getId();
+
+                // Create a temporary User object for the session
+                user = new User(firstName, lastName, email, "", googleId);
+
+                // Save email to SharedPreferences
+                getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                        .edit()
+                        .putString("USER_EMAIL", email)
+                        .apply();
+
+                ToDashboard(null);
+            }
+        } catch (ApiException e) {
+            Log.w("GOOGLE_AUTH", "signInResult:failed code=" + e.getStatusCode());
+            Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void openUrl(String url) {
