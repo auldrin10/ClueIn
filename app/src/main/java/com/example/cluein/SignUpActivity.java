@@ -118,25 +118,33 @@ public class SignUpActivity extends AppCompatActivity {
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Log.d("GOOGLE_AUTH", "Result Code: " + result.getResultCode());
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                        try {
-                            GoogleSignInAccount account = task.getResult(ApiException.class);
-                            if (account != null) {
-                                firebaseAuthWithGoogle(account.getIdToken());
-                            }
-                        } catch (ApiException e) {
-                            Log.e("GOOGLE_AUTH", "Google sign in failed. Status Code: " + e.getStatusCode(), e);
-                            Toast.makeText(this, "Google Sign-In Failed (Code: " + e.getStatusCode() + ")", Toast.LENGTH_LONG).show();
+                    Intent data = result.getData();
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    try {
+                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                        if (account != null) {
+                            firebaseAuthWithGoogle(account.getIdToken());
                         }
-                    } else {
-                        // This handles cases where the user cancels or an error occurs before account selection
-                        int resultCode = result.getResultCode();
-                        Log.w("GOOGLE_AUTH", "Sign-in result not OK: " + resultCode);
-                        String message = (resultCode == 0) ? "Sign-In Canceled (Check SHA-1 in Firebase)" : "Sign-In Failed (Code: " + resultCode + ")";
-                        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                    } catch (ApiException e) {
+                        int statusCode = e.getStatusCode();
+                        Log.e("GOOGLE_AUTH", "Google sign in failed. Status Code: " + statusCode, e);
+                        
+                        String errorMessage;
+                        switch (statusCode) {
+                            case 10:
+                                errorMessage = "Developer Error (10): Check SHA-1, Package Name, and Support Email in Firebase.";
+                                break;
+                            case 12500:
+                                errorMessage = "Sign-In Failed (12500): Update Google Play Services or check Firebase config.";
+                                break;
+                            case 7:
+                                errorMessage = "Network Error: Check your internet connection.";
+                                break;
+                            default:
+                                errorMessage = "Google Sign-In Failed (Code: " + statusCode + ")";
+                                break;
+                        }
+                        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
         );
