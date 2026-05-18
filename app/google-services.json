@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "636341501011-lbdnfitta0hnut6cr9i8isl7c3j68a5p.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.cluein",
-            "certificate_hash": "448700d2f72600e47378a5d679eccd28b4e9023d"
-          }
-        },
-        {
           "client_id": "636341501011-05gshqc6fa0q3vctris0fsm5r4smheov.apps.googleusercontent.com",
           "client_type": 3
         }
