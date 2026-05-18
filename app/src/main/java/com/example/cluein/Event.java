@@ -20,6 +20,8 @@ public class Event {
     private double price;
     @SerializedName("id")
     private String Event_id;
+    @SerializedName("university")
+    private String university;
 
     @SerializedName("is_wits_event")
     private boolean isOnCampus;
@@ -28,6 +30,8 @@ public class Event {
 
     public String getEvent_id() { return Event_id;}
     public void setEvent_id(String event_id) { Event_id = event_id;}
+    public String getUniversity() { return university; }
+    public void setUniversity(String university) { this.university = university; }
     public String getEvent_title() { return event_title; }
     public String getImageURL() { return imageURL; }
     public void setImageURL(String imageURL) { this.imageURL = imageURL; }

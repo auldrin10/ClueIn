@@ -50,6 +50,10 @@
         </activity>
 
         <activity
+            android:name=".UniversitySelectionActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
 

@@ -45,6 +45,7 @@ public class MainFragment extends Fragment {
     private OkHttpClient client = new OkHttpClient();
     private FirebaseFirestore firestore;
     private Set<String> selectedCategories;
+    private String selectedUniversity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +79,9 @@ public class MainFragment extends Fragment {
         if (getContext() != null) {
             SharedPreferences prefs = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             selectedCategories = prefs.getStringSet("SelectedCategories", new HashSet<>());
+            selectedUniversity = prefs.getString("SelectedUniversity", "Wits");
             Log.d("MainFragment", "Selected Categories: " + selectedCategories.toString());
+            Log.d("MainFragment", "Selected University: " + selectedUniversity);
         }
     }
 
@@ -126,6 +129,13 @@ public class MainFragment extends Fragment {
                 }
                 
                 String imageUrl = document.getString("Image_url");
+                String eventUni = document.getString("university");
+
+                // Filter based on University
+                if (eventUni != null && !eventUni.equalsIgnoreCase(selectedUniversity)) {
+                    continue;
+                }
+
                 Boolean isWitsEvent = document.getBoolean("is_wits_event");
 
                 eventList.add(new Event(
@@ -233,8 +243,10 @@ public class MainFragment extends Fragment {
     OkHttpClient client3 = new OkHttpClient();
 
     public void fetchEvents() {
+        String urlWithParams = getEventsURL + "?university=" + selectedUniversity;
+        
         Request request = new Request.Builder()
-                .url(getEventsURL)
+                .url(urlWithParams)
                 .get()
                 .build();
 

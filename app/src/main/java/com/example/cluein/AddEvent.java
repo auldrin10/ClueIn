@@ -103,8 +103,10 @@ public class AddEvent extends Fragment {
             @Override
             public void onClick(View view) {
                 if (validateFields()) {
-                    // Images are now determined by category automatically in the Adapter
-                    post("category_default");
+                    if (validateUniversityEmail()) {
+                        // Images are now determined by category automatically in the Adapter
+                        post("category_default");
+                    }
                 }
             }
         });
@@ -154,6 +156,25 @@ public class AddEvent extends Fragment {
         return true;
     }
 
+    private boolean validateUniversityEmail() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String selectedUni = prefs.getString("SelectedUniversity", "");
+        String userEmail = prefs.getString("USER_EMAIL", "").toLowerCase();
+
+        if (selectedUni.equals("Wits")) {
+            if (!userEmail.endsWith("@students.wits.ac.za") && !userEmail.endsWith("@wits.ac.za")) {
+                Toast.makeText(requireContext(), "You must have a Wits email to post here.", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        } else if (selectedUni.equals("UJ")) {
+            if (!userEmail.endsWith("@student.uj.ac.za") && !userEmail.endsWith("@uj.ac.za")) {
+                Toast.makeText(requireContext(), "You must have a UJ email to post here.", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
     String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
 
     public void post(String imageUrlString) {
@@ -164,6 +185,9 @@ public class AddEvent extends Fragment {
         String eTime = eventTime.getText().toString().trim();
         String ePrice = eventPrice.getText().toString().trim();
         String eDesc = eventDescription.getText().toString().trim();
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String selectedUni = prefs.getString("SelectedUniversity", "Wits");
 
         String formattedDate = rawDate;
         try{
@@ -196,6 +220,7 @@ public class AddEvent extends Fragment {
                 .add("event_price",ePrice)
                 .add("event_description",eDesc)
                 .add("event_image",imageUrlString)
+                .add("university", selectedUni)
                 .build();
 
         Request request = new Request.Builder()

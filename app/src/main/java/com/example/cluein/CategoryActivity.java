@@ -350,7 +350,7 @@ public class CategoryActivity extends AppCompatActivity {
                                 Intent intent =
                                         new Intent(
                                                 CategoryActivity.this,
-                                                MainActivity.class
+                                                UniversitySelectionActivity.class
                                         );
                                 intent.putExtra("USER_EMAIL", NewEmail);
 
