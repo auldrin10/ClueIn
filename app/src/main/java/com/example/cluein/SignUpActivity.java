@@ -118,6 +118,7 @@ public class SignUpActivity extends AppCompatActivity {
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    Log.d("GOOGLE_AUTH", "Result Code: " + result.getResultCode());
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -127,9 +128,13 @@ public class SignUpActivity extends AppCompatActivity {
                                 firebaseAuthWithGoogle(account.getIdToken());
                             }
                         } catch (ApiException e) {
-                            Log.w("GOOGLE_AUTH", "Google sign in failed", e);
-                            Toast.makeText(this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show();
+                            Log.e("GOOGLE_AUTH", "Google sign in failed. Status Code: " + e.getStatusCode(), e);
+                            Toast.makeText(this, "Google Sign-In Failed (Code: " + e.getStatusCode() + ")", Toast.LENGTH_LONG).show();
                         }
+                    } else {
+                        // This handles cases where the user cancels or an error occurs before account selection
+                        Log.w("GOOGLE_AUTH", "Sign-in result not OK: " + result.getResultCode());
+                        Toast.makeText(this, "Sign-In Canceled or Failed", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
