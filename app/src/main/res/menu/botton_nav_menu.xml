@@ -15,6 +15,11 @@
         android:title="Add event"/>
 
     <item
+        android:id="@+id/nav_notifications"
+        android:icon="@drawable/outline_alarm_24"
+        android:title="Notifications" />
+
+    <item
         android:id="@+id/nav_favorites"
         android:icon="@drawable/heart_alt_svgrepo_com"
         android:title="Favorites" />

@@ -95,6 +95,37 @@
                 </RelativeLayout>
 
                 <!-- Theme Row (Clickable Icon Only) -->
+
+                <!-- Logout Row -->
+                <RelativeLayout
+                    android:id="@+id/btnLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/txtLogOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Log out"
+                        android:textColor="@color/app_text_primary"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/outline_arrow_forward_ios_24"
+                        app:tint="@color/app_text_secondary" />
+                </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/btnTheme"
                     android:layout_width="match_parent"
@@ -127,36 +158,6 @@
                         app:tint="@color/orange" />
                 </RelativeLayout>
 
-                <!-- Logout Row -->
-                <RelativeLayout
-                    android:id="@+id/btnLogout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
-
-                    <TextView
-                        android:id="@+id/txtLogOut"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:text="Log out"
-                        android:textColor="@color/app_text_primary"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/outline_arrow_forward_ios_24"
-                        app:tint="@color/app_text_secondary" />
-                </RelativeLayout>
 
             </LinearLayout>
 

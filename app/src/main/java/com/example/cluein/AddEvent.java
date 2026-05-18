@@ -212,7 +212,6 @@ public class AddEvent extends Fragment {
                     );
                 }
             }
-
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String serverResponse = response.body()!=null ? response.body().string() : "";
