@@ -140,6 +140,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         intent.putExtra("message", message);
         context.sendBroadcast(intent);
     }
+    public void updateList(List<Event> newList){
+
+        this.eventList.clear();
+
+        this.eventList.addAll(newList);
+
+        notifyDataSetChanged();
+    }
 
     private void scheduleAlarm(Event event, long triggerAtMillis, String message, int requestCodeOffset) {
         if (triggerAtMillis <= System.currentTimeMillis()) return;

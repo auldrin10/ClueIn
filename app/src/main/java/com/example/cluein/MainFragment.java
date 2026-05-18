@@ -134,7 +134,7 @@ public class MainFragment extends Fragment {
                         location,
                         eventDate,
                         description,
-                        price != null ? price : 0.0,
+                        price,
                         id,
                         isWitsEvent != null ? isWitsEvent : false, 
                         category != null ? category : "General"

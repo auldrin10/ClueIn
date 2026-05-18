@@ -179,11 +179,11 @@ public class AddEvent extends Fragment {
 
         String eCat = eventCategory.getText().toString().trim();
         switch(eCat){
-            case "Social": eCat="1"; break;
+            case "Society": eCat="1"; break;
             case "Sports": eCat="2"; break;
-            case "Music": eCat="3"; break;
-            case "Food": eCat="4"; break;
-            case "Nightlife": eCat="5"; break;
+            case "Music Concerts": eCat="3"; break;
+            case "Financial literacy": eCat="4"; break;
+            case "Career Expo": eCat="5"; break;
             case "Academics": eCat="6"; break;
         }
 

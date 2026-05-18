@@ -17,7 +17,7 @@ public class Event {
     private String category;
     
     @SerializedName("price")
-    private double price ;
+    private double price;
     @SerializedName("id")
     private String Event_id;
 
@@ -25,9 +25,6 @@ public class Event {
     private boolean isOnCampus;
 
     private boolean isExpanded = false;
-
-    public Event(String eventId, String eventName, String location, String categoryId, String date, String time, String price, String description, String eventImage) {
-    }
 
     public String getEvent_id() { return Event_id;}
     public void setEvent_id(String event_id) { Event_id = event_id;}
@@ -88,15 +85,15 @@ public class Event {
         return "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1000&auto=format&fit=crop";
     }
 
-    public Event(String event_title, String imageURL, String location, String eventDate, String description, double price,String Event_id,boolean isOnCampus, String category) {
-        this.event_title=event_title;
-        this.imageURL=imageURL;
-        this.location=location;
-        this.eventDate=eventDate;
-        this.description=description;
-        this.price=price;
-        this.Event_id=Event_id;
-        this.isOnCampus=isOnCampus;
+    public Event(String event_title, String imageURL, String location, String eventDate, String description, double price, String Event_id, boolean isOnCampus, String category) {
+        this.event_title = event_title;
+        this.imageURL = imageURL;
+        this.location = location;
+        this.eventDate = eventDate;
+        this.description = description;
+        this.price = price;
+        this.Event_id = Event_id;
+        this.isOnCampus = isOnCampus;
         this.category = category;
         this.isExpanded = false;
     }

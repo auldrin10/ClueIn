@@ -57,7 +57,7 @@ public class FavoriteManager {
     }
     String loadURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/users/usersfavourates.php";
 
-    public void loadFavoritesFromDatabase() {
+    public void loadFavoritesFromDatabase(Runnable onComplete) {
 
         String user_id = getUserId();
 
@@ -65,7 +65,7 @@ public class FavoriteManager {
 
         RequestBody body =
                 new FormBody.Builder()
-                        .add("user_id",user_id)
+                        .add("user_id", user_id)
                         .build();
 
         Request request =
@@ -99,6 +99,11 @@ public class FavoriteManager {
                     String res =
                             response.body().string();
 
+                    Log.d(
+                            "FAVORITE_RESPONSE",
+                            res
+                    );
+
                     JSONObject obj =
                             new JSONObject(res);
 
@@ -112,23 +117,40 @@ public class FavoriteManager {
                         JSONObject item =
                                 arr.getJSONObject(i);
 
+                        // Extract values safely and ensure types match the Event constructor
+                        String eventName = item.optString("event_name", "");
+                        String imageUrl = item.optString("event_image", ""); // Assuming correct key
+                        String location = item.optString("location", "");
+                        String date = item.optString("date", "");
+                        String description = item.optString("description", "");
+                        double price = item.optDouble("price", 0.0);
+                        String eventId = item.optString("event_id", "");
+                        String categoryId = item.optString("category_id", "");
+
                         Event event =
                                 new Event(
-                                        item.getString("event_id"),
-                                        item.getString("event_name"),
-                                        item.getString("location"),
-                                        item.getString("category_id"),
-                                        item.getString("date"),
-                                        item.getString("time"),
-                                        item.getString("price"),
-                                        item.getString("description"),
-                                        item.getString("event_image")
+                                        eventName,
+                                        imageUrl,
+                                        location,
+                                        date,
+                                        description,
+                                        price,
+                                        eventId,
+                                        true,
+                                        categoryId
                                 );
 
                         favoriteEvents.add(event);
                     }
 
-                }catch(Exception e){
+                    if(onComplete!=null){
+
+                        onComplete.run();
+
+                    }
+
+                }
+                catch(Exception e){
 
                     Log.e(
                             "LOAD_PARSE_ERROR",
