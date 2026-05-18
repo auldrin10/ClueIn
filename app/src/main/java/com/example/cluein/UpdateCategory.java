@@ -44,13 +44,13 @@ public class UpdateCategory extends Fragment {
     SelectedCategoryAdapter adapter;
     List<Category> selectedCategoriesList = new ArrayList<>();
 
-    // All available categories
+    // Standardized categories to match CategoryActivity and database expectations
     private final String[] allCategories = {
             "Music Concerts",
             "Sports",
             "Society",
             "Academics",
-            "Financial literacy",
+            "Financial Literacy",
             "Career Expo"
     };
 
@@ -113,10 +113,10 @@ public class UpdateCategory extends Fragment {
 
         String userId = LoginActivity.user.getUserID();
 
-        // Prepare the request body with user_id and category
+        // Using .trim() to ensure no hidden spaces cause database mismatch
         RequestBody body = new FormBody.Builder()
                 .add("user_id", userId)
-                .add("category", categoryName)
+                .add("category", categoryName.trim())
                 .build();
 
         Request request = new Request.Builder()
@@ -141,7 +141,7 @@ public class UpdateCategory extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             if (res.isSuccessful()) {
                                 Toast.makeText(getContext(), categoryName + " added successfully", Toast.LENGTH_SHORT).show();
-                                loadPreferredCategories(); // Refresh the list to show the new preference
+                                loadPreferredCategories(); 
                             } else {
                                 Toast.makeText(getContext(), "Server error: " + res.code(), Toast.LENGTH_SHORT).show();
                             }
@@ -160,10 +160,9 @@ public class UpdateCategory extends Fragment {
 
         String userId = LoginActivity.user.getUserID();
 
-        // Prepare the request body with user_id and category for removal
         RequestBody body = new FormBody.Builder()
                 .add("user_id", userId)
-                .add("category", categoryName)
+                .add("category", categoryName.trim())
                 .build();
 
         Request request = new Request.Builder()
@@ -188,9 +187,9 @@ public class UpdateCategory extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             if (res.isSuccessful()) {
                                 Toast.makeText(getContext(), categoryName + " removed successfully", Toast.LENGTH_SHORT).show();
-                                loadPreferredCategories(); // Refresh the list to show changes
+                                loadPreferredCategories(); 
                             } else {
-                                Toast.makeText(getContext(), "Server error: " + res.code(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Error: " + res.code(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -200,10 +199,7 @@ public class UpdateCategory extends Fragment {
     }
 
     private void loadPreferredCategories() {
-        if (LoginActivity.user == null) {
-            Log.e("CATEGORY_ERROR", "User is null");
-            return;
-        }
+        if (LoginActivity.user == null) return;
 
         String userId = LoginActivity.user.getUserID();
 
@@ -215,7 +211,6 @@ public class UpdateCategory extends Fragment {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("CATEGORY_ERROR", e.toString());
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> 
                         Toast.makeText(getContext(), "Failed to load categories", Toast.LENGTH_SHORT).show()
@@ -227,8 +222,6 @@ public class UpdateCategory extends Fragment {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 try {
                     String res = response.body().string();
-                    Log.d("CATEGORY_RESPONSE", res);
-
                     JSONObject obj = new JSONObject(res);
                     JSONArray arr = obj.optJSONArray("categories");
 
@@ -261,21 +254,18 @@ public class UpdateCategory extends Fragment {
     }
 
     private int getCategoryIcon(String categoryName) {
-        switch (categoryName) {
-            case "Music Concerts":
-                return R.drawable.music_notes_svgrepo_com;
-            case "Sports":
-                return R.drawable.football_svgrepo_com;
-            case "Society":
-                return R.drawable.socials;
-            case "Academics":
-                return R.drawable.academics;
-            case "Financial literacy":
-                return R.drawable.finacial_literacy;
-            case "Career Expo":
-                return R.drawable.career_expo;
-            default:
-                return R.drawable.baseline_event_24;
-        }
+        if (categoryName == null) return R.drawable.baseline_event_24;
+        
+        // Using case-insensitive comparisons to handle database variations
+        String name = categoryName.toLowerCase().trim();
+        
+        if (name.contains("music")) return R.drawable.music_notes_svgrepo_com;
+        if (name.contains("sport")) return R.drawable.football_svgrepo_com;
+        if (name.contains("society")) return R.drawable.socials;
+        if (name.contains("academic")) return R.drawable.academics;
+        if (name.contains("financial")) return R.drawable.finacial_literacy;
+        if (name.contains("career")) return R.drawable.career_expo;
+        
+        return R.drawable.baseline_event_24;
     }
 }
