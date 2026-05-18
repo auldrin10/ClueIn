@@ -133,8 +133,10 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     } else {
                         // This handles cases where the user cancels or an error occurs before account selection
-                        Log.w("GOOGLE_AUTH", "Sign-in result not OK: " + result.getResultCode());
-                        Toast.makeText(this, "Sign-In Canceled or Failed", Toast.LENGTH_SHORT).show();
+                        int resultCode = result.getResultCode();
+                        Log.w("GOOGLE_AUTH", "Sign-in result not OK: " + resultCode);
+                        String message = (resultCode == 0) ? "Sign-In Canceled (Check SHA-1 in Firebase)" : "Sign-In Failed (Code: " + resultCode + ")";
+                        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -376,22 +378,39 @@ public class SignUpActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            // Save to SharedPreferences for AddEvent authorization
+                            String email = firebaseUser.getEmail();
+                            String fullName = firebaseUser.getDisplayName();
+                            
+                            // Split name if possible for backend
+                            String firstName = "";
+                            String lastName = "";
+                            if (fullName != null && fullName.contains(" ")) {
+                                String[] parts = fullName.split(" ", 2);
+                                firstName = parts[0];
+                                lastName = parts[1];
+                            } else {
+                                firstName = fullName != null ? fullName : "";
+                            }
+
+                            // Save to SharedPreferences
                             getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
                                     .edit()
-                                    .putString("USER_EMAIL", firebaseUser.getEmail())
+                                    .putString("USER_EMAIL", email)
                                     .apply();
+
+                            // Create session user object
+                            LoginActivity.user = new User(firstName, lastName, email, "", firebaseUser.getUid());
 
                             Toast.makeText(this, "Google Registration Successful", Toast.LENGTH_SHORT).show();
                             
-                            // Redirect to Dashboard (or Category choice if you prefer)
                             Intent intent = new Intent(this, MainActivity.class);
-                            intent.putExtra("USER_EMAIL", firebaseUser.getEmail());
+                            intent.putExtra("USER_EMAIL", email);
                             startActivity(intent);
                             finish();
                         }
                     } else {
-                        Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        Log.e("GOOGLE_AUTH", "Firebase Auth failed", task.getException());
+                        Toast.makeText(this, "Authentication Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
