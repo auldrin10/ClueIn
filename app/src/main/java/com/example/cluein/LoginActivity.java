@@ -194,7 +194,6 @@ public class LoginActivity extends AppCompatActivity {
             // Signed in successfully, show authenticated UI.
             if (account != null) {
                 String email = account.getEmail();
-                String displayName = account.getDisplayName();
                 String firstName = account.getGivenName();
                 String lastName = account.getFamilyName();
                 String googleId = account.getId();
@@ -211,8 +210,15 @@ public class LoginActivity extends AppCompatActivity {
                 ToDashboard(null);
             }
         } catch (ApiException e) {
-            Log.w("GOOGLE_AUTH", "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
+            int statusCode = e.getStatusCode();
+            Log.w("GOOGLE_AUTH", "signInResult:failed code=" + statusCode);
+            String message = "Google Sign-In Failed (Code: " + statusCode + ")";
+            if (statusCode == 10) {
+                message += "\nCheck Support Email & SHA-1 in Firebase";
+            } else if (statusCode == 12500) {
+                message += "\nGoogle Play Services Error";
+            }
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
