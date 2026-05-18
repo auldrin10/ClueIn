@@ -22,14 +22,6 @@
           }
         },
         {
-          "client_id": "636341501011-5u2j4k8l9m0n1p2q3r4s5t6u7v8w9x0y.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.cluein",
-            "certificate_hash": "a15a0a7b4f67e67d97fc5de633eef3e9558265559fe7a89ef6150d0243221d46"
-          }
-        },
-        {
           "client_id": "636341501011-05gshqc6fa0q3vctris0fsm5r4smheov.apps.googleusercontent.com",
           "client_type": 3
         }
