@@ -302,9 +302,14 @@ public class SignUpActivity extends AppCompatActivity {
                 isFormValid = false;
             }
 
-            if (emailInput.getText().toString().isEmpty()) {
+            String emailText = emailInput.getText().toString();
+            if (emailText.isEmpty()) {
                 emailLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
                 emailLayout.setError("Email Address is required");
+                isFormValid = false;
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+                emailLayout.setErrorTextColor(ColorStateList.valueOf(Color.RED));
+                emailLayout.setError("Please enter a valid email address (e.g., name@domain.com)");
                 isFormValid = false;
             }
 

@@ -1,7 +1,6 @@
 package com.example.cluein;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -9,9 +8,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,7 +19,6 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,41 +26,22 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.Switch;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.button.MaterialButton;
 import androidx.appcompat.app.AlertDialog;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -80,28 +56,13 @@ public class AddEvent extends Fragment {
     private EditText eventName, eventDate, eventTime, eventPrice, eventDescription;
     private AutoCompleteTextView eventLocation, eventCategory;
     private Button addEvent, clearForm, pickDate, pickTime;
-    private Uri imageUrl;
-    private MaterialButton selectImage;
-    private ImageView imageView;
     private ScrollView mainFormContainer;
 
     private static final String TAG = "AddEventFragment";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private Calendar selectedEventDate = Calendar.getInstance();
 
     private final List<String> authorizedEmails = Arrays.asList("3030015@students.wits.ac.za", "3002003@students.wits.ac.za", "3032986@students.wits.ac.za");
-    private final ActivityResultLauncher<String> selectImageLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    imageUrl = uri;
-                    imageView.setImageURI(uri);
-                    imageView.setVisibility(View.VISIBLE);
-                    selectImage.setText("Change Image");
-                }
-            }
-    );
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -132,8 +93,7 @@ public class AddEvent extends Fragment {
         clearForm = view.findViewById(R.id.clearForm);
         pickDate = view.findViewById(R.id.btnPickDate);
         pickTime = view.findViewById(R.id.btnPickTime);
-        selectImage = view.findViewById(R.id.selectImage);
-        imageView = view.findViewById(R.id.eventImage);
+
         EditText[] editTexts = {eventName, eventLocation, eventCategory, eventDate, eventTime, eventPrice, eventDescription};
 
         checkUserAuthorization();
@@ -143,14 +103,14 @@ public class AddEvent extends Fragment {
             @Override
             public void onClick(View view) {
                 if (validateFields()) {
-                    uploadImageAndPost();
+                    // Images are now determined by category automatically in the Adapter
+                    post("category_default");
                 }
             }
         });
 
         pickDate.setOnClickListener(v -> dateDialog());
         pickTime.setOnClickListener(v -> timeDialog());
-        selectImage.setOnClickListener(v -> selectImageLauncher.launch("image/*"));
         clearForm.setOnClickListener(v -> clearFormFields());
 
         for (EditText edit : editTexts) {
@@ -191,83 +151,51 @@ public class AddEvent extends Fragment {
             return false;
         }
         
-        if (imageUrl == null) {
-            Toast.makeText(requireContext(), "Please select an image.", Toast.LENGTH_LONG).show();
-            return false;
-        }
         return true;
     }
 
-    private void uploadImageAndPost() {
-        if (imageUrl == null) return;
-
-        addEvent.setEnabled(false);
-        Toast.makeText(requireContext(), "Uploading event...", Toast.LENGTH_SHORT).show();
-
-        String fileName = "events/" + System.currentTimeMillis() + ".jpg";
-        StorageReference storageRef = storage.getReference().child(fileName);
-
-        storageRef.putFile(imageUrl)
-                .addOnSuccessListener(taskSnapshot -> {
-                    storageRef.getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                String downloadUrl = uri.toString();
-                                post(downloadUrl);
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e(TAG, "Failed to get download URL", e);
-                                addEvent.setEnabled(true);
-                                Toast.makeText(requireContext(), "Failed to get image link", Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Image upload failed", e);
-                    addEvent.setEnabled(true);
-                    String errorMsg = e.getMessage();
-                    if (errorMsg != null && errorMsg.contains("unsigned")) {
-                        new AlertDialog.Builder(requireContext())
-                            .setTitle("Storage Error")
-                            .setMessage("Firebase Storage rules require login. Please set rules to 'allow read, write: if true;' in Firebase Console.")
-                            .setPositiveButton("OK", null)
-                            .show();
-                    } else {
-                        Toast.makeText(requireContext(), "Upload failed: " + errorMsg, Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
+    String postEventURL = "https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
 
     public void post(String imageUrlString) {
 
         String eName = eventName.getText().toString().trim();
         String eLoc = eventLocation.getText().toString().trim();
-
-        String eDate = eventDate.getText().toString().trim();
+        String rawDate = eventDate.getText().toString().trim();
         String eTime = eventTime.getText().toString().trim();
-
-        String eCat = eventCategory.getText().toString().trim();
-
-        switch (eCat) {
-            case "Social": eCat = "1"; break;
-            case "Sports": eCat = "2"; break;
-            case "Academics": eCat = "6"; break;
-            case "Nightlife": eCat = "5"; break;
-            case "Music": eCat = "3"; break;
-            case "Food": eCat = "4"; break;
-            default: eCat = "2";
-        }
-
         String ePrice = eventPrice.getText().toString().trim();
         String eDesc = eventDescription.getText().toString().trim();
 
+        String formattedDate = rawDate;
+        try{
+            SimpleDateFormat input = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+            SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date d = input.parse(rawDate);
+            if(d != null){
+                formattedDate = output.format(d);
+            }
+        }catch(Exception e){
+            Log.e("DATE_ERROR",e.getMessage());
+        }
+
+        String eCat = eventCategory.getText().toString().trim();
+        switch(eCat){
+            case "Social": eCat="1"; break;
+            case "Sports": eCat="2"; break;
+            case "Music": eCat="3"; break;
+            case "Food": eCat="4"; break;
+            case "Nightlife": eCat="5"; break;
+            case "Academics": eCat="6"; break;
+        }
+
         RequestBody body = new FormBody.Builder()
-                .add("event_name", eName)
-                .add("event_location", eLoc)
-                .add("category_id", eCat)
-                .add("event_date", eDate)
-                .add("event_time", eTime)
-                .add("event_price", ePrice)
-                .add("event_description", eDesc)
-                .add("event_image", imageUrlString)
+                .add("event_name",eName)
+                .add("event_location",eLoc)
+                .add("category_id",eCat)
+                .add("event_date",formattedDate)
+                .add("event_time",eTime)
+                .add("event_price",ePrice)
+                .add("event_description",eDesc)
+                .add("event_image",imageUrlString)
                 .build();
 
         Request request = new Request.Builder()
@@ -276,48 +204,39 @@ public class AddEvent extends Fragment {
                 .build();
 
         Eventclient.newCall(request).enqueue(new Callback() {
-
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(),
-                                "Network error: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show()
-                );
+            public void onFailure(@NonNull Call call, @NonNull IOException e){
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(), "NETWORK ERROR:\n"+e.getMessage(), Toast.LENGTH_LONG).show()
+                    );
+                }
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String serverResponse = response.body()!=null ? response.body().string() : "";
+                Log.d("SERVER_RESPONSE",serverResponse);
 
-                String resBody = response.body() != null ? response.body().string() : "";
-
-                Log.d("EVENT_RESPONSE", resBody);
-
-                requireActivity().runOnUiThread(() -> {
-                    try {
-                        JSONObject obj = new JSONObject(resBody);
-
-                        String status = obj.optString("status");
-                        String message = obj.optString("message");
-
-                        Toast.makeText(requireContext(),
-                                status + " - " + message,
-                                Toast.LENGTH_LONG).show();
-
-                        if (status.equals("success")) {
-                            clearFormFields();
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        try{
+                            JSONObject obj = new JSONObject(serverResponse);
+                            String status = obj.getString("status");
+                            String message = obj.getString("message");
+                            Toast.makeText(requireContext(), status+" : "+message, Toast.LENGTH_LONG).show();
+                            if(status.equals("success")){
+                                clearFormFields();
+                            }
+                        }catch(Exception e){
+                            Toast.makeText(requireContext(), serverResponse, Toast.LENGTH_LONG).show();
                         }
-
-                    } catch (Exception e) {
-                        Toast.makeText(requireContext(),
-                                "Invalid server response",
-                                Toast.LENGTH_LONG).show();
-                        Log.e("PARSE_ERROR", resBody);
-                    }
-                });
+                    });
+                }
             }
         });
     }
+
     private void checkUserAuthorization() {
         String userEmail = "";
         if (getActivity() != null && getActivity().getIntent() != null) {
@@ -345,8 +264,6 @@ public class AddEvent extends Fragment {
         });
         dialog.show();
     }
-
-    String postEventURL = " https://wmc.ms.wits.ac.za/students/sgroup2672/events/eventpost.php";
 
     private void checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -387,9 +304,6 @@ public class AddEvent extends Fragment {
         eventTime.setText("");
         eventPrice.setText("");
         eventDescription.setText("");
-        imageUrl = null;
-        if (imageView != null) imageView.setVisibility(View.GONE);
-        if (selectImage != null) selectImage.setText("Select Image");
         if (addEvent != null) {
             addEvent.setEnabled(true);
             addEvent.setBackgroundResource(R.drawable.sign_up_button);
@@ -398,13 +312,17 @@ public class AddEvent extends Fragment {
 
     private void setupLocationDropdown() {
         String[] locations = {"Great Hall", "Matrix", "Rugby Stadium", "Soccer Stadium", "Netball", "Mathematical Sciences Building", "Science Stadium", "Oppenheimer Life Sciences", "FNB Building", "Flower Hall", "Theatre", "Amic Deck", "Wits Art Musium", "Online"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
-        eventLocation.setAdapter(adapter);
+        if (getContext() != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
+            eventLocation.setAdapter(adapter);
+        }
     }
 
     private void setupCategoryDropdown() {
         String[] categories = {"Social", "Sports", "Academics", "Nightlife", "Music", "Food"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
-        eventCategory.setAdapter(adapter);
+        if (getContext() != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
+            eventCategory.setAdapter(adapter);
+        }
     }
 }
