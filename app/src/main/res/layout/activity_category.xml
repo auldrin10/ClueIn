@@ -74,45 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Music"
-                    android:textColor="@color/app_text_primary" />
-            </LinearLayout>
-
-            <!-- Food -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_food"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardBackgroundColor="@color/navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
-
-                    <ImageView
-                        android:id="@+id/img_food"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/food_dish_svgrepo_com"
-                        app:tint="#FF9800" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Food"
+                    android:text="Music Concerts"
                     android:textColor="@color/app_text_primary" />
             </LinearLayout>
 
@@ -150,11 +112,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Football"
+                    android:text="Sports"
                     android:textColor="@color/app_text_primary" />
             </LinearLayout>
 
-            <!-- Rugby -->
+            <!-- Socials -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -164,7 +126,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_rugby"
+                    android:id="@+id/card_socials"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -176,48 +138,11 @@
                     app:strokeWidth="2dp">
 
                     <ImageView
-                        android:id="@+id/img_rugby"
+                        android:id="@+id/img_socials"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/sport_rugby_svgrepo_com" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Rugby"
-                    android:textColor="@color/app_text_primary" />
-            </LinearLayout>
-
-            <!-- Hackathon -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_hackathon"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardBackgroundColor="@color/navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
-
-                    <ImageView
-                        android:id="@+id/img_hackathon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/coding_html_svgrepo_com"
+                        android:src="@drawable/socials"
                         app:tint="#FF9800" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -225,11 +150,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Hackathon"
+                    android:text="Society"
                     android:textColor="@color/app_text_primary" />
             </LinearLayout>
 
-            <!-- Worship -->
+            <!-- Academics -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -239,7 +164,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_worship"
+                    android:id="@+id/card_academics"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -251,48 +176,11 @@
                     app:strokeWidth="2dp">
 
                     <ImageView
-                        android:id="@+id/img_worship"
+                        android:id="@+id/img_academics"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/gospel_choir_svgrepo_com" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Worship"
-                    android:textColor="@color/app_text_primary" />
-            </LinearLayout>
-
-            <!-- Netball -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_netball"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardBackgroundColor="@color/navy"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    app:strokeColor="#FF9800"
-                    app:strokeWidth="2dp">
-
-                    <ImageView
-                        android:id="@+id/img_netball"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/dribbble_logo"
+                        android:src="@drawable/academics"
                         app:tint="#FF9800" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -300,11 +188,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Netball"
+                    android:text="Academics"
                     android:textColor="@color/app_text_primary" />
             </LinearLayout>
 
-            <!-- Nightlife -->
+            <!-- Financial Literacy -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -314,7 +202,7 @@
                 android:padding="8dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_nightlife"
+                    android:id="@+id/card_financial_literacy"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:clickable="true"
@@ -326,11 +214,11 @@
                     app:strokeWidth="2dp">
 
                     <ImageView
-                        android:id="@+id/img_nightlife"
+                        android:id="@+id/img_financial_literacy"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/drinks_svgrepo_com"
+                        android:src="@drawable/finacial_literacy"
                         app:tint="#FF9800" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -338,7 +226,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Nightlife"
+                    android:text="Financial Literacy"
+                    android:textColor="@color/app_text_primary" />
+            </LinearLayout>
+
+            <!-- Career Expo -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_career_expo"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/navy"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="10dp"
+                    app:strokeColor="#FF9800"
+                    app:strokeWidth="2dp">
+
+                    <ImageView
+                        android:id="@+id/img_career_expo"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/career_expo"
+                        app:tint="#FF9800" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Career Expo"
                     android:textColor="@color/app_text_primary" />
             </LinearLayout>
 

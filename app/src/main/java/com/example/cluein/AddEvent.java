@@ -310,7 +310,7 @@ public class AddEvent extends Fragment {
     }
 
     private void setupLocationDropdown() {
-        String[] locations = {"Great Hall", "Matrix", "Rugby Stadium", "Soccer Stadium", "Netball", "Mathematical Sciences Building", "Science Stadium", "Oppenheimer Life Sciences", "FNB Building", "Flower Hall", "Theatre", "Amic Deck", "Wits Art Musium", "Online"};
+        String[] locations = {"Great Hall", "Matrix", "Rugby Stadium", "Football Stadium", "Campus(Library lawns)", "Mathematical Sciences Building", "Science Stadium", "Oppenheimer Life Sciences", "FNB Building", "Flower Hall", "Theatre Complex", "Club & Conference", "Origin Centre", "Solomon Mahlangu House"};
         if (getContext() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, locations);
             eventLocation.setAdapter(adapter);
@@ -318,7 +318,7 @@ public class AddEvent extends Fragment {
     }
 
     private void setupCategoryDropdown() {
-        String[] categories = {"Social", "Sports", "Academics", "Career Expo", "Music Concert", "Financial Literacy"};
+        String[] categories = {"Music Concerts", "Sports", "Society", "Academics", "Financial literacy", "Career Expo"};
         if (getContext() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
             eventCategory.setAdapter(adapter);
