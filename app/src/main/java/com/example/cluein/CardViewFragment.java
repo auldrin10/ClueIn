@@ -56,7 +56,8 @@ public class CardViewFragment extends Fragment {
         args.putString(ARG_LOCATION, event.getLocation());
         args.putString(ARG_DATE, event.getEventDate());
         args.putDouble(ARG_PRICE, event.getPrice());
-        args.putString(ARG_IMAGE_URL, event.getImageURL());
+        // Use the category-associated image URL
+        args.putString(ARG_IMAGE_URL, event.getCategoryImageURL());
         args.putString(ARG_DESCRIPTION, event.getDescription());
         fragment.setArguments(args);
         return fragment;
@@ -80,7 +81,6 @@ public class CardViewFragment extends Fragment {
         ImageView btnClose = view.findViewById(R.id.btn_close_fragment);
         LinearLayout layoutLocation = view.findViewById(R.id.layout_location);
 
-        // This correctly finds the <org.osmdroid.views.MapView> in your XML
         map = view.findViewById(R.id.map);
 
         if (getArguments() != null) {
@@ -97,6 +97,7 @@ public class CardViewFragment extends Fragment {
                     .load(getArguments().getString(ARG_IMAGE_URL))
                     .centerCrop()
                     .placeholder(R.drawable.dribbble_logo)
+                    .error(R.drawable.dribbble_logo)
                     .into(imgEvent);
 
             layoutLocation.setOnClickListener(v -> {
@@ -123,14 +124,12 @@ public class CardViewFragment extends Fragment {
         IMapController mapController = map.getController();
         mapController.setZoom(17.0);
 
-        // Show User Location
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), map);
             locationOverlay.enableMyLocation();
             map.getOverlays().add(locationOverlay);
         }
 
-        // Show Event Marker
         if (eventLocationName != null && !eventLocationName.isEmpty()) {
             GeoPoint eventPoint = getGeoPointFromAddress("Wits " + eventLocationName);
             if (eventPoint != null) {
@@ -139,7 +138,6 @@ public class CardViewFragment extends Fragment {
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                 marker.setTitle(eventLocationName);
                 
-                // Add the click listener to the marker here
                 marker.setOnMarkerClickListener((m, mapView) -> {
                     openExternalMap(eventLocationName);
                     return true;
@@ -165,20 +163,14 @@ public class CardViewFragment extends Fragment {
     }
 
     private void openExternalMap(String location) {
-        // Prepend "Wits " to ensure navigation starts within the correct context
         String witsLocation = "Wits " + location;
-        
-        // google.navigation:q= starts navigation mode specifically
         Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(witsLocation));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        
-        // Target Google Maps specifically
         mapIntent.setPackage("com.google.android.apps.maps");
         
         try {
             startActivity(mapIntent);
         } catch (Exception e) {
-            // Fallback for devices without Google Maps (searches for location)
             Uri searchUri = Uri.parse("geo:0,0?q=" + Uri.encode(witsLocation));
             Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, searchUri);
             startActivity(fallbackIntent);
