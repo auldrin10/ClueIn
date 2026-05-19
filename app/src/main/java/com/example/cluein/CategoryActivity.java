@@ -136,16 +136,13 @@ public class CategoryActivity extends AppCompatActivity {
         view.setOnClickListener(v -> {
 
             int viewId = view.getId();
-            Log.d("CARD_CLICKED",
-                    getResources().getResourceEntryName(view.getId()));
 
             String categoryName;
-            // Standardizing names to match database expectations and working categories
             if (viewId == R.id.Music_Concert) categoryName = "Music Concerts";
             else if (viewId == R.id.Sport) categoryName = "Sports";
             else if (viewId == R.id.Society) categoryName = "Society";
             else if (viewId == R.id.Academics) categoryName = "Academics";
-            else if (viewId == R.id.Financial_Literacy) categoryName = "Financial Literacy";
+            else if (viewId == R.id.Financial_Literacy) categoryName = "Financial literacy";
             else if (viewId == R.id.Career_Expo) categoryName = "Career Expo";
             else categoryName = getResources().getResourceEntryName(viewId).replace("_", " ");
 
@@ -394,9 +391,9 @@ public class CategoryActivity extends AppCompatActivity {
         RequestBody body =
                 new FormBody.Builder()
 
-                        // IMPORTANT: Using .trim() to ensure names match database entries perfectly
+                        // IMPORTANT
                         .add("user_id", userid)
-                        .add("category", category.trim())
+                        .add("category", category)
                         .build();
 
         Request request =
